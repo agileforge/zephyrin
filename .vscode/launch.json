@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Electron: Renderer",
+            "type": "chrome",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+            "windows": {
+                "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+            },
+            "runtimeArgs": [
+                "--remote-debugging-port=9222",
+                ".",
+            ],
+            "sourceMapPathOverrides": {
+                "webpack:\\*": "${workspaceRoot}/*"
+            },
+            "sourceMaps": true,
+            "timeout": 30000,
+            //"preLaunchTask": "npmStart",
+            "webRoot": "${workspaceRoot}/dist"
+        }
+    ]
+}
