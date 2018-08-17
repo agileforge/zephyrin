@@ -1,4 +1,6 @@
-# Zephyrin
+# Zephyrin - Mailer tool
+
+## Synopsis
 
 Zephyrin is a tool to send emails to a list of adresses, and attach a document that comes from a merge of a template and a data source document.
 
