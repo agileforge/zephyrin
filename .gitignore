@@ -40,4 +40,4 @@ testem.log
 Thumbs.db
 
 #TS generated
-./main.js*
+main.js*
