@@ -2,25 +2,38 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Electron: Renderer",
-            "type": "chrome",
+            "name": "Debug Electron",
+            "type": "node",
             "request": "launch",
             "cwd": "${workspaceRoot}",
             "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
             "windows": {
                 "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
             },
+            "program": "${workspaceRoot}/main.js",
+            "protocol": "inspector",
+            "sourceMaps": true,
+            "preLaunchTask": "build",
+        },
+        {
+            "name": "Debug Angular",
+            "type": "chrome",
+            "request": "launch",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+            "windows": {
+                "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+            },
             "runtimeArgs": [
                 "--remote-debugging-port=9222",
-                ".",
+                "${workspaceRoot}/main.js",
             ],
             "sourceMapPathOverrides": {
-                "webpack:\\*": "${workspaceRoot}/*"
+                "webpack:///*": "${workspaceRoot}/*"
             },
+            "port": 9222,
             "sourceMaps": true,
-            "timeout": 30000,
-            //"preLaunchTask": "npmStart",
-            "webRoot": "${workspaceRoot}/dist"
-        }
+            "webRoot": "${workspaceRoot}",
+            "preLaunchTask": "build",
+        },
     ]
 }

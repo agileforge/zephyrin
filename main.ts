@@ -22,7 +22,7 @@ function createWindow() {
             pathname: path.join(__dirname, `/dist/index.html`), 
             protocol: "file:", slashes: true 
         })
-    );    
+    );  
     
     win.on("closed", () => {     
         win = null;   
