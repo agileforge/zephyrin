@@ -10,8 +10,11 @@ let win;
 
 function createWindow() {
     win = new BrowserWindow({ 
-        width: 800, 
-        height: 600 
+        width: 950, minWidth: 800, 
+        height: 600, minHeight: 500,
+        resizable: true,
+        center: true,
+        //icon: path.join(__dirname, 'src/assets/icons/png/64x64.png')
     });
 
     win.setMenu(null);
