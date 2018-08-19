@@ -5,7 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { MailSenderService } from '../mail-sender/mail-sender.service';
-import { MailingDataSource } from './mailingDataSource';
+import { MailingData } from './mailingData';
 
 /**
  * Service that is able to merge and then send email with attachement
@@ -33,7 +33,7 @@ export class MailerEngineService {
      * @param {MailingDataSource} mailingDataSource
      * @memberof MailerEngineService
      */
-    sendMails(mailingDataSource: MailingDataSource) {
+    sendMails(mailingDataSource: MailingData) {
         throw new Error('Not implemented');
     }
 

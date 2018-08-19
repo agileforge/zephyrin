@@ -28,13 +28,13 @@ export interface MailingDataSource {
      * @type {string}
      * @memberof MailingDataSource
      */
-    lastNameField: string;
+    lastNameField?: string;
     /**
      * Filed name to find the first name in data array.
      * @type {string}
      * @memberof MailingDataSource
      */
-    firstNameField: string;
+    firstNameField?: string;
     /**
      * Array of key value pair (field/value) that represents the data table
      * used to do the mailing.
