@@ -6,6 +6,8 @@
 import { Injectable } from '@angular/core';
 import { MailSenderService } from '../mail-sender/mail-sender.service';
 import { MailingData } from './mailingData';
+import { MailModel } from '../mail-sender/mailModel';
+import { EMAIL_REGEX } from '../../misc/const';
 
 /**
  * Service that is able to merge and then send email with attachement
@@ -34,7 +36,18 @@ export class MailerEngineService {
      * @memberof MailerEngineService
      */
     sendMails(mailingDataSource: MailingData) {
-        throw new Error('Not implemented');
+        mailingDataSource.datasource.data
+        .filter(row => EMAIL_REGEX.test(row['email']))
+        .forEach(row => {
+            const mail = <MailModel>{
+                from: 'should comes from config',
+                to: [row['email']],
+                subject: mailingDataSource.subject,
+                body: mailingDataSource.body
+            };
+
+            this._mailSenderService.send(mail);
+        });
     }
 
 }

@@ -51,5 +51,5 @@ export interface MailModel {
      * @type {object[]}
      * @memberof MailModel
      */
-    attachments: any[][];
+    attachments?: any[][];
 }
