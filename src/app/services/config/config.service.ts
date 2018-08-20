@@ -5,7 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { ConfigModel } from './configModel';
-import { Observable, ReplaySubject, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 /**
  * Provides user configuration services.
@@ -15,20 +15,20 @@ import { Observable, ReplaySubject, BehaviorSubject } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
-export class ConfigServiceService {
+export class ConfigService {
 
     config = new BehaviorSubject(<ConfigModel>{});
 
     /**
      *Creates an instance of ConfigServiceService.
-     * @memberof ConfigServiceService
+     * @memberof ConfigService
      */
     constructor() { }
 
     /**
      * Saves the configuration.
      * @returns {Observable<ConfigModel>}
-     * @memberof ConfigServiceService
+     * @memberof ConfigService
      */
     save(): Observable<ConfigModel> {
         throw new Error('Not implemented');
@@ -37,7 +37,7 @@ export class ConfigServiceService {
     /**
      * Saves the configuration.
      * @returns {Observable<ConfigModel>}
-     * @memberof ConfigServiceService
+     * @memberof ConfigService
      */
     load(): Observable<ConfigModel> {
         throw new Error('Not implemented');
