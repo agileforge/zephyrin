@@ -5,6 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { MailModel } from '../mail-sender/mailModel';
+import { InvalidEmailAddressError } from '../mailer-engine/invalidEmailAddressError';
 
 /**
  * Service to log mails when sent.
@@ -24,18 +25,33 @@ export class MailingLoggerService {
 
     /**
      * Log a mail that has been successfully sent.
-     * @param {MailModel} mail The sent mail.
+     * @param {string} mail The mail data that fail while sending.
+     * @param {number} rowNum The row number of data table.
      * @memberof MailingLoggerService
      */
-    success(mail: MailModel) {
+    success(mail: MailModel, rowNum: number) {
     }
 
     /**
-     * Log a mail that has fail when sending.
      * @param {MailModel} mail The mail that fail.
      * @memberof MailingLoggerService
      */
-    fail(mail: MailModel) {
+    /**
+     * Log a mail that has fail when sending.
+     * @param {MailModel} mail The mail data that fail while sending.
+     * @param {Error} error The error that cause the mail sending fail.
+     * @param {number} rowNum The row number of data table.
+     * @memberof MailingLoggerService
+     */
+    sendFail(mail: MailModel, error: Error, rowNum: number) {
+    }
+
+    /**
+     * Log an email address error.
+     * @param {MailModel} mail The mail that fail.
+     * @memberof MailingLoggerService
+     */
+    emailAddressError(error: InvalidEmailAddressError) {
     }
 
 }

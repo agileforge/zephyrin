@@ -11,6 +11,7 @@ import { EMAIL_REGEX } from '../../misc/const';
 import { ConfigService } from '../config/config.service';
 import Utils from '../../misc/utils';
 import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
+import { InvalidEmailAddressError } from './invalidEmailAddressError';
 
 /**
  * Service that is able to merge and then send email with attachement
@@ -33,7 +34,7 @@ export class MailerEngineService {
     constructor(
         private _configService: ConfigService,
         private _mailSenderService: MailSenderService,
-        private _mailingLoggerServiced: MailingLoggerService
+        private _mailingLoggerService: MailingLoggerService
     ) {
     }
 
@@ -51,21 +52,33 @@ export class MailerEngineService {
         const lastNameField = mailingDataSource.datasource.lastNameField;
         const firstNameField = mailingDataSource.datasource.firstNameField;
 
+        let rowNum = 0;
         mailingDataSource.datasource.data
-            .filter(row => EMAIL_REGEX.test(row['email']))
             .forEach(row => {
+                rowNum++;
+
+                const emailAddress = row[emailField];
+                // Check if email is valid
+                if (!EMAIL_REGEX.test(emailAddress)) {
+                    const error = new InvalidEmailAddressError(emailAddress, emailField, row, rowNum);
+                    that._mailingLoggerService.emailAddressError(error);
+                    return;
+                }
+
+                // Email addres is valid, prepare data
                 const mail = <MailModel>{
                     from: Utils.getEmailAddress(config.sender.emailAddress, config.sender.fullName),
-                    to: [Utils.getEmailAddress(row[emailField], row[lastNameField], row[firstNameField])],
+                    to: [Utils.getEmailAddress(emailAddress, row[lastNameField], row[firstNameField])],
                     subject: that.replaceFields(mailingDataSource.subject, row),
                     body: that.replaceFields(mailingDataSource.body, row),
                     attachments: []
                 };
 
+                // Send the email
                 that._mailSenderService.send(mail).subscribe(() => {
-                    that._mailingLoggerServiced.success(mail);
+                    that._mailingLoggerService.success(mail, rowNum);
                 }, err => {
-                    that._mailingLoggerServiced.fail(mail);
+                    that._mailingLoggerService.sendFail(mail, err, rowNum);
                 });
             });
     }
