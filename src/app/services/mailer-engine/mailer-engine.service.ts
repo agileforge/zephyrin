@@ -8,6 +8,8 @@ import { MailSenderService } from '../mail-sender/mail-sender.service';
 import { MailingData } from './mailingData';
 import { MailModel } from '../mail-sender/mailModel';
 import { EMAIL_REGEX } from '../../misc/const';
+import { ConfigService } from '../config/config.service';
+import Utils from '../../misc/utils';
 
 /**
  * Service that is able to merge and then send email with attachement
@@ -20,14 +22,18 @@ import { EMAIL_REGEX } from '../../misc/const';
 })
 export class MailerEngineService {
 
+    private _placeHolderPattern = /(\{([\w\d_\-\.]*)\})/ig;
+
     /**
      *Creates an instance of MailerEngineService.
      * @param {MailSenderService} _mailSenderService
      * @memberof MailerEngineService
      */
     constructor(
+        private _configService: ConfigService,
         private _mailSenderService: MailSenderService
-    ) { }
+    ) {
+    }
 
     /**
      * Merge, prepare document and send email to each address found
@@ -36,17 +42,39 @@ export class MailerEngineService {
      * @memberof MailerEngineService
      */
     sendMails(mailingDataSource: MailingData) {
-        mailingDataSource.datasource.data
-        .filter(row => EMAIL_REGEX.test(row['email']))
-        .forEach(row => {
-            const mail = <MailModel>{
-                from: 'should comes from config',
-                to: [row['email']],
-                subject: mailingDataSource.subject,
-                body: mailingDataSource.body
-            };
+        const that = this;
+        const config = this._configService.config.value;
 
-            this._mailSenderService.send(mail);
+        const emailField = mailingDataSource.datasource.mailAddressField;
+        const lastNameField = mailingDataSource.datasource.lastNameField;
+        const firstNameField = mailingDataSource.datasource.firstNameField;
+
+        mailingDataSource.datasource.data
+            .filter(row => EMAIL_REGEX.test(row['email']))
+            .forEach(row => {
+                const mail = <MailModel>{
+                    from: Utils.getEmailAddress(config.sender.emailAddress, config.sender.fullName),
+                    to: [Utils.getEmailAddress(row[emailField], row[lastNameField], row[firstNameField])],
+                    subject: that.replaceFields(mailingDataSource.subject, row),
+                    body: that.replaceFields(mailingDataSource.body, row),
+                    attachments: []
+                };
+
+                this._mailSenderService.send(mail);
+            });
+    }
+
+    /**
+     * Replace placeholders in form {field_name} by found value in data.
+     * If a placeholder is not found in data, leave it as is.
+     * @private
+     * @param {string} value The string that contains place holders.
+     * @param {{ [field: string]: string }} data The dictionary that contains data.
+     * @memberof MailerEngineService
+     */
+    private replaceFields(value: string, data: { [field: string]: string }): string {
+        return value.replace(this._placeHolderPattern, (match, $1, $2) => {
+            return data[$2] || $1; // If field not exists in data let it as is.
         });
     }
 
