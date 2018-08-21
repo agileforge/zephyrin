@@ -10,6 +10,7 @@ import { MailModel } from '../mail-sender/mailModel';
 import { EMAIL_REGEX } from '../../misc/const';
 import { ConfigService } from '../config/config.service';
 import Utils from '../../misc/utils';
+import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
 
 /**
  * Service that is able to merge and then send email with attachement
@@ -31,7 +32,8 @@ export class MailerEngineService {
      */
     constructor(
         private _configService: ConfigService,
-        private _mailSenderService: MailSenderService
+        private _mailSenderService: MailSenderService,
+        private _mailingLoggerServiced: MailingLoggerService
     ) {
     }
 
@@ -60,7 +62,11 @@ export class MailerEngineService {
                     attachments: []
                 };
 
-                this._mailSenderService.send(mail);
+                that._mailSenderService.send(mail).subscribe(() => {
+                    that._mailingLoggerServiced.success(mail);
+                }, err => {
+                    that._mailingLoggerServiced.fail(mail);
+                });
             });
     }
 

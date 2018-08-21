@@ -9,15 +9,19 @@ import { ConfigService } from '../config/config.service';
 import { MailSenderService } from '../mail-sender/mail-sender.service';
 import { MailingData } from './mailingData';
 import { MailingDataSource } from './mailingDataSource';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import { MailModel } from '../mail-sender/mailModel';
 import { ConfigModel, SmtpConfigModel, SenderConfigModel, MailingLogConfigModel } from '../config/configModel';
+import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
 
 describe('MailerEngineService', () => {
     let target: MailerEngineService;
     let configServiceStub: ConfigService;
     let mailSenderServiceStub: MailSenderService;
+    let mailingLoggerServiceStub: MailingLoggerService;
 
+    let mails: MailModel[];
+    let sendSpy;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -29,6 +33,7 @@ describe('MailerEngineService', () => {
         });
         configServiceStub = TestBed.get(ConfigService);
         mailSenderServiceStub = TestBed.get(MailSenderService);
+        mailingLoggerServiceStub = TestBed.get(MailingLoggerService);
         target = TestBed.get(MailerEngineService);
 
         const config = new BehaviorSubject(<ConfigModel>{
@@ -46,6 +51,15 @@ describe('MailerEngineService', () => {
         });
 
         configServiceStub.config = config;
+        spyOn(mailingLoggerServiceStub, 'success').and.callThrough();
+        spyOn(mailingLoggerServiceStub, 'fail').and.callThrough();
+
+        mails = [];
+        sendSpy = spyOn(mailSenderServiceStub, 'send').and.callFake(mail => {
+            mails.push(mail);
+            return new BehaviorSubject(true);
+        });
+
     });
 
     it('should be created', inject([MailerEngineService], (service: MailerEngineService) => {
@@ -66,13 +80,59 @@ describe('MailerEngineService', () => {
             }
         };
 
-        spyOn(mailSenderServiceStub, 'send').and.returnValue(new BehaviorSubject<boolean>(true));
-
         // Act
         target.sendMails(data);
 
         // Assert
         expect(mailSenderServiceStub.send).toHaveBeenCalled();
+    });
+
+    it('should log on mail successfully sent', async () => {
+        // Arrange
+        const data = <MailingData>{
+            subject: 'SomeSubject',
+            body: '<h1>Some HTML code</h1>',
+            template: null,
+            datasource: <MailingDataSource>{
+                mailAddressField: 'email',
+                data: [
+                    { email: 'john.doe@somedomain.com' }
+                ]
+            }
+        };
+
+        // Act
+        target.sendMails(data);
+
+        // Assert
+        expect(mailingLoggerServiceStub.success).toHaveBeenCalledWith(mails[0]);
+    });
+
+    it('should log fail when mail sending fail', async () => {
+        // Arrange
+        const data = <MailingData>{
+            subject: 'SomeSubject',
+            body: '<h1>Some HTML code</h1>',
+            template: null,
+            datasource: <MailingDataSource>{
+                mailAddressField: 'email',
+                data: [
+                    { email: 'john.doe@somedomain.com' }
+                ]
+            }
+        };
+
+        sendSpy.and.callFake(mail => {
+            mails.push(mail);
+            return throwError(new Error('Test error'));
+        });
+
+        // Act
+        target.sendMails(data);
+
+        // Assert
+        expect(mailingLoggerServiceStub.success).not.toHaveBeenCalled();
+        expect(mailingLoggerServiceStub.fail).toHaveBeenCalledWith(mails[0]);
     });
 
     it('should send a mail to each address in source', async () => {
@@ -89,8 +149,6 @@ describe('MailerEngineService', () => {
                 ]
             }
         };
-
-        spyOn(mailSenderServiceStub, 'send').and.returnValue(new BehaviorSubject<boolean>(true));
 
         // Act
         target.sendMails(data);
@@ -114,10 +172,6 @@ describe('MailerEngineService', () => {
             }
         };
 
-        const mails = <MailModel[]>[];
-        spyOn(mailSenderServiceStub, 'send').and.callFake(mail => {
-            mails.push(mail);
-        });
 
         // Act
         target.sendMails(data);
@@ -142,11 +196,6 @@ describe('MailerEngineService', () => {
             }
         };
 
-        const mails: MailModel[] = [];
-        spyOn(mailSenderServiceStub, 'send').and.callFake(mail => {
-            mails.push(mail);
-        });
-
         // Act
         target.sendMails(data);
 
@@ -169,11 +218,6 @@ describe('MailerEngineService', () => {
                 ]
             }
         };
-
-        const mails: MailModel[] = [];
-        spyOn(mailSenderServiceStub, 'send').and.callFake(mail => {
-            mails.push(mail);
-        });
 
         // Act
         target.sendMails(data);
@@ -209,11 +253,6 @@ describe('MailerEngineService', () => {
                 ]
             }
         };
-
-        const mails: MailModel[] = [];
-        spyOn(mailSenderServiceStub, 'send').and.callFake(mail => {
-            mails.push(mail);
-        });
 
         // Act
         target.sendMails(data);
@@ -264,11 +303,6 @@ describe('MailerEngineService', () => {
             }
         };
 
-        const mails: MailModel[] = [];
-        spyOn(mailSenderServiceStub, 'send').and.callFake(mail => {
-            mails.push(mail);
-        });
-
         // Act
         target.sendMails(data);
 
@@ -302,11 +336,6 @@ describe('MailerEngineService', () => {
                 ]
             }
         };
-
-        const mails: MailModel[] = [];
-        spyOn(mailSenderServiceStub, 'send').and.callFake(mail => {
-            mails.push(mail);
-        });
 
         // Act
         target.sendMails(data);
@@ -343,11 +372,6 @@ describe('MailerEngineService', () => {
     //             ]
     //         }
     //     };
-
-    //     const mails: MailModel[] = [];
-    //     spyOn(mailSenderServiceStub, 'send').and.callFake(mail => {
-    //         mails.push(mail);
-    //     });
 
     //     // Act
     //     target.sendMails(data);
