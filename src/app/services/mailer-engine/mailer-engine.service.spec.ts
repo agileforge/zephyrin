@@ -14,12 +14,16 @@ import { MailModel } from '../mail-sender/mailModel';
 import { ConfigModel, SmtpConfigModel, SenderConfigModel, MailingLogConfigModel } from '../config/configModel';
 import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
 import { InvalidEmailAddressError } from './invalidEmailAddressError';
+import { MIMETYPE_PDF, MIMETYPE_TXT } from '../../misc/const';
+import { DocumentMergerService } from '../render-engine/document-merger/document-merger.service';
+import { Document } from '../../complexes/documents/document';
 
 describe('MailerEngineService', () => {
     let target: MailerEngineService;
     let configServiceStub: ConfigService;
     let mailSenderServiceStub: MailSenderService;
     let mailingLoggerServiceStub: MailingLoggerService;
+    let documentMergerServiceStub: DocumentMergerService;
 
     let mails: MailModel[];
     let sendSpy;
@@ -35,6 +39,7 @@ describe('MailerEngineService', () => {
         configServiceStub = TestBed.get(ConfigService);
         mailSenderServiceStub = TestBed.get(MailSenderService);
         mailingLoggerServiceStub = TestBed.get(MailingLoggerService);
+        documentMergerServiceStub = TestBed.get(DocumentMergerService);
         target = TestBed.get(MailerEngineService);
 
         const config = new BehaviorSubject(<ConfigModel>{
@@ -73,6 +78,7 @@ describe('MailerEngineService', () => {
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
+                renderType: MIMETYPE_PDF,
                 datasource: <MailingDataSource>{
                     mailAddressField: 'email',
                     data: [
@@ -96,6 +102,7 @@ describe('MailerEngineService', () => {
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
+                renderType: MIMETYPE_PDF,
                 datasource: <MailingDataSource>{
                     mailAddressField: 'email',
                     data: [
@@ -125,6 +132,7 @@ describe('MailerEngineService', () => {
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
+                renderType: MIMETYPE_PDF,
                 datasource: <MailingDataSource>{
                     mailAddressField: 'email',
                     lastNameField: 'fullName',
@@ -176,6 +184,7 @@ describe('MailerEngineService', () => {
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
+                renderType: MIMETYPE_PDF,
                 datasource: <MailingDataSource>{
                     mailAddressField: 'email',
                     data: [
@@ -197,6 +206,7 @@ describe('MailerEngineService', () => {
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
+                renderType: MIMETYPE_PDF,
                 datasource: <MailingDataSource>{
                     mailAddressField: 'email',
                     data: [
@@ -219,6 +229,7 @@ describe('MailerEngineService', () => {
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
+                renderType: MIMETYPE_PDF,
                 datasource: <MailingDataSource>{
                     mailAddressField: 'email',
                     data: [
@@ -243,6 +254,7 @@ describe('MailerEngineService', () => {
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
+                renderType: MIMETYPE_PDF,
                 datasource: <MailingDataSource>{
                     mailAddressField: 'email',
                     data: [
@@ -266,6 +278,7 @@ describe('MailerEngineService', () => {
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
+                renderType: MIMETYPE_PDF,
                 datasource: <MailingDataSource>{
                     mailAddressField: 'email',
                     data: [
@@ -286,12 +299,13 @@ describe('MailerEngineService', () => {
 
     describe('data preparing', () => {
 
-        it('should prepare email data correcly', async () => {
+        it('should prepare email data correctly', async () => {
             // Arrange
             const data = <MailingData>{
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
+                renderType: MIMETYPE_PDF,
                 datasource: <MailingDataSource>{
                     mailAddressField: 'email',
                     lastNameField: 'lastName',
@@ -349,6 +363,7 @@ describe('MailerEngineService', () => {
                 subject: 'My subject is: {subject}',
                 body: '<h1>{title}</h1><h2>{subtitle}</h2>',
                 template: null,
+                renderType: MIMETYPE_PDF,
                 datasource: <MailingDataSource>{
                     mailAddressField: 'email',
                     data: [
@@ -384,6 +399,7 @@ describe('MailerEngineService', () => {
                 subject: 'My subject is: {subject}',
                 body: '<h1>{title}</h1><h2>{non_existing_field}</h2>',
                 template: null,
+                renderType: MIMETYPE_PDF,
                 datasource: <MailingDataSource>{
                     mailAddressField: 'email',
                     data: [
@@ -412,40 +428,41 @@ describe('MailerEngineService', () => {
             ]);
         });
 
-        // it('should prepare email data and replace place holders in subject and body', async () => {
-        //     // Arrange
-        //     const data = <MailingData>{
-        //         subject: 'My subject is: {subject}',
-        //         body: '<h1>{title}</h1>',
-        //         template: // Set a document that have mergeTo => a render that could be PDF...
-        //             template.render(data, Renderer.PDF): byte[]; method, and null,
-        //         datasource: <MailingDataSource>{
-        //             mailAddressField: 'email',
-        //             data: [
-        //                 {
-        //                     email: 'john.doe@somedomain.com',
-        //                     subject: 'some subject',
-        //                     title: 'some title',
-        //                     someData: 'MiscData'
-        //                 }
-        //             ]
-        //         }
-        //     };
+        it('should prepare email data and replace place holders in subject and body', async () => {
+            // Arrange
+            const encoder = new TextEncoder();
+            const fileContent = encoder.encode('Hello {title}');
+            const renderedContent = encoder.encode('Hello some title');
+            const templateDocument = new Document(MIMETYPE_TXT, fileContent);
+            const renderedDocument = new Document(MIMETYPE_TXT, renderedContent);
 
-        //     // Act
-        //     target.sendMails(data);
+            const data = <MailingData>{
+                subject: 'My subject is: {subject}',
+                body: '<h1>{title}</h1>',
+                template: templateDocument,
+                renderType: MIMETYPE_TXT,
+                datasource: <MailingDataSource>{
+                    mailAddressField: 'email',
+                    data: [
+                        {
+                            email: 'john.doe@somedomain.com',
+                            subject: 'some subject',
+                            title: 'some title',
+                            someData: 'MiscData'
+                        }
+                    ]
+                }
+            };
 
-        //     // Assert
-        //     expect(mails.length).toEqual(3);
-        //     expect(mails).toEqual([
-        //         <MailModel>{
-        //             to: ['john.doe@somedomain.com'],
-        //             subject: 'My subject is: some subject',
-        //             body: '<h1>some title</h1>',
-        //             attachments: [] // Check not null
-        //         }
-        //     ]);
-        //     // Check renderer called. Maybe do a renderer service.
-        // });
+            spyOn(documentMergerServiceStub, 'mergeAndRender').and.returnValues(renderedDocument);
+
+            // Act
+            target.sendMails(data);
+
+            // Assert
+            expect(mails[0].attachments.length).toEqual(1);
+            const attachment = mails[0].attachments[0];
+            expect(renderedContent).toEqual(attachment);
+        });
     });
 });

@@ -12,10 +12,11 @@ import { ConfigService } from '../config/config.service';
 import Utils from '../../misc/utils';
 import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
 import { InvalidEmailAddressError } from './invalidEmailAddressError';
+import { DocumentMergerService } from '../render-engine/document-merger/document-merger.service';
 
 /**
- * Service that is able to merge and then send email with attachement
- * from template and a table datasource.
+ * Service that is able to merge and then send email with attachment
+ * from template and a table data source.
  * @export
  * @class MailerEngineService
  */
@@ -28,13 +29,13 @@ export class MailerEngineService {
 
     /**
      *Creates an instance of MailerEngineService.
-     * @param {MailSenderService} _mailSenderService
      * @memberof MailerEngineService
      */
     constructor(
         private _configService: ConfigService,
         private _mailSenderService: MailSenderService,
-        private _mailingLoggerService: MailingLoggerService
+        private _mailingLoggerService: MailingLoggerService,
+        private _documentMergerService: DocumentMergerService
     ) {
     }
 
@@ -51,6 +52,8 @@ export class MailerEngineService {
         const emailField = mailingDataSource.datasource.mailAddressField;
         const lastNameField = mailingDataSource.datasource.lastNameField;
         const firstNameField = mailingDataSource.datasource.firstNameField;
+        const template = mailingDataSource.template;
+        const renderType = mailingDataSource.renderType;
 
         let rowNum = 0;
         mailingDataSource.datasource.data
@@ -65,7 +68,7 @@ export class MailerEngineService {
                     return;
                 }
 
-                // Email addres is valid, prepare data
+                // Email address is valid, prepare data
                 const mail = <MailModel>{
                     from: Utils.getEmailAddress(config.sender.emailAddress, config.sender.fullName),
                     to: [Utils.getEmailAddress(emailAddress, row[lastNameField], row[firstNameField])],
@@ -73,6 +76,12 @@ export class MailerEngineService {
                     body: that.replaceFields(mailingDataSource.body, row),
                     attachments: []
                 };
+
+                // Eventually merge and render the attached document.
+                if (template) {
+                    const renderedDocument = that._documentMergerService.mergeAndRender(row, template, renderType);
+                    mail.attachments.push(renderedDocument.content);
+                }
 
                 // Send the email
                 that._mailSenderService.send(mail).subscribe(() => {
