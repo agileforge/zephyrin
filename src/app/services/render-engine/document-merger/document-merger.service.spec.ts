@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { TestBed, inject } from '@angular/core/testing';
-import { MailSenderService } from './mail-sender.service';
+import { DocumentMergerService } from './document-merger.service';
 
-describe('MailSenderService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [MailSenderService]
+describe('DocumentMergerService', () => {
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [DocumentMergerService]
+        });
     });
-  });
 
-  it('should be created', inject([MailSenderService], (service: MailSenderService) => {
-    expect(service).toBeTruthy();
-  }));
+    it('should be created', inject([DocumentMergerService], (service: DocumentMergerService) => {
+        expect(service).toBeTruthy();
+    }));
 });

@@ -16,19 +16,19 @@ export interface MailModel {
      */
     from: string;
     /**
-     * Email addresse(s) of receiver(s).
+     * Email address(es) of receiver(s).
      * @type {string}
      * @memberof MailModel
      */
     to: string[];
     /**
-     * Email addresse(s) where to send copy.
+     * Email address(es) where to send copy.
      * @type {string[]}
      * @memberof MailModel
      */
     cc?: string[];
     /**
-     * Email addresse(s) where to send hidden copy.
+     * Email address(es) where to send hidden copy.
      * @type {string[]}
      * @memberof MailModel
      */
@@ -51,5 +51,5 @@ export interface MailModel {
      * @type {object[]}
      * @memberof MailModel
      */
-    attachments?: any[][];
+    attachments: Uint8Array[];
 }
