@@ -16,7 +16,7 @@ import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
 import { InvalidEmailAddressError } from './invalidEmailAddressError';
 import { MIMETYPE_PDF, MIMETYPE_TXT } from '../../misc/const';
 import { DocumentMergerService } from '../render-engine/document-merger/document-merger.service';
-import { Document } from '../../complexes/documents/document';
+import { DocumentModel } from '../../complexes/documents/documentModel';
 
 describe('MailerEngineService', () => {
     let target: MailerEngineService;
@@ -433,8 +433,8 @@ describe('MailerEngineService', () => {
             const encoder = new TextEncoder();
             const fileContent = encoder.encode('Hello {title}');
             const renderedContent = encoder.encode('Hello some title');
-            const templateDocument = new Document(MIMETYPE_TXT, fileContent);
-            const renderedDocument = new Document(MIMETYPE_TXT, renderedContent);
+            const templateDocument = <DocumentModel>{ mimeType: MIMETYPE_TXT, content: fileContent };
+            const renderedDocument = <DocumentModel>{ mimeType: MIMETYPE_TXT, content: renderedContent };
 
             const data = <MailingData>{
                 subject: 'My subject is: {subject}',

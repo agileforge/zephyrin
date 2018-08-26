@@ -8,6 +8,11 @@ import { DocumentMergerService } from '../document-merger/document-merger.servic
 export class RenderEnginePdf extends RenderEngine {
 
     constructor() {
-        super(_documentMerger);
+        super();
     }
+
+    // protected executeRendering(data: any, template: Document) {
+    //     throw new Error('Method not implemented.');
+    // }
+
 }

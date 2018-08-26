@@ -3,19 +3,17 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-export class Document {
+import { FileService } from '../../services/file/file.service';
+import Utils from '../../misc/utils';
+import { Injectable, ReflectiveInjector, Injector, InjectionToken, Inject } from '@angular/core';
+import { DocumentModel } from './documentModel';
+
+export const FILE_NAME = new InjectionToken<string>('fileName');
+
+@Injectable()
+export class Document implements DocumentModel {
 
     protected _content: Uint8Array;
-
-    /**
-     * Creates an instance of Document.
-     * @param {string} mimeType The type of document.
-     * @memberof Document
-     */
-    constructor(mimeType: string, content?: Uint8Array) {
-        this.mimeType = mimeType;
-        this._content = content || new Uint8Array(); // User atob to get byte array ?
-    }
 
     /**
      * Gets the mime type of template document.
@@ -24,6 +22,7 @@ export class Document {
      * @memberof DocumentTemplate
      */
     mimeType: string;
+
     /**
      * Get the content of document as his binary representation.
      * @readonly
@@ -32,17 +31,49 @@ export class Document {
      */
     get content(): Uint8Array { return this._content; }
 
+
+    static fromFile(injector: Injector, fileName: string): DocumentModel {
+        const documentInjector = ReflectiveInjector.resolveAndCreate(
+            [
+                Document,
+                { provide: FILE_NAME, useValue: fileName }
+            ],
+            injector);
+        const document = documentInjector.resolveAndInstantiate([Document]);
+        return document;
+    }
+
     /**
-     * Loads and create a Document from a file.
+     * Creates an instance of Document.
+     * @param {string} mimeType The type of document.
+     * @memberof Document
+     */
+    constructor(
+        private _fileService: FileService,
+        @Inject(FILE_NAME) private fileName: string
+    ) {
+        this.loadFromFile(this.fileName);
+    }
+
+    /**
+     * Loads document data from a file.
      * @static
      * @param {string} fileName The file to load.
      * @returns {Document} Created Document.
      * @memberof Document
      */
-    static fromFile(fileName: string): Document {
-        // const fs = require('fs');
-        // fs.readFile(fileName, (err, data) => {
-        // });
-        throw new Error();
+    private loadFromFile(fileName: string) {
+        const that = this;
+        this.mimeType = Utils.getMimeType(fileName);
+
+        // TODO: Test it...
+        // if (!this.mimeType) {
+        //     throw new Error(`No mime type found for the file '${fileName}'. Ths file is not supported.`);
+        // }
+
+        return this._fileService.readBytes(fileName).subscribe(data => {
+            that._content = data;
+        });
     }
+
 }

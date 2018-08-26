@@ -3,3 +3,44 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import { TestBed, inject } from '@angular/core/testing';
+import { FileService } from '../../services/file/file.service';
+import { Document } from '../documents/document';
+import { MIMETYPE_TXT } from '../../misc/const';
+import { Injector } from '@angular/core';
+import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
+import { BehaviorSubject } from 'rxjs';
+
+describe('Document', () => {
+
+    let fileServiceStub: FileService;
+
+    beforeEach(() => {
+        try {
+            TestBed.resetTestEnvironment();
+            TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+
+            TestBed.configureTestingModule({
+                providers: [
+                    Document,
+                    FileService
+                ]
+            });
+
+            fileServiceStub = TestBed.get(FileService);
+            const readBytesValue = new BehaviorSubject(new Uint8Array([1, 2, 3, 4, 5]));
+            spyOn(fileServiceStub, 'readBytes').and.returnValue(readBytesValue);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    it('should be created', async () => {
+        // Act
+        const document = Document.fromFile(TestBed, '/some/path/to/a/file.txt');
+
+        // Assert
+        expect(document.mimeType).toEqual(MIMETYPE_TXT);
+        expect(document.content).toEqual(new Uint8Array([1, 2, 3, 4, 5]));
+    });
+});

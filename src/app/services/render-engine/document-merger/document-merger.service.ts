@@ -4,8 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { RenderEngine } from '../render-engine-pdf/render-engine';
-import { Document } from "../../../complexes/documents/document";
+import { DocumentModel } from '../../../complexes/documents/documentModel';
 
 /**
  * Service that is able to merge data with a document template.
@@ -19,7 +18,7 @@ export class DocumentMergerService {
 
     constructor() { }
 
-    mergeAndRender(data: any, template: Document, renderingType: string): Document {
+    mergeAndRender(data: any, template: DocumentModel, renderingType: string): DocumentModel {
         // // Get renderEngine according renderingType
         // const renderer: RenderEngine = getRenderEngine(renderingType);
         // // Launch rendering

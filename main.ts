@@ -17,6 +17,8 @@ function createWindow() {
         // icon: path.join(__dirname, 'src/assets/icons/png/64x64.png')
     });
 
+    win.webContents.openDevTools();
+
     win.setMenu(null);
 
     // load the dist folder from Angular

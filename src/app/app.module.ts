@@ -3,13 +3,14 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injector } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { MailSenderService } from './services/mail-sender/mail-sender.service';
 import { MailerEngineService } from './services/mailer-engine/mailer-engine.service';
 import { ConfigService } from './services/config/config.service';
 import { DocumentMergerService } from './services/render-engine/document-merger/document-merger.service';
+import { FileService } from './services/file/file.service';
 
 @NgModule({
     declarations: [
@@ -23,6 +24,7 @@ import { DocumentMergerService } from './services/render-engine/document-merger/
         MailerEngineService,
         ConfigService,
         DocumentMergerService,
+        FileService,
     ],
     bootstrap: [AppComponent]
 })

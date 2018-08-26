@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { MailingDataSource } from './mailingDataSource';
-import { Document } from "../../complexes/documents/document";
+import { DocumentModel } from '../../complexes/documents/documentModel';
 
 /**
  * Represents all information to be able to make a mailing.
@@ -36,10 +36,10 @@ export interface MailingData {
      *
      * The template document can contains placeholders as '{field_name}' that will
      * be replaced with data found in the data array in datasource.
-     * @type {Document}
+     * @type {DocumentModel}
      * @memberof MailingData
      */
-    template: Document;
+    template: DocumentModel;
     /**
      * The mime type of rendered document after merging from template and datasource
      * to be attached in mail.

@@ -1,0 +1,24 @@
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) agileforge. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+export interface DocumentModel {
+
+    /**
+     * Gets the mime type of template document.
+     * @abstract
+     * @type {string}
+     * @memberof DocumentTemplate
+     */
+    mimeType: string;
+
+    /**
+     * Get the content of document as his binary representation.
+     * @readonly
+     * @type {Uint8Array}
+     * @memberof Document
+     */
+    content: Uint8Array;
+
+}
