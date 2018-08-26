@@ -4,17 +4,19 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { TestBed, inject } from '@angular/core/testing';
-import { DocumentMergerService } from './document-merger.service';
+import { RenderEngine } from './render-engine';
 
-describe('DocumentMergerService', () => {
 
+
+describe('RenderEngineService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [DocumentMergerService]
+            providers: [RenderEngine]
         });
     });
 
-    it('should be created', inject([DocumentMergerService], (service: DocumentMergerService) => {
+    it('should be created', inject([RenderEngine], (service: RenderEngine) => {
         expect(service).toBeTruthy();
     }));
+
 });

@@ -19,10 +19,12 @@ export class DocumentMergerService {
     constructor() { }
 
     mergeAndRender(data: any, template: DocumentModel, renderingType: string): DocumentModel {
-        // // Get renderEngine according renderingType
+        // // Get merger by mime type
+        // const merger = getMergerEngine(template.mimeType);
+        // const document = merger.merge(data, template);
+        // // // Get renderEngine according renderingType
         // const renderer: RenderEngine = getRenderEngine(renderingType);
-        // // Launch rendering
-        // return renderer.render(data, template);
+        // return renderer.render(document);
         throw new Error();
     }
 }
