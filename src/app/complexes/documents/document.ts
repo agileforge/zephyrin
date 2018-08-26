@@ -66,10 +66,9 @@ export class Document implements DocumentModel {
         const that = this;
         this.mimeType = Utils.getMimeType(fileName);
 
-        // TODO: Test it...
-        // if (!this.mimeType) {
-        //     throw new Error(`No mime type found for the file '${fileName}'. Ths file is not supported.`);
-        // }
+        if (!this.mimeType) {
+            throw new Error(`No mime type found for the file '${fileName}'. This file is not supported.`);
+        }
 
         return this._fileService.readBytes(fileName).subscribe(data => {
             that._content = data;

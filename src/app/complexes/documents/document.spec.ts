@@ -43,4 +43,17 @@ describe('Document', () => {
         expect(document.mimeType).toEqual(MIMETYPE_TXT);
         expect(document.content).toEqual(new Uint8Array([1, 2, 3, 4, 5]));
     });
+
+    it('should throw error if file type unknown', async () => {
+        try {
+            // Act
+            Document.fromFile(TestBed, '/some/path/to/a/file.unknownext');
+            fail('No error thrown.');
+        } catch (err) {
+            // Assert
+            expect(err.message).toContain('/some/path/to/a/file.unknownext');
+            expect(err.message).toContain('This file is not supported');
+        }
+
+    });
 });
