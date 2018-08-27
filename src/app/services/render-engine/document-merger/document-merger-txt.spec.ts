@@ -7,6 +7,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { DocumentMergerTxt } from './document-merger-txt';
 import { MIMETYPE_TXT } from '../../../misc/const';
 import { DocumentModel } from '../../../complexes/documents/documentModel';
+import { TextEncoder, TextDecoder } from 'text-encoding';
 
 describe('DocumentMergerTxt', () => {
 

@@ -13,6 +13,7 @@ import { DocumentMergerTxt } from './document-merger-txt';
 import { DocumentMergerWord } from './document-merger-word';
 import { RenderEngineTxt } from '../render-engines/render-engine-txt.service';
 import { RenderEnginePdf } from '../render-engines/render-engine-pdf.service';
+import { TextEncoder } from 'text-encoding';
 
 export class MockDocumentMergerService extends DocumentMergerService {
 

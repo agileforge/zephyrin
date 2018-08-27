@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
 import { DocumentModel } from '../../../complexes/documents/documentModel';
 import Utils from '../../../misc/utils';
 import { DocumentMerger } from './document-merger';
+import { TextEncoder, TextDecoder } from 'text-encoding';
 
 /**
  * Service that is able to merge data with a text document template.

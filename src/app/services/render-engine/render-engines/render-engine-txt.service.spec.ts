@@ -7,6 +7,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { RenderEngineTxt } from './render-engine-txt.service';
 import { DocumentModel } from '../../../complexes/documents/documentModel';
 import { MIMETYPE_TXT } from '../../../misc/const';
+import { TextEncoder } from 'text-encoding';
 
 describe('RenderEnginePdfService', () => {
 

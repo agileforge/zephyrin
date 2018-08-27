@@ -29,7 +29,9 @@
             "styles": [
               "src/styles.sass"
             ],
-            "scripts": []
+            "scripts": [
+              "./native.js"
+            ]
           },
           "configurations": {
             "production": {

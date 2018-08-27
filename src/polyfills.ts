@@ -78,3 +78,11 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+declare global {
+    interface Window{
+        fs : any;
+        os : any;
+        stream : any;
+        path : any;
+    }
+}

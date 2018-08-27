@@ -26,11 +26,10 @@ export class FileService {
     constructor() { }
 
     private get fs(): any {
-        // if (!this._fs) {
-        //     this._fs = (<any>window).require('fs');
-        // }
-        // return this._fs;
-        return null;
+        if (!this._fs) {
+            this._fs = window.fs;
+        }
+        return this._fs;
     }
 
     /**

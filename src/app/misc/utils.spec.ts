@@ -81,7 +81,7 @@ describe('utils', () => {
             const result = Utils.getPropertyCI(data, 'two');
 
             // Arrange
-            expect(result).toEqual('two');
+            expect(result.toString()).toEqual('two');
         });
 
         it ('should return value if property name not same case', async() => {
@@ -92,7 +92,7 @@ describe('utils', () => {
             const result = Utils.getPropertyCI(data, 'tWo');
 
             // Arrange
-            expect(result).toEqual('two');
+            expect(result.toString()).toEqual('two');
         });
 
         it ('should return undefined if property not found', async() => {

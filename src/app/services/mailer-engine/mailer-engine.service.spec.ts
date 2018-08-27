@@ -17,6 +17,7 @@ import { InvalidEmailAddressError } from './invalidEmailAddressError';
 import { MIMETYPE_PDF, MIMETYPE_TXT } from '../../misc/const';
 import { DocumentMergerService } from '../render-engine/document-merger/document-merger.service';
 import { DocumentModel } from '../../complexes/documents/documentModel';
+import { TextEncoder } from 'text-encoding';
 
 describe('MailerEngineService', () => {
     let target: MailerEngineService;

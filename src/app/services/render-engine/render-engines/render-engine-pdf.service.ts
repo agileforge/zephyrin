@@ -9,6 +9,7 @@ import { DocumentModel } from '../../../complexes/documents/documentModel';
 import { MIMETYPE_TXT, MIMETYPE_DOCX, MIMETYPE_PDF } from '../../../misc/const';
 import * as PDFDocument from 'pdfkit';
 import * as MemoryStream from 'memorystream';
+import { TextDecoder } from 'text-encoding';
 
 /**
  * Provide an engine that is able to render a document to a PDF document.
@@ -96,6 +97,6 @@ export class RenderEnginePdf extends RenderEngine {
      * @memberof RenderEnginePdf
      */
     private renderFromDocx(document: DocumentModel): DocumentModel {
-
+        return null;
     }
 }
