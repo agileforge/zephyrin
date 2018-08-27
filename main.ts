@@ -5,6 +5,8 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import * as fs from 'fs';
+import * as log from 'electron-log';
 
 let win;
 
@@ -16,6 +18,10 @@ function createWindow() {
         center: true,
         // icon: path.join(__dirname, 'src/assets/icons/png/64x64.png')
     });
+
+    // Set misc classes for angular
+    win.fs = fs;
+    win.log = log;
 
     win.webContents.openDevTools();
 

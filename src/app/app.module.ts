@@ -13,6 +13,9 @@ import { DocumentMergerService } from './services/render-engine/document-merger/
 import { FileService } from './services/file/file.service';
 import { DocumentMergerWord } from './services/render-engine/document-merger/document-merger-word';
 import { DocumentMergerTxt } from './services/render-engine/document-merger/document-merger-txt';
+import { LogService } from './services/log-service';
+import { RenderEngineTxt } from './services/render-engine/render-engines/render-engine-txt.service';
+import { RenderEnginePdf } from './services/render-engine/render-engines/render-engine-pdf.service';
 
 @NgModule({
     declarations: [
@@ -22,6 +25,7 @@ import { DocumentMergerTxt } from './services/render-engine/document-merger/docu
         BrowserModule
     ],
     providers: [
+        LogService,
         MailSenderService,
         MailerEngineService,
         ConfigService,
@@ -29,7 +33,10 @@ import { DocumentMergerTxt } from './services/render-engine/document-merger/docu
         FileService,
         // Mergers
         DocumentMergerTxt,
-        DocumentMergerWord
+        DocumentMergerWord,
+        // Renderers
+        RenderEngineTxt,
+        RenderEnginePdf,
     ],
     bootstrap: [AppComponent]
 })
