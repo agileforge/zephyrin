@@ -1,4 +1,4 @@
-import { FILE_COMPLIANT_REGEX, MIMETYPE_TXT, MIMETYPE_DOCX, MIMETYPE_XLSX, MIMETYPE_PDF } from "./const";
+import { FILE_COMPLIANT_REGEX, MIMETYPE_TXT, MIMETYPE_DOCX, MIMETYPE_XLSX, MIMETYPE_PDF } from './const';
 
 /*---------------------------------------------------------------------------------------------
  * Copyright (c) agileforge. All rights reserved.

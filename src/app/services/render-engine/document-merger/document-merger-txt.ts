@@ -42,7 +42,7 @@ export class DocumentMergerTxt extends DocumentMerger {
         // Find and replace placeholders with data
         const result = text.replace(this._placeholderRegex, placeholder => {
             const fieldName = placeholder.replace('{', '').replace('}', '');
-            return Utils.getPropertyCI(data, fieldName) || placeholder;
+            return (Utils.getPropertyCI(data, fieldName) || placeholder).toString();
         });
         // Encode result in a new document
         return <DocumentModel>{

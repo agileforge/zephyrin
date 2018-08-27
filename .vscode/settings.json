@@ -1,7 +1,13 @@
 {
     "cSpell.words": [
+        "DOCX",
+        "Templater",
         "Zephyrin",
+        "docxtemplater",
+        "jszip",
+        "nodebuffer",
         "noemail",
-        "somedomain"
+        "somedomain",
+        "unknownext"
     ]
 }

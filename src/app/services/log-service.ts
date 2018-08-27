@@ -45,7 +45,7 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    trace(message: string) {
+    trace(message: any) {
         this.log(LogLevel.trace, message);
     }
 
@@ -54,7 +54,7 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    debug(message: string) {
+    debug(message: any) {
         this.log(LogLevel.debug, message);
     }
 
@@ -63,7 +63,7 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    info(message: string) {
+    info(message: any) {
         this.log(LogLevel.info, message);
     }
 
@@ -72,7 +72,7 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    warn(message: string) {
+    warn(message: any) {
         this.log(LogLevel.warn, message);
     }
 
@@ -81,7 +81,7 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    error(message: string) {
+    error(message: any) {
         this.log(LogLevel.error, message);
     }
 
@@ -90,7 +90,7 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    fatal(message: string) {
+    fatal(message: any) {
         this.log(LogLevel.fatal, message);
     }
 
@@ -100,7 +100,7 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    log(level: LogLevel, message: string) {
+    log(level: LogLevel, message: any) {
         if (!this._log) {
             console.log(message);
         }
