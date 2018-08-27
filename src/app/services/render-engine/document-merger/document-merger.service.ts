@@ -8,8 +8,10 @@ import { DocumentModel } from '../../../complexes/documents/documentModel';
 import { DocumentMerger } from './document-merger';
 import { RenderEngine } from '../render-engines/render-engine';
 import { DocumentMergerTxt } from './document-merger-txt';
-import { MIMETYPE_TXT, MIMETYPE_DOCX } from '../../../misc/const';
+import { MIMETYPE_TXT, MIMETYPE_DOCX, MIMETYPE_PDF } from '../../../misc/const';
 import { DocumentMergerWord } from './document-merger-word';
+import { RenderEnginePdf } from '../render-engines/render-engine-pdf.service';
+import { RenderEngineTxt } from '../render-engines/render-engine-txt.service';
 
 /**
  * Service that is able to merge data with a document template.
@@ -24,6 +26,8 @@ export class DocumentMergerService {
     constructor(
         private _mergerTxt: DocumentMergerTxt,
         private _mergerWord: DocumentMergerWord,
+        private _renderPdf: RenderEnginePdf,
+        private _renderTxt: RenderEngineTxt
     ) { }
 
     /**
@@ -36,13 +40,12 @@ export class DocumentMergerService {
      * @memberof DocumentMergerService
      */
     mergeAndRender(data: any, template: DocumentModel, renderingType: string): DocumentModel {
-        // // Get merger by mime type
+        // // Get merger by mime type and merge template
         const merger = this.getDocumentMerger(template.mimeType);
         const document = merger.merge(data, template);
-        // // // Get renderEngine according renderingType
-        // const renderer: RenderEngine = getRenderEngine(renderingType);
-        // return renderer.render(document);
-        return null;
+        // Get renderEngine according renderingType and render document
+        const renderer = this.getRenderEngine(renderingType);
+        return renderer.render(document);
     }
 
     /**
@@ -73,7 +76,14 @@ export class DocumentMergerService {
      * @memberof DocumentMergerService
      */
     protected getRenderEngine(mimeType: string): RenderEngine {
-        return null;
+        switch (mimeType) {
+            case MIMETYPE_PDF:
+                return this._renderPdf;
+            case MIMETYPE_TXT:
+                return this._renderTxt;
+            default:
+                throw new Error(`No render engine found for mime type '${mimeType}'`);
+        }
     }
 
 }
