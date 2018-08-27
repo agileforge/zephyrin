@@ -71,4 +71,39 @@ describe('utils', () => {
         });
 
     });
+
+    describe('getPropertyCI', () => {
+        it ('should return value if property name exactly same', async() => {
+            // Arrange
+            const data = { one: 'one', two: 'two', three: 'three' };
+
+            // Act
+            const result = Utils.getPropertyCI(data, 'two');
+
+            // Arrange
+            expect(result).toEqual('two');
+        });
+
+        it ('should return value if property name not same case', async() => {
+            // Arrange
+            const data = { one: 'one', two: 'two', three: 'three' };
+
+            // Act
+            const result = Utils.getPropertyCI(data, 'tWo');
+
+            // Arrange
+            expect(result).toEqual('two');
+        });
+
+        it ('should return undefined if property not found', async() => {
+            // Arrange
+            const data = { one: 'one', two: 'two', three: 'three' };
+
+            // Act
+            const result = Utils.getPropertyCI(data, 'unknown');
+
+            // Arrange
+            expect(result).toBeUndefined();
+        });    });
+
 });

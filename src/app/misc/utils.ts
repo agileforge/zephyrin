@@ -53,4 +53,19 @@ export default class Utils {
         }
     }
 
+    /**
+     * Try to get a property value from an object case insensitively.
+     * @static
+     * @param {*} obj Object that should contains value.
+     * @param {*} prop Name of property.
+     * @returns Value or undefined if not found.
+     * @memberof Utils
+     */
+    static getPropertyCI(obj: object, property: string): object {
+        const foundProperty = Object.keys(obj).find(k => k.toLowerCase() === property.toLowerCase() );
+        if (foundProperty) {
+            return obj[foundProperty];
+        }
+        return undefined;
+    }
 }
