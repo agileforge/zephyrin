@@ -19,11 +19,14 @@ export abstract class DocumentMerger {
 
     constructor() { }
 
-    merge(data: any, template: DocumentModel): DocumentModel {
-        // Get renderEngine according renderingType
-        // const renderer: RenderEngine = getRenderEngine(renderingType);
-        // Launch rendering
-        // return renderer.render(data, template);
-        throw new Error('Method not implemented.');
-    }
+    /**
+     * Merge some data to a document by replacing placeholders represented as '{field_name}'.
+     * @abstract
+     * @param {*} data Object that contains the source data for replacement.
+     * @param {DocumentModel} template Template document where are the placeholders.
+     * @returns {DocumentModel} Merged document.
+     * @memberof DocumentMerger
+     */
+    abstract merge(data: any, template: DocumentModel): DocumentModel;
+
 }
