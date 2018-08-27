@@ -28,12 +28,13 @@ describe('DocumentMergerTxt', () => {
         // Arrange
         const encoder = new TextEncoder();
         const decoder = new TextDecoder();
-        const text = 'a{b}c{d}{eF}';
+        const text = 'a{b}c{d}{eF}{num}';
         const data = {
             some: 'No matching data',
             b: 'b',
             // d: 'd', => This field is not present...
-            Ef: 'ef'
+            Ef: 'ef',
+            num: 5
         };
 
         const template = <DocumentModel>{ mimeType: MIMETYPE_TXT, content: encoder.encode(text) };
@@ -43,7 +44,7 @@ describe('DocumentMergerTxt', () => {
 
         // Assert
         const finalText = decoder.decode(mergedDocument.content);
-        const expectedText  = 'abc{d}ef';
+        const expectedText  = 'abc{d}ef5';
         expect(mergedDocument.mimeType).toEqual(MIMETYPE_TXT);
         expect(finalText).toEqual(expectedText);
     });

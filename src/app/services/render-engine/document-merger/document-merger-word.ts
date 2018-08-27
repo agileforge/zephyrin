@@ -5,7 +5,6 @@
 
 import { Injectable } from '@angular/core';
 import { DocumentModel } from '../../../complexes/documents/documentModel';
-import Utils from '../../../misc/utils';
 import { DocumentMerger } from './document-merger';
 
 /**
@@ -16,16 +15,10 @@ import { DocumentMerger } from './document-merger';
 @Injectable({
     providedIn: 'root'
 })
-export class DocumentMergerTxt extends DocumentMerger {
-
-    private _encoder: TextEncoder;
-    private _decoder: TextDecoder;
-    private _placeholderRegex = /\{([\w\d-\_]*)\}/g;
+export class DocumentMergerWord extends DocumentMerger {
 
     constructor() {
         super();
-        this._encoder = new TextEncoder();
-        this._decoder = new TextDecoder();
     }
 
     /**
@@ -37,18 +30,7 @@ export class DocumentMergerTxt extends DocumentMerger {
      * @memberof DocumentMerger
      */
     merge(data: any, template: DocumentModel): DocumentModel {
-        // Gets clear text
-        const text = this._decoder.decode(template.content);
-        // Find and replace placeholders with data
-        const result = text.replace(this._placeholderRegex, placeholder => {
-            const fieldName = placeholder.replace('{', '').replace('}', '');
-            return Utils.getPropertyCI(data, fieldName) || placeholder;
-        });
-        // Encode result in a new document
-        return <DocumentModel>{
-            mimeType: template.mimeType,
-            content: this._encoder.encode(result)
-        };
+        throw Error('Not implemented');
     }
 
 }

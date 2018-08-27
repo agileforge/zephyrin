@@ -11,6 +11,8 @@ import { MailerEngineService } from './services/mailer-engine/mailer-engine.serv
 import { ConfigService } from './services/config/config.service';
 import { DocumentMergerService } from './services/render-engine/document-merger/document-merger.service';
 import { FileService } from './services/file/file.service';
+import { DocumentMergerWord } from './services/render-engine/document-merger/document-merger-word';
+import { DocumentMergerTxt } from './services/render-engine/document-merger/document-merger-txt';
 
 @NgModule({
     declarations: [
@@ -25,6 +27,9 @@ import { FileService } from './services/file/file.service';
         ConfigService,
         DocumentMergerService,
         FileService,
+        // Mergers
+        DocumentMergerTxt,
+        DocumentMergerWord
     ],
     bootstrap: [AppComponent]
 })
