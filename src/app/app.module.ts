@@ -48,7 +48,9 @@ export function HttpLoaderFactory(http: HttpClient) {
                 deps: [HttpClient]
             }
         }),
-
+    ],
+    providers: [
+        ElectronService,
         LogService,
         MailSenderService,
         MailerEngineService,
@@ -61,9 +63,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         // Renderers
         RenderEngineTxt,
         RenderEnginePdf,
-
     ],
-    providers: [ElectronService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

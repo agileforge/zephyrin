@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 import { RenderEngine } from './render-engine';
 import { DocumentModel } from '../../../complexes/documents/documentModel';
 import { MIMETYPE_TXT, MIMETYPE_DOCX, MIMETYPE_PDF } from '../../../misc/const';
-import * as PDFDocument from 'pdfkit';
+// import * as PDFDocument from 'pdfkit';
 import * as MemoryStream from 'memorystream';
 import { TextDecoder } from 'text-encoding';
 
@@ -58,35 +58,36 @@ export class RenderEnginePdf extends RenderEngine {
      * @memberof RenderEnginePdf
      */
     private renderFromTxt(document: DocumentModel): DocumentModel {
-        const renderedDocument = <DocumentModel>{ mimeType: MIMETYPE_PDF };
+        // const renderedDocument = <DocumentModel>{ mimeType: MIMETYPE_PDF };
 
-        const text = this._decoder.decode(document.content);
-        const stream = new MemoryStream();
+        // const text = this._decoder.decode(document.content);
+        // const stream = new MemoryStream();
 
-        const data = new Uint8Array();
-        stream.on('data', chunk => {
-            console.log(chunk);
-        });
+        // const data = new Uint8Array();
+        // stream.on('data', chunk => {
+        //     console.log(chunk);
+        // });
 
-        stream.on('finish', () => {
-            renderedDocument.content = data;
-        });
+        // stream.on('finish', () => {
+        //     renderedDocument.content = data;
+        // });
 
-        // Builds the PDF
-        const pdf = new PDFDocument();
-        pdf.pipe(stream);
+        // // Builds the PDF
+        // const pdf = new PDFDocument();
+        // pdf.pipe(stream);
 
-        pdf
-            .addPage()
-            .fontSize(25)
-            .text(text, 100, 100);
+        // pdf
+        //     .addPage()
+        //     .fontSize(25)
+        //     .text(text, 100, 100);
 
-        pdf.end();
+        // pdf.end();
 
-        // Close stream
-        stream.end();
+        // // Close stream
+        // stream.end();
 
-        return renderedDocument;
+        // return renderedDocument;
+        return null;
     }
 
     /**

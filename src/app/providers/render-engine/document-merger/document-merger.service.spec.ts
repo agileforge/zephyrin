@@ -14,6 +14,8 @@ import { DocumentMergerWord } from './document-merger-word';
 import { RenderEngineTxt } from '../render-engines/render-engine-txt.service';
 import { RenderEnginePdf } from '../render-engines/render-engine-pdf.service';
 import { TextEncoder } from 'text-encoding';
+import { LogService } from '../../log-service';
+import { ElectronService } from '../../electron.service';
 
 export class MockDocumentMergerService extends DocumentMergerService {
 
@@ -51,7 +53,9 @@ describe('DocumentMergerService', () => {
                 DocumentMergerTxt,
                 DocumentMergerWord,
                 RenderEngineTxt,
-                RenderEnginePdf
+                RenderEnginePdf,
+                LogService,
+                ElectronService
             ]
         });
 
@@ -85,11 +89,7 @@ describe('DocumentMergerService', () => {
             content: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
         };
 
-        let called = false;
-        renderEnginePdfSpy.and.callFake(() => {
-            called = true;
-            return defaultPdfRenderedDocument;
-        });
+        renderEnginePdfSpy.and.returnValue(defaultPdfRenderedDocument);
 
         // Act
         const renderedDocument = target.mergeAndRender(data, template, MIMETYPE_PDF);
@@ -121,7 +121,7 @@ describe('DocumentMergerService', () => {
             }
         });
 
-        it('should use DocumentMergerTxt when mimeType is plain/text', async () => {
+        it('should use DocumentMergerTxt when template mimeType is plain/text', async () => {
             // Arrange
             const data = {
                 email: 'john.doe@somedomain.com',
@@ -139,7 +139,7 @@ describe('DocumentMergerService', () => {
             expect(target.merger).toEqual(jasmine.any(DocumentMergerTxt));
         });
 
-        it('should use DocumentMergerTxt when mimeType is plain/text', async () => {
+        it('should use DocumentMergerWord when template mimeType is docx', async () => {
             // Arrange
             const data = {
                 email: 'john.doe@somedomain.com',

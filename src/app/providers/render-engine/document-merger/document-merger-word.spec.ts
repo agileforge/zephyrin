@@ -5,9 +5,9 @@
 
 import { TestBed, inject } from '@angular/core/testing';
 import { DocumentMergerTxt } from './document-merger-txt';
-import { MIMETYPE_TXT } from '../../../misc/const';
-import { DocumentModel } from '../../../complexes/documents/documentModel';
 import { DocumentMergerWord } from './document-merger-word';
+import { LogService } from '../../log-service';
+import { ElectronService } from '../../electron.service';
 
 describe('DocumentMergerWord', () => {
 
@@ -15,7 +15,11 @@ describe('DocumentMergerWord', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [DocumentMergerWord]
+            providers: [
+                DocumentMergerWord,
+                LogService,
+                ElectronService,
+            ]
         });
 
         target = TestBed.get(DocumentMergerWord);

@@ -33,11 +33,11 @@ export class LogService {
      * @memberof LogService
      */
     constructor() {
-        try {
-            this._log = (<any>window).log;
-        } catch (err) {
-            console.log('Cannot get logger.', err);
-        }
+        // try {
+        //     this._log = (<any>window).log;
+        // } catch (err) {
+        //     console.log('Cannot get logger.', err);
+        // }
     }
 
     /**
