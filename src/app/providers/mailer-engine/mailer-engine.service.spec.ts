@@ -9,7 +9,7 @@ import { ConfigService } from '../config/config.service';
 import { MailSenderService } from '../mail-sender/mail-sender.service';
 import { MailingData } from './mailingData';
 import { MailingDataSource } from './mailingDataSource';
-import { BehaviorSubject, throwError } from 'rxjs';
+import { of, throwError, BehaviorSubject, empty } from 'rxjs';
 import { MailModel } from '../mail-sender/mailModel';
 import { ConfigModel, SmtpConfigModel, SenderConfigModel, MailingLogConfigModel } from '../config/configModel';
 import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
@@ -43,7 +43,7 @@ describe('MailerEngineService', () => {
         documentMergerServiceStub = TestBed.get(DocumentMergerService);
         target = TestBed.get(MailerEngineService);
 
-        const config = new BehaviorSubject(<ConfigModel>{
+        const config = <ConfigModel>{
             smtp: <SmtpConfigModel>{
                 host: 'smtp.somedomain.com',
                 port: 999,
@@ -55,14 +55,14 @@ describe('MailerEngineService', () => {
             mailingLog: <MailingLogConfigModel>{
                 directoryPath: '/my/path/to/dir'
             }
-        });
+        };
 
-        configServiceStub.config = config;
+        configServiceStub.config = new BehaviorSubject(config);
 
         mails = [];
         sendSpy = spyOn(mailSenderServiceStub, 'send').and.callFake(mail => {
             mails.push(mail);
-            return new BehaviorSubject(true);
+            return of(null);
         });
 
     });
@@ -91,7 +91,7 @@ describe('MailerEngineService', () => {
             spyOn(mailingLoggerServiceStub, 'success').and.callThrough();
 
             // Act
-            target.sendMails(data);
+            await target.sendMails(data).toPromise();
 
             // Assert
             expect(mailingLoggerServiceStub.success).toHaveBeenCalledWith(mails[0], 1);
@@ -121,7 +121,7 @@ describe('MailerEngineService', () => {
             spyOn(mailingLoggerServiceStub, 'sendFail').and.callThrough();
 
             // Act
-            target.sendMails(data);
+            await target.sendMails(data).toPromise();
 
             // Assert
             expect(mailingLoggerServiceStub.sendFail).toHaveBeenCalledWith(mails[0], error, 1);
@@ -156,7 +156,7 @@ describe('MailerEngineService', () => {
             });
 
             // Act
-            target.sendMails(data);
+            await target.sendMails(data).toPromise();
 
             // Assert
             expect(mailingLoggerServiceStub.emailAddressError).toHaveBeenCalledTimes(3);
@@ -195,7 +195,7 @@ describe('MailerEngineService', () => {
             };
 
             // Act
-            target.sendMails(data);
+            await target.sendMails(data).toPromise();
 
             // Assert
             expect(mailSenderServiceStub.send).toHaveBeenCalled();
@@ -218,7 +218,7 @@ describe('MailerEngineService', () => {
             };
 
             // Act
-            target.sendMails(data);
+            await target.sendMails(data).toPromise();
 
             // Assert
             expect(mailSenderServiceStub.send).toHaveBeenCalledTimes(2);
@@ -242,7 +242,7 @@ describe('MailerEngineService', () => {
 
 
             // Act
-            target.sendMails(data);
+            await target.sendMails(data).toPromise();
 
             // Assert
             expect(mails.length).toEqual(1);
@@ -266,7 +266,7 @@ describe('MailerEngineService', () => {
             };
 
             // Act
-            target.sendMails(data);
+            await target.sendMails(data).toPromise();
 
             // Assert
             expect(mails.length).toEqual(1);
@@ -290,7 +290,7 @@ describe('MailerEngineService', () => {
             };
 
             // Act
-            target.sendMails(data);
+            await target.sendMails(data).toPromise();
 
             // Assert
             expect(mails.length).toEqual(1);
@@ -329,7 +329,7 @@ describe('MailerEngineService', () => {
             };
 
             // Act
-            target.sendMails(data);
+            await target.sendMails(data).toPromise();
 
             // Assert
             expect(mails.length).toEqual(3);
@@ -379,7 +379,7 @@ describe('MailerEngineService', () => {
             };
 
             // Act
-            target.sendMails(data);
+            await target.sendMails(data).toPromise();
 
             // Assert
             expect(mails.length).toEqual(1);
@@ -414,7 +414,7 @@ describe('MailerEngineService', () => {
             };
 
             // Act
-            target.sendMails(data);
+            await target.sendMails(data).toPromise();
 
             // Assert
             expect(mails.length).toEqual(1);
@@ -455,10 +455,10 @@ describe('MailerEngineService', () => {
                 }
             };
 
-            spyOn(documentMergerServiceStub, 'mergeAndRender').and.returnValues(renderedDocument);
+            spyOn(documentMergerServiceStub, 'mergeAndRender').and.returnValues(of(renderedDocument));
 
             // Act
-            target.sendMails(data);
+            await target.sendMails(data).toPromise();
 
             // Assert
             expect(mails[0].attachments.length).toEqual(1);

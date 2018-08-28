@@ -16,6 +16,7 @@ import { RenderEnginePdf } from '../render-engines/render-engine-pdf.service';
 import { TextEncoder } from 'text-encoding';
 import { LogService } from '../../log-service';
 import { ElectronService } from '../../electron.service';
+import { of } from 'rxjs';
 
 export class MockDocumentMergerService extends DocumentMergerService {
 
@@ -70,8 +71,8 @@ describe('DocumentMergerService', () => {
         spyOn(mergerTxtStub, 'merge').and.returnValue(defaultTxtMergedDocument);
         mergerWordSpy = spyOn(mergerWordStub, 'merge').and.returnValue(defaultWordMergedDocument);
 
-        renderEnginePdfSpy = spyOn(renderEnginePdfStub, 'render').and.returnValue(defaultPdfRenderedDocument);
-        spyOn(renderEngineTxtStub, 'render').and.returnValue(defaultTxtRenderedDocument);
+        renderEnginePdfSpy = spyOn(renderEnginePdfStub, 'render').and.returnValue(of(defaultPdfRenderedDocument));
+        spyOn(renderEngineTxtStub, 'render').and.returnValue(of(defaultTxtRenderedDocument));
     });
 
     it('should be created', inject([DocumentMergerService], (service: DocumentMergerService) => {
@@ -89,10 +90,10 @@ describe('DocumentMergerService', () => {
             content: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
         };
 
-        renderEnginePdfSpy.and.returnValue(defaultPdfRenderedDocument);
+        renderEnginePdfSpy.and.returnValue(of(defaultPdfRenderedDocument));
 
         // Act
-        const renderedDocument = target.mergeAndRender(data, template, MIMETYPE_PDF);
+        const renderedDocument = await target.mergeAndRender(data, template, MIMETYPE_PDF).toPromise();
 
         // Assert
         expect(renderedDocument).toEqual(defaultPdfRenderedDocument);
@@ -112,7 +113,7 @@ describe('DocumentMergerService', () => {
 
             try {
                 // Act
-                target.mergeAndRender(data, template, MIMETYPE_PDF);
+                await target.mergeAndRender(data, template, MIMETYPE_PDF).toPromise();
                 fail('Should throw exception.');
             } catch (err) {
                 // Assert
@@ -133,7 +134,7 @@ describe('DocumentMergerService', () => {
             };
 
             // Act
-            target.mergeAndRender(data, template, MIMETYPE_TXT);
+            await target.mergeAndRender(data, template, MIMETYPE_TXT).toPromise();
 
             // Assert
             expect(target.merger).toEqual(jasmine.any(DocumentMergerTxt));
@@ -151,7 +152,7 @@ describe('DocumentMergerService', () => {
             };
 
             // Act
-            target.mergeAndRender(data, template, MIMETYPE_PDF);
+            await target.mergeAndRender(data, template, MIMETYPE_PDF).toPromise();
 
             // Assert
             expect(target.merger).toEqual(jasmine.any(DocumentMergerWord));
@@ -174,7 +175,7 @@ describe('DocumentMergerService', () => {
             });
 
             // Act
-            target.mergeAndRender(data, template, MIMETYPE_PDF);
+            await target.mergeAndRender(data, template, MIMETYPE_PDF).toPromise();
 
             // Assert
             expect(called).toEqual(true);
@@ -195,7 +196,7 @@ describe('DocumentMergerService', () => {
 
             try {
                 // Act
-                target.mergeAndRender(data, template, 'unknownMimeType');
+                await target.mergeAndRender(data, template, 'unknownMimeType').toPromise();
                 fail('Should throw exception.');
             } catch (err) {
                 // Assert
@@ -216,7 +217,7 @@ describe('DocumentMergerService', () => {
             };
 
             // Act
-            target.mergeAndRender(data, template, MIMETYPE_TXT);
+            await target.mergeAndRender(data, template, MIMETYPE_TXT).toPromise();
 
             // Assert
             expect(target.render).toEqual(jasmine.any(RenderEngineTxt));
@@ -234,7 +235,7 @@ describe('DocumentMergerService', () => {
             };
 
             // Act
-            target.mergeAndRender(data, template, MIMETYPE_PDF);
+            await target.mergeAndRender(data, template, MIMETYPE_PDF).toPromise();
 
             // Assert
             expect(target.render).toEqual(jasmine.any(RenderEnginePdf));
@@ -254,10 +255,11 @@ describe('DocumentMergerService', () => {
             let called = false;
             renderEnginePdfSpy.and.callFake(() => {
                 called = true;
+                return of(defaultPdfRenderedDocument);
             });
 
             // Act
-            target.mergeAndRender(data, template, MIMETYPE_PDF);
+            await target.mergeAndRender(data, template, MIMETYPE_PDF).toPromise();
 
             // Assert
             expect(called).toEqual(true);

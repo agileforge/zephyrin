@@ -6,11 +6,11 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { Document } from '../documents/document';
 import { MIMETYPE_TXT } from '../../misc/const';
-import { Injector } from '@angular/core';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
-import { BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs';
 import { FileService } from '../../providers/file/file.service';
 import { ElectronService } from '../../providers/electron.service';
+import { LogService } from '../../providers/log-service';
 
 describe('Document', () => {
 
@@ -24,13 +24,14 @@ describe('Document', () => {
             TestBed.configureTestingModule({
                 providers: [
                     Document,
+                    LogService,
                     FileService,
                     ElectronService
                 ]
             });
 
             fileServiceStub = TestBed.get(FileService);
-            const readBytesValue = new BehaviorSubject(new Uint8Array([1, 2, 3, 4, 5]));
+            const readBytesValue = of(new Uint8Array([1, 2, 3, 4, 5]));
             spyOn(fileServiceStub, 'readBytes').and.returnValue(readBytesValue);
         } catch (err) {
             console.log(err);

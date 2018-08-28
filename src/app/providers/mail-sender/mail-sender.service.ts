@@ -29,7 +29,8 @@ export class MailSenderService {
      * @param {MailModel} mail
      * @memberof MailSenderService
      */
-    send(mail: MailModel): Observable<any> {
+    send(mail: MailModel): Observable<void> {
+        // TODO: Implements
         console.log(mail);
         throw new Error('Not implemented');
     }

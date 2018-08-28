@@ -6,6 +6,7 @@
 import { Injectable } from '@angular/core';
 import { MailModel } from '../mail-sender/mailModel';
 import { InvalidEmailAddressError } from '../mailer-engine/invalidEmailAddressError';
+import { Observable, empty } from 'rxjs';
 
 /**
  * Service to log mails when sent.
@@ -29,7 +30,8 @@ export class MailingLoggerService {
      * @param {number} rowNum The row number of data table.
      * @memberof MailingLoggerService
      */
-    success(mail: MailModel, rowNum: number) {
+    success(mail: MailModel, rowNum: number): Observable<void> {
+        return empty();
     }
 
     /**
@@ -43,7 +45,8 @@ export class MailingLoggerService {
      * @param {number} rowNum The row number of data table.
      * @memberof MailingLoggerService
      */
-    sendFail(mail: MailModel, error: Error, rowNum: number) {
+    sendFail(mail: MailModel, error: Error, rowNum: number): Observable<void> {
+        return empty();
     }
 
     /**
@@ -51,7 +54,8 @@ export class MailingLoggerService {
      * @param {MailModel} mail The mail that fail.
      * @memberof MailingLoggerService
      */
-    emailAddressError(error: InvalidEmailAddressError) {
+    emailAddressError(error: InvalidEmailAddressError): Observable<void> {
+        return empty();
     }
 
 }

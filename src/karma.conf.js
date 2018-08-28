@@ -21,9 +21,10 @@ module.exports = function (config) {
             fixWebpackSourcePaths: true
         },
         webpack: {
-            node: {
-                fs: 'empty'
-            }
+            // externals: {
+            //     "child_process": "require('child_process')"
+            // },
+            node: { fs: 'empty', child_process: 'empty' },
         },
         reporters: ['progress', 'kjhtml'],
         port: 9876,

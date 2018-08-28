@@ -6,6 +6,7 @@
 import { Injectable } from '@angular/core';
 import { RenderEngine } from './render-engine';
 import { DocumentModel } from '../../../complexes/documents/documentModel';
+import { Observable, of } from 'rxjs';
 
 /**
  * Provide an engine that is able to render a document to a text document.
@@ -33,8 +34,8 @@ export class RenderEngineTxt extends RenderEngine {
      * @returns {DocumentModel} The rendered text (TXT) document.
      * @memberof RenderEngine
      */
-    render(document: DocumentModel): DocumentModel {
-        return document;
+    render(document: DocumentModel): Observable<DocumentModel> {
+        return of(document);
     }
 
 }

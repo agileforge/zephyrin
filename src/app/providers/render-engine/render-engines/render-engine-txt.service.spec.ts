@@ -31,7 +31,7 @@ describe('RenderEnginePdfService', () => {
         const document = <DocumentModel>{ mimeType: MIMETYPE_TXT, content: encoder.encode('Hello world!') };
 
         // Act
-        const renderedDocument = target.render(document);
+        const renderedDocument = await target.render(document).toPromise();
 
         // Assert
         expect(renderedDocument).toEqual(document);

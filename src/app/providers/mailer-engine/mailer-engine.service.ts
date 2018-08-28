@@ -13,6 +13,9 @@ import Utils from '../../misc/utils';
 import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
 import { InvalidEmailAddressError } from './invalidEmailAddressError';
 import { DocumentMergerService } from '../render-engine/document-merger/document-merger.service';
+import { Observable, from, of } from 'rxjs';
+import { merge, map, last } from 'rxjs/operators';
+import { DocumentModel } from '../../complexes/documents/documentModel';
 
 /**
  * Service that is able to merge and then send email with attachment
@@ -45,7 +48,7 @@ export class MailerEngineService {
      * @param {MailingDataSource} mailingDataSource
      * @memberof MailerEngineService
      */
-    sendMails(mailingDataSource: MailingData) {
+    sendMails(mailingDataSource: MailingData): Observable<void> {
         const that = this;
         const config = this._configService.config.value;
 
@@ -55,41 +58,52 @@ export class MailerEngineService {
         const template = mailingDataSource.template;
         const renderType = mailingDataSource.renderType;
 
-        let rowNum = 0;
-        mailingDataSource.datasource.data
-            .forEach(row => {
-                rowNum++;
+        let rowCounter = 0;
+        return from(mailingDataSource.datasource.data)
+            .pipe(
+                map(row => <{ rowNum: number, row: any }>{ rowNum: ++rowCounter, row }),
+                merge(3),
+                map(irow => {
+                    const rowNum = irow.rowNum;
+                    const row = irow.row;
 
-                const emailAddress = row[emailField];
-                // Check if email is valid
-                if (!EMAIL_REGEX.test(emailAddress)) {
-                    const error = new InvalidEmailAddressError(emailAddress, emailField, row, rowNum);
-                    that._mailingLoggerService.emailAddressError(error);
-                    return;
-                }
+                    const emailAddress = row[emailField];
+                    // Check if email is valid
+                    if (!EMAIL_REGEX.test(emailAddress)) {
+                        const error = new InvalidEmailAddressError(emailAddress, emailField, row, rowNum);
+                        that._mailingLoggerService.emailAddressError(error);
+                        return;
+                    }
 
-                // Email address is valid, prepare data
-                const mail = <MailModel>{
-                    from: Utils.getEmailAddress(config.sender.emailAddress, config.sender.fullName),
-                    to: [Utils.getEmailAddress(emailAddress, row[lastNameField], row[firstNameField])],
-                    subject: that.replaceFields(mailingDataSource.subject, row),
-                    body: that.replaceFields(mailingDataSource.body, row),
-                    attachments: []
-                };
+                    // Email address is valid, prepare data
+                    const mail = <MailModel>{
+                        from: Utils.getEmailAddress(config.sender.emailAddress, config.sender.fullName),
+                        to: [Utils.getEmailAddress(emailAddress, row[lastNameField], row[firstNameField])],
+                        subject: that.replaceFields(mailingDataSource.subject, row),
+                        body: that.replaceFields(mailingDataSource.body, row),
+                        attachments: []
+                    };
 
-                // Eventually merge and render the attached document.
-                if (template) {
-                    const renderedDocument = that._documentMergerService.mergeAndRender(row, template, renderType);
-                    mail.attachments.push(renderedDocument.content);
-                }
+                    // Eventually merge and render the attached document.
+                    let merger = of(<DocumentModel>{ mimeType: renderType, content: null });
+                    if (template) {
+                        merger = that._documentMergerService.mergeAndRender(row, template, renderType);
+                    }
 
-                // Send the email
-                that._mailSenderService.send(mail).subscribe(() => {
-                    that._mailingLoggerService.success(mail, rowNum);
-                }, err => {
-                    that._mailingLoggerService.sendFail(mail, err, rowNum);
-                });
-            });
+                    // Send the email
+                    merger.subscribe(document => {
+                        if (document.content) {
+                            mail.attachments.push(document.content);
+                        }
+                        that._mailSenderService.send(mail).subscribe(() => {
+                            return that._mailingLoggerService.success(mail, rowNum);
+                        }, err => {
+                            return that._mailingLoggerService.sendFail(mail, err, rowNum);
+                        });
+                    });
+                }),
+                last()
+            );
     }
 
     /**

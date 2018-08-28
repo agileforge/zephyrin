@@ -5,6 +5,7 @@
 
 import { Injectable, Injector } from '@angular/core';
 import { DocumentModel } from '../../../complexes/documents/documentModel';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -19,6 +20,6 @@ export abstract class RenderEngine {
      * @returns {DocumentModel} The rendered document.
      * @memberof RenderEngine
      */
-    abstract render(document: DocumentModel): DocumentModel;
+    abstract render(document: DocumentModel): Observable<DocumentModel>;
 
 }

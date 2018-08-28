@@ -5,7 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { ConfigModel } from './configModel';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 
 /**
  * Provides user configuration services.
@@ -31,6 +31,7 @@ export class ConfigService {
      * @memberof ConfigService
      */
     save(): Observable<ConfigModel> {
+        // TODO: Implements
         throw new Error('Not implemented');
     }
 
@@ -40,6 +41,7 @@ export class ConfigService {
      * @memberof ConfigService
      */
     load(): Observable<ConfigModel> {
+        // TODO: Implements
         throw new Error('Not implemented');
     }
 

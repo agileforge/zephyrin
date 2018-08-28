@@ -45,7 +45,7 @@ export class RenderEnginePdf extends RenderEngine {
      * @returns {DocumentModel} The rendered PDF document.
      * @memberof RenderEngine
      */
-    render(document: DocumentModel): DocumentModel {
+    render(document: DocumentModel): Observable<DocumentModel> {
         switch (document.mimeType) {
             case MIMETYPE_TXT:
                 return this.renderFromTxt(document);
@@ -64,7 +64,7 @@ export class RenderEnginePdf extends RenderEngine {
      * @returns {DocumentModel}
      * @memberof RenderEnginePdf
      */
-    private renderFromTxt(document: DocumentModel): DocumentModel {
+    private renderFromTxt(document: DocumentModel): Observable<DocumentModel> {
         // const renderedDocument = <DocumentModel>{ mimeType: MIMETYPE_PDF };
 
         // const text = this._decoder.decode(document.content);
@@ -94,7 +94,7 @@ export class RenderEnginePdf extends RenderEngine {
         // stream.end();
 
         // return renderedDocument;
-        return null;
+        return new BehaviorSubject<DocumentModel>(null);
     }
 
     /**
