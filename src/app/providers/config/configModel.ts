@@ -10,20 +10,20 @@
  */
 export interface ConfigModel {
     /**
-     * Contains informations about SMTP connection to send emails.
+     * Contains information about SMTP connection to send emails.
      * This is given by user.
      * @type {SmtpConfigModel}
      * @memberof ConfigModel
      */
     smtp: SmtpConfigModel;
     /**
-     * Contains informations about the sender of mails.
+     * Contains information about the sender of mails.
      * @type {SenderConfigModel}
      * @memberof ConfigModel
      */
     sender: SenderConfigModel;
     /**
-     * Contains informations about mailing logging.
+     * Contains information about mailing logging.
      * @type {MailingLogConfigModel}
      * @memberof ConfigModel
      */
@@ -31,7 +31,7 @@ export interface ConfigModel {
 }
 
 /**
- * Represents user informations about SMTP connection to send emails.
+ * Represents user information about SMTP connection to send emails.
  * @export
  * @interface SmtpConfigModel
  */

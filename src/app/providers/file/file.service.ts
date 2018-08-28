@@ -49,17 +49,60 @@ export class FileService {
      * @param {string} fileName The target file name.
      * @memberof FileService
      */
-    writeBytes(content: Uint8Array, fileName: string): Observable<{}> {
+    writeBytes(content: Uint8Array, fileName: string): Observable<void> {
         const that = this;
         this._logger.debug(`Starting to write a binary content to file '${fileName}'.`);
-        const subject = new ReplaySubject<{}>();
+        const subject = new ReplaySubject<void>();
         this._electron.fs.writeFile(fileName, content.buffer, err => {
             if (err) {
                 that._logger.error(`Error while writing to file '${fileName}': '${err.message}'`);
                 throw err;
             }
             that._logger.debug(`File '${fileName}' written successfully.`);
-            subject.next({});
+            subject.next();
+        });
+        return subject;
+    }
+
+    /**
+     * Writes a text in a file. If file exists, replace it.
+     * @param {string} text Text to write.
+     * @param {string} fileName The file name to create.
+     * @returns {Observable<void>}
+     * @memberof FileService
+     */
+    writeText(text: string, fileName: string): Observable<void> {
+        const that = this;
+        this._logger.debug(`Starting to write a text content to file '${fileName}'.`);
+        const subject = new ReplaySubject<void>();
+        this._electron.fs.writeFile(fileName, text, err => {
+            if (err) {
+                that._logger.error(`Error while writing to file '${fileName}': '${err.message}'`);
+                throw err;
+            }
+            that._logger.debug(`File '${fileName}' written successfully.`);
+            subject.next();
+        });
+        return subject;
+    }
+
+    /**
+     * Read text from a file.
+     * @param {string} fileName The file name to read.
+     * @returns {Observable<string>} Text contained in file.
+     * @memberof FileService
+     */
+    readText(fileName: string): Observable<string> {
+        const that = this;
+        this._logger.debug(`Starting to read a text content from file '${fileName}'.`);
+        const subject = new ReplaySubject<string>();
+        this._electron.fs.readFile(fileName, 'utf8', (err, data) => {
+            if (err) {
+                that._logger.error(`Error while reading file '${fileName}': '${err.message}'`);
+                throw err;
+            }
+            that._logger.debug(`File '${fileName}' read successfully.`);
+            subject.next(data);
         });
         return subject;
     }

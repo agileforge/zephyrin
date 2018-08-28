@@ -18,6 +18,9 @@ import { MIMETYPE_PDF, MIMETYPE_TXT } from '../../misc/const';
 import { DocumentMergerService } from '../render-engine/document-merger/document-merger.service';
 import { DocumentModel } from '../../complexes/documents/documentModel';
 import { TextEncoder } from 'text-encoding';
+import { FileService } from '../file/file.service';
+import { LogService } from '../log-service';
+import { ElectronService } from '../electron.service';
 
 describe('MailerEngineService', () => {
     let target: MailerEngineService;
@@ -34,7 +37,10 @@ describe('MailerEngineService', () => {
             providers: [
                 MailerEngineService,
                 ConfigService,
-                MailSenderService
+                MailSenderService,
+                FileService,
+                LogService,
+                ElectronService,
             ]
         });
         configServiceStub = TestBed.get(ConfigService);

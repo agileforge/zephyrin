@@ -6,6 +6,7 @@
 import { Injectable } from '@angular/core';
 import { ConfigModel } from './configModel';
 import { Observable, of, BehaviorSubject } from 'rxjs';
+import { FileService } from '../file/file.service';
 
 /**
  * Provides user configuration services.
@@ -23,16 +24,17 @@ export class ConfigService {
      *Creates an instance of ConfigServiceService.
      * @memberof ConfigService
      */
-    constructor() { }
+    constructor(private _fileService: FileService) { }
 
     /**
      * Saves the configuration.
      * @returns {Observable<ConfigModel>}
      * @memberof ConfigService
      */
-    save(): Observable<ConfigModel> {
-        // TODO: Implements
-        throw new Error('Not implemented');
+    save(): Observable<void> {
+        const fileName = this._fileService.pathJoin(__dirname, 'config.json');
+        const text = JSON.stringify(this.config.value, null, 2);
+        return this._fileService.writeText(text, fileName);
     }
 
     /**
