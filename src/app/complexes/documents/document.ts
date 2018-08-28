@@ -3,10 +3,10 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { FileService } from '../../services/file/file.service';
 import Utils from '../../misc/utils';
 import { Injectable, ReflectiveInjector, Injector, InjectionToken, Inject } from '@angular/core';
 import { DocumentModel } from './documentModel';
+import { FileService } from '../../providers/file/file.service';
 
 export const FILE_NAME = new InjectionToken<string>('fileName');
 

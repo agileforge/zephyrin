@@ -9,5 +9,6 @@
         "noemail",
         "somedomain",
         "unknownext"
-    ]
+    ],
+    "git.ignoreLimitWarning": true
 }

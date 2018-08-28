@@ -5,6 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
+import { ElectronService } from '../electron.service';
 
 /**
  * File service to access to local files.
@@ -23,11 +24,11 @@ export class FileService {
      *Creates an instance of FileService.
      * @memberof FileService
      */
-    constructor() { }
+    constructor(private _electron: ElectronService) { }
 
     private get fs(): any {
         if (!this._fs) {
-            this._fs = window.fs;
+            this._fs = this._electron.fs;
         }
         return this._fs;
     }

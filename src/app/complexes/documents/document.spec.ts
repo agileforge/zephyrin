@@ -4,12 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { TestBed, inject } from '@angular/core/testing';
-import { FileService } from '../../services/file/file.service';
 import { Document } from '../documents/document';
 import { MIMETYPE_TXT } from '../../misc/const';
 import { Injector } from '@angular/core';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 import { BehaviorSubject } from 'rxjs';
+import { FileService } from '../../providers/file/file.service';
+import { ElectronService } from '../../providers/electron.service';
 
 describe('Document', () => {
 
@@ -23,7 +24,8 @@ describe('Document', () => {
             TestBed.configureTestingModule({
                 providers: [
                     Document,
-                    FileService
+                    FileService,
+                    ElectronService
                 ]
             });
 
