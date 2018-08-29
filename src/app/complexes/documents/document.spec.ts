@@ -44,6 +44,7 @@ describe('Document', () => {
 
         // Assert
         expect(document.fileName).toEqual('file.txt');
+        expect(document.fullName).toEqual('/some/path/to/a/file.txt');
         expect(document.mimeType).toEqual(MIMETYPE_TXT);
         expect(document.content).toEqual(new Uint8Array([1, 2, 3, 4, 5]));
     });

@@ -13,6 +13,12 @@ export interface DocumentModel {
      */
     fileName?: string;
     /**
+     * Full path to source file of this document.
+     * @type {string}
+     * @memberof DocumentModel
+     */
+    fullName?: string;
+    /**
      * Gets the mime type of template document.
      * @abstract
      * @type {string}
