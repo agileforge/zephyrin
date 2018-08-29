@@ -50,7 +50,7 @@ export class MailerEngineService {
      */
     sendMails(mailingDataSource: MailingData): Observable<void> {
         const that = this;
-        const config = this._configService.config.value;
+        const config = this._configService.config;
 
         const emailField = mailingDataSource.datasource.mailAddressField;
         const lastNameField = mailingDataSource.datasource.lastNameField;

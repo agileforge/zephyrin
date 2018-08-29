@@ -11,6 +11,7 @@
         "lcovonly",
         "memorystream",
         "nodebuffer",
+        "nodomain",
         "noemail",
         "polyfills",
         "somedomain",

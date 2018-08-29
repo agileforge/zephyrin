@@ -5,8 +5,10 @@
 
 import { Injectable } from '@angular/core';
 import { ConfigModel } from './configModel';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FileService } from '../file/file.service';
+import { LogService } from '../log-service';
+import { map } from 'rxjs/operators';
 
 /**
  * Provides user configuration services.
@@ -18,23 +20,34 @@ import { FileService } from '../file/file.service';
 })
 export class ConfigService {
 
-    config = new BehaviorSubject(<ConfigModel>{});
+    config = <ConfigModel>{
+        mailingLog: {
+            directoryPath: this._fileService.pathJoin(__dirname, 'logs'),
+        },
+    };
+
+    private _fileName = this._fileService.pathJoin(__dirname, 'config.json');
 
     /**
      *Creates an instance of ConfigServiceService.
      * @memberof ConfigService
      */
-    constructor(private _fileService: FileService) { }
+    constructor(
+        private _logger: LogService,
+        private _fileService: FileService
+    ) { }
 
     /**
      * Saves the configuration.
      * @returns {Observable<ConfigModel>}
      * @memberof ConfigService
      */
-    save(): Observable<void> {
-        const fileName = this._fileService.pathJoin(__dirname, 'config.json');
-        const text = JSON.stringify(this.config.value, null, 2);
-        return this._fileService.writeText(text, fileName);
+     save(): Observable<void> {
+        this._logger.debug(`Saving config to file '${this._fileName}'.`);
+        const text = JSON.stringify(this.config, null, 2);
+        const result = this._fileService.writeText(text, this._fileName);
+        this._logger.info(`File '${this._fileName}' successfully saved.`);
+        return result;
     }
 
     /**
@@ -43,8 +56,15 @@ export class ConfigService {
      * @memberof ConfigService
      */
     load(): Observable<ConfigModel> {
-        // TODO: Implements
-        throw new Error('Not implemented');
+        this._logger.debug(`Loading config from file '${this._fileName}'.`);
+        const that = this;
+        return this._fileService.readText(this._fileName).pipe(
+            map(t => {
+                that.config = <ConfigModel>JSON.parse(t);
+                this._logger.info(`Config successfully loaded from file '${this._fileName}':\n${t}.`);
+                return that.config;
+            })
+        );
     }
 
 }

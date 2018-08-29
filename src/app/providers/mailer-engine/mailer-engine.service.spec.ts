@@ -9,7 +9,7 @@ import { ConfigService } from '../config/config.service';
 import { MailSenderService } from '../mail-sender/mail-sender.service';
 import { MailingData } from './mailingData';
 import { MailingDataSource } from './mailingDataSource';
-import { of, throwError, BehaviorSubject, empty } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { MailModel } from '../mail-sender/mailModel';
 import { ConfigModel, SmtpConfigModel, SenderConfigModel, MailingLogConfigModel } from '../config/configModel';
 import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
@@ -63,7 +63,7 @@ describe('MailerEngineService', () => {
             }
         };
 
-        configServiceStub.config = new BehaviorSubject(config);
+        configServiceStub.config = config;
 
         mails = [];
         sendSpy = spyOn(mailSenderServiceStub, 'send').and.callFake(mail => {

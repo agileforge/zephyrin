@@ -9,6 +9,7 @@ import { FileService } from '../file/file.service';
 import { ElectronService } from '../electron.service';
 import { LogService } from '../log-service';
 import { ConfigModel, SmtpConfigModel, SenderConfigModel, MailingLogConfigModel } from './configModel';
+import { of } from 'rxjs';
 
 describe('ConfigService', () => {
 
@@ -25,6 +26,7 @@ describe('ConfigService', () => {
             directoryPath: '/my/path/to/dir'
         }
     };
+    const configJson = JSON.stringify(config, null, 2);
 
     let target: ConfigService;
     let fileServiceStub: FileService;
@@ -40,7 +42,7 @@ describe('ConfigService', () => {
         });
 
         target = TestBed.get(ConfigService);
-        target.config.next(config);
+        target.config = config;
         fileServiceStub = TestBed.get(FileService);
     });
 
@@ -55,18 +57,58 @@ describe('ConfigService', () => {
             let fileName: string;
             let text: string;
 
-            const spy = spyOn(fileServiceStub, 'writeText').and.callFake((t, fn) => {
+            spyOn(fileServiceStub, 'writeText').and.callFake((t, fn) => {
                 fileName = fn;
                 text = t;
             });
-            target.config.next(config);
+            target.config = config;
 
             // Act
             target.save();
 
             // Assert
             expect(fileName).toEqual(__dirname + 'config.json');
-            expect(text).toEqual(JSON.stringify(config, null, 2));
+            expect(text).toEqual(configJson);
+        });
+
+    });
+
+    describe('load', () => {
+
+        it('should call readText of FileService', async () => {
+            // Arrange
+            const spy = spyOn(fileServiceStub, 'readText').and.returnValue(of(configJson));
+
+            // Act
+            await target.load().toPromise();
+
+            // Assert
+            expect(spy).toHaveBeenCalledWith(__dirname + 'config.json');
+        });
+
+        it('should call return loaded config', async () => {
+            // Arrange
+            const localConfig = <ConfigModel>{ sender: { emailAddress: 'some@email.com' } };
+            spyOn(fileServiceStub, 'readText').and.returnValue(of(JSON.stringify(localConfig, null, 2)));
+
+            // Act
+            const loadedConfig = await target.load().toPromise();
+            console.log(loadedConfig);
+
+            // Assert
+            expect(loadedConfig).toEqual(localConfig);
+        });
+
+        it('should change config in service', async () => {
+            // Arrange
+            const localConfig = <ConfigModel>{ sender: { emailAddress: 'some@email.com' } };
+            spyOn(fileServiceStub, 'readText').and.returnValue(of(JSON.stringify(localConfig, null, 2)));
+
+            // Act
+            await target.load().toPromise();
+
+            // Assert
+            expect(target.config).toEqual(localConfig);
         });
 
     });

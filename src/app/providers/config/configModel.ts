@@ -15,19 +15,19 @@ export interface ConfigModel {
      * @type {SmtpConfigModel}
      * @memberof ConfigModel
      */
-    smtp: SmtpConfigModel;
+    smtp?: SmtpConfigModel;
     /**
      * Contains information about the sender of mails.
      * @type {SenderConfigModel}
      * @memberof ConfigModel
      */
-    sender: SenderConfigModel;
+    sender?: SenderConfigModel;
     /**
      * Contains information about mailing logging.
      * @type {MailingLogConfigModel}
      * @memberof ConfigModel
      */
-    mailingLog: MailingLogConfigModel;
+    mailingLog?: MailingLogConfigModel;
 }
 
 /**
