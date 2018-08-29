@@ -26,5 +26,6 @@ export const MIMETYPE_XLSX = 'application/vnd.openxmlformats-officedocument.spre
 // #region Misc
 
 export const FILEDATE_FORMAT = 'yyyymmdd_HHMMss';
+export const ISODATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
 // #endregion

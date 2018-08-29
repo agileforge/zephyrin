@@ -60,6 +60,10 @@ export class MailerEngineService {
         const template = mailingDataSource.template;
         const renderType = mailingDataSource.renderType;
 
+        // Initialize the mailing log
+        that._mailingLoggerService.initial(mailingDataSource);
+
+        // And send it all
         let rowCounter = 0;
         return from(mailingDataSource.datasource.data)
             .pipe(

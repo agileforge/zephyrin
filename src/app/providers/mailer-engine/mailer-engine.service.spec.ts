@@ -31,6 +31,7 @@ describe('MailerEngineService', () => {
 
     let mails: MailModel[];
     let sendSpy;
+    let emailAddressErrorSpy;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -71,6 +72,11 @@ describe('MailerEngineService', () => {
             return of(null);
         });
 
+        spyOn(mailingLoggerServiceStub, 'initial').and.stub();
+        spyOn(mailingLoggerServiceStub, 'success').and.stub();
+        spyOn(mailingLoggerServiceStub, 'sendFail').and.stub();
+        emailAddressErrorSpy = spyOn(mailingLoggerServiceStub, 'emailAddressError').and.stub();
+
     });
 
     it('should be created', inject([MailerEngineService], (service: MailerEngineService) => {
@@ -78,6 +84,28 @@ describe('MailerEngineService', () => {
     }));
 
     describe('logging', () => {
+
+        it('should log initial data', async () => {
+            // Arrange
+            const data = <MailingDataModel>{
+                subject: 'SomeSubject',
+                body: '<h1>Some HTML code</h1>',
+                template: null,
+                renderType: MIMETYPE_PDF,
+                datasource: <MailingDataSource>{
+                    mailAddressField: 'email',
+                    data: [
+                        { email: 'john.doe@somedomain.com' }
+                    ]
+                }
+            };
+
+            // Act
+            await target.sendMails(data).toPromise();
+
+            // Assert
+            expect(mailingLoggerServiceStub.initial).toHaveBeenCalledWith(data);
+        });
 
         it('should log on mail successfully sent', async () => {
             // Arrange
@@ -93,8 +121,6 @@ describe('MailerEngineService', () => {
                     ]
                 }
             };
-
-            spyOn(mailingLoggerServiceStub, 'success').and.callThrough();
 
             // Act
             await target.sendMails(data).toPromise();
@@ -123,8 +149,6 @@ describe('MailerEngineService', () => {
                 mails.push(mail);
                 return throwError(error);
             });
-
-            spyOn(mailingLoggerServiceStub, 'sendFail').and.callThrough();
 
             // Act
             await target.sendMails(data).toPromise();
@@ -157,7 +181,7 @@ describe('MailerEngineService', () => {
             });
 
             const errors: InvalidEmailAddressError[] = [];
-            spyOn(mailingLoggerServiceStub, 'emailAddressError').and.callFake(error => {
+            emailAddressErrorSpy.and.callFake(error => {
                 errors.push(error);
             });
 

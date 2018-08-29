@@ -7,13 +7,13 @@ import { Injectable } from '@angular/core';
 import { MailModel } from '../mail-sender/mailModel';
 import { InvalidEmailAddressError } from '../mailer-engine/invalidEmailAddressError';
 import { Observable, empty, merge } from 'rxjs';
-import { ConfigModel } from '../config/configModel';
 import { MailingDataModel } from '../mailer-engine/mailingDataModel';
 import { FileService } from '../file/file.service';
 import * as dateFormat from 'dateformat';
 import { LogService } from '../log-service';
 import { DateProviderService } from '../date-provider/date-provider.service';
-import { FILEDATE_FORMAT } from '../../misc/const';
+import { FILEDATE_FORMAT, ISODATE_FORMAT } from '../../misc/const';
+import { ConfigService } from '../config/config.service';
 
 /**
  * Service to log mails when sent.
@@ -25,8 +25,11 @@ import { FILEDATE_FORMAT } from '../../misc/const';
 })
 export class MailingLoggerService {
 
+    private _logDirectory: string;
+
     constructor(
         private _logger: LogService,
+        private _config: ConfigService,
         private _fileService: FileService,
         private _dateProvider: DateProviderService
     ) { }
@@ -37,17 +40,9 @@ export class MailingLoggerService {
      * @param {MailingDataModel} mailingData
      * @memberof MailingLoggerService
      */
-    initial(config: ConfigModel, mailingData: MailingDataModel): Observable<void> {
-        // Create log directory
-        let directoryPath = config.mailingLog.directoryPath || this._fileService.pathJoin(__dirname, 'logs');
-        const sessionName = dateFormat(this._dateProvider.now(), FILEDATE_FORMAT);
-
-        if (mailingData.name) {
-            directoryPath = this._fileService.pathJoin(directoryPath, mailingData.name, sessionName);
-        } else {
-            directoryPath = this._fileService.pathJoin(directoryPath, sessionName);
-        }
-        this._fileService.makeDir(directoryPath);
+    initial(mailingData: MailingDataModel): Observable<void> {
+        // Get and create log directory
+        const directoryPath = this.getDirectory(mailingData.name);
 
         // Build file names
         const configFileName = this._fileService.pathJoin(directoryPath, 'config.json');
@@ -67,7 +62,7 @@ export class MailingLoggerService {
 
         // Save it all
         return merge(
-            this._fileService.writeText(configFileName, JSON.stringify(config, null, 2)),
+            this._fileService.writeText(configFileName, JSON.stringify(this._config.config, null, 2)),
             this._fileService.writeText(dataFileName, dataJson),
             this._fileService.writeBytes(templateFileName, mailingData.template.content),
             this._fileService.copyFile(mailingData.datasource.fileName, datasourceFileName)
@@ -81,7 +76,10 @@ export class MailingLoggerService {
      * @memberof MailingLoggerService
      */
     success(mail: MailModel, rowNum: number): Observable<void> {
-        return empty();
+        const fileName = this._fileService.pathJoin(this._logDirectory, 'success.log');
+        const date = dateFormat(this._dateProvider.now(), ISODATE_FORMAT);
+        const message = `${date} - From row ${rowNum} sent to "${mail.to[0]}"\n`;
+        return this._fileService.appendText(fileName, message);
     }
 
     /**
@@ -96,16 +94,45 @@ export class MailingLoggerService {
      * @memberof MailingLoggerService
      */
     sendFail(mail: MailModel, error: Error, rowNum: number): Observable<void> {
-        return empty();
+        const fileName = this._fileService.pathJoin(this._logDirectory, 'error.log');
+        const date = dateFormat(this._dateProvider.now(), ISODATE_FORMAT);
+        const message = `${date} - From row ${rowNum} fail to send email to "${mail.to[0]}": "${error.message}"\n`;
+        return this._fileService.appendText(fileName, message);
     }
 
     /**
      * Log an email address error.
+     * @param {number} rowNum The row number in datasource from where come the error.
      * @param {MailModel} mail The mail that fail.
      * @memberof MailingLoggerService
      */
     emailAddressError(error: InvalidEmailAddressError): Observable<void> {
-        return empty();
+        const fileName = this._fileService.pathJoin(this._logDirectory, 'bad-address.log');
+        const date = dateFormat(this._dateProvider.now(), ISODATE_FORMAT);
+        const message = `${date} - ${error.message} It has been taken from field "${error.emailField}" in data source.\n`;
+        return this._fileService.appendText(fileName, message);
+    }
+
+    /**
+     * Build log directory and ensure it exists.
+     * @private
+     * @param {string} mailingName Name of mailing
+     * @returns {string}
+     * @memberof MailingLoggerService
+     */
+    private getDirectory(mailingName: string): string {
+        let directoryPath = this._config.config.mailingLog.directoryPath || this._fileService.pathJoin(__dirname, 'logs');
+        const sessionName = dateFormat(this._dateProvider.now(), FILEDATE_FORMAT);
+
+        if (mailingName) {
+            directoryPath = this._fileService.pathJoin(directoryPath, mailingName, sessionName);
+        } else {
+            directoryPath = this._fileService.pathJoin(directoryPath, sessionName);
+        }
+        this._fileService.makeDir(directoryPath);
+
+        this._logDirectory = directoryPath;
+        return directoryPath;
     }
 
 }

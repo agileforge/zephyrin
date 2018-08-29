@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ElectronService } from '../electron.service';
 import { LogService } from '../log-service';
 import * as path from 'path';
@@ -36,11 +36,19 @@ export class FileService {
      * @memberof FileService
      */
     readBytes(fileName: string): Observable<Uint8Array> {
-        const subject = new ReplaySubject<Uint8Array>();
-        this._electron.fs.readFile(fileName, (err, data) => {
-            subject.next(new Uint8Array(data));
+        const that = this;
+        this._logger.debug(`Starting to write a text content to file '${fileName}'.`);
+        return Observable.create(observer => {
+            this._electron.fs.readFile(fileName, (err, data) => {
+                if (err) {
+                    that._logger.error(`Error reading file '${fileName}': '${err.message}'`);
+                    observer.onError(err);
+                    return;
+                }
+                that._logger.debug(`File '${fileName}' read successfully.`);
+                observer.onNext(new Uint8Array(data));
+            });
         });
-        return subject;
     }
 
     /**
@@ -52,16 +60,17 @@ export class FileService {
     writeBytes(fileName: string, content: Uint8Array): Observable<void> {
         const that = this;
         this._logger.debug(`Starting to write a binary content to file '${fileName}'.`);
-        const subject = new ReplaySubject<void>();
-        this._electron.fs.writeFile(fileName, content.buffer, err => {
-            if (err) {
-                that._logger.error(`Error while writing to file '${fileName}': '${err.message}'`);
-                throw err;
-            }
-            that._logger.debug(`File '${fileName}' written successfully.`);
-            subject.next();
+        return Observable.create(observer => {
+            this._electron.fs.writeFile(fileName, content.buffer, err => {
+                if (err) {
+                    that._logger.error(`Error while writing to file '${fileName}': '${err.message}'`);
+                    observer.onError(err);
+                    return;
+                }
+                that._logger.debug(`File '${fileName}' written successfully.`);
+                observer.onNext();
+            });
         });
-        return subject;
     }
 
     /**
@@ -74,16 +83,41 @@ export class FileService {
     writeText(fileName: string, text: string): Observable<void> {
         const that = this;
         this._logger.debug(`Starting to write a text content to file '${fileName}'.`);
-        const subject = new ReplaySubject<void>();
-        this._electron.fs.writeFile(fileName, text, err => {
-            if (err) {
-                that._logger.error(`Error while writing to file '${fileName}': '${err.message}'`);
-                throw err;
-            }
-            that._logger.debug(`File '${fileName}' written successfully.`);
-            subject.next();
+        return Observable.create(observer => {
+            this._electron.fs.writeFile(fileName, text, error => {
+                if (error) {
+                    that._logger.error(`Error while writing to file '${fileName}': '${error.message}'`);
+                    observer.onError(error);
+                    return;
+                }
+                that._logger.debug(`File '${fileName}' written successfully.`);
+                observer.onNext();
+            });
         });
-        return subject;
+    }
+
+    /**
+     * Append text to the specified fileName. If file doesn't exists,
+     * create it.
+     * @param {string} fileName
+     * @param {string} text
+     * @returns {Observable<void>}
+     * @memberof FileService
+     */
+    appendText(fileName: string, text: string): Observable<void> {
+        const that = this;
+        this._logger.debug(`Starting to append a text content to file '${fileName}'.`);
+        return Observable.create(observer => {
+            this._electron.fs.appendFile(fileName, text, error => {
+                if (error) {
+                    that._logger.error(`Error while writing to file '${fileName}': '${error.message}'`);
+                    observer.onError(error);
+                    return;
+                }
+                that._logger.debug(`File '${fileName}' written successfully.`);
+                observer.onNext();
+            });
+        });
     }
 
     /**
@@ -95,16 +129,16 @@ export class FileService {
     readText(fileName: string): Observable<string> {
         const that = this;
         this._logger.debug(`Starting to read a text content from file '${fileName}'.`);
-        const subject = new ReplaySubject<string>();
-        this._electron.fs.readFile(fileName, 'utf8', (err, data) => {
-            if (err) {
-                that._logger.error(`Error while reading file '${fileName}': '${err.message}'`);
-                throw err;
-            }
-            that._logger.debug(`File '${fileName}' read successfully.`);
-            subject.next(data);
+        return Observable.create(observer => {
+            this._electron.fs.readFile(fileName, 'utf8', (err, data) => {
+                if (err) {
+                    that._logger.error(`Error while reading file '${fileName}': '${err.message}'`);
+                    observer.onError(err);
+                }
+                that._logger.debug(`File '${fileName}' read successfully.`);
+                observer.onNext(data);
+            });
         });
-        return subject;
     }
 
     /**
