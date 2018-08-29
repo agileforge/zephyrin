@@ -103,6 +103,7 @@ export class LogService {
     log(level: LogLevel, message: any) {
         if (!this._log) {
             console.log(message);
+            return;
         }
         switch (level) {
             case LogLevel.trace:
