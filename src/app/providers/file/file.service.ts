@@ -49,7 +49,7 @@ export class FileService {
      * @param {string} fileName The target file name.
      * @memberof FileService
      */
-    writeBytes(content: Uint8Array, fileName: string): Observable<void> {
+    writeBytes(fileName: string, content: Uint8Array): Observable<void> {
         const that = this;
         this._logger.debug(`Starting to write a binary content to file '${fileName}'.`);
         const subject = new ReplaySubject<void>();
@@ -71,7 +71,7 @@ export class FileService {
      * @returns {Observable<void>}
      * @memberof FileService
      */
-    writeText(text: string, fileName: string): Observable<void> {
+    writeText(fileName: string, text: string): Observable<void> {
         const that = this;
         this._logger.debug(`Starting to write a text content to file '${fileName}'.`);
         const subject = new ReplaySubject<void>();
@@ -108,6 +108,53 @@ export class FileService {
     }
 
     /**
+     * Creates the specified directoryPath.
+     * @param {string} directoryPath Directory to create.
+     * @memberof FileService
+     */
+    makeDir(directoryPath: string): void {
+        this._electron.fs.mkdirSync(directoryPath);
+    }
+
+    /**
+     * Copy specified source file to dest file.
+     * @param {string} source Source file to copy.
+     * @param {string} dest Destination file.
+     * @returns {Observable<void>}
+     * @memberof FileService
+     */
+    copyFile(source: string, dest: string): Observable<void> {
+        return Observable.create(observer => {
+            this._electron.fs.copyFile(source, dest, error => {
+                if (error) {
+                    observer.onError(error);
+                } else {
+                    observer.onNext();
+                }
+            });
+        });
+    }
+
+    /**
+     * Move specified source file to dest file.
+     * @param {string} source Source file to copy.
+     * @param {string} dest Destination file.
+     * @returns {Observable<void>}
+     * @memberof FileService
+     */
+    moveFile(source: string, dest: string): Observable<void> {
+        return Observable.create(observer => {
+            this._electron.fs.rename(source, dest, error => {
+                if (error) {
+                    observer.onError(error);
+                } else {
+                    observer.onNext();
+                }
+            });
+        });
+    }
+
+    /**
      * Check if a file exists on disk.
      * @param {string} fileName The file to check.
      * @returns {boolean} True if exists; otherwise False.
@@ -130,7 +177,7 @@ export class FileService {
     }
 
     /**
-     * Return the last portion of a path. Similar to the Unix basename command. 
+     * Return the last portion of a path. Similar to the Unix basename command.
      * Often used to extract the file name from a fully qualified path.
      * @param {string} fileName The file where the file name is.
      * @returns {string} Only the base file name.
