@@ -6,13 +6,19 @@
 export interface DocumentModel {
 
     /**
+     * File name of document. It could be used to save or
+     * give a name in attachment or download.
+     * @type {string}
+     * @memberof DocumentModel
+     */
+    fileName?: string;
+    /**
      * Gets the mime type of template document.
      * @abstract
      * @type {string}
      * @memberof DocumentTemplate
      */
     mimeType: string;
-
     /**
      * Get the content of document as his binary representation.
      * @readonly

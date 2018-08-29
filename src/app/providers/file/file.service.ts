@@ -119,4 +119,15 @@ export class FileService {
         return path.join(...paths);
     }
 
+    /**
+     * Return the last portion of a path. Similar to the Unix basename command. 
+     * Often used to extract the file name from a fully qualified path.
+     * @param {string} fileName The file where the file name is.
+     * @returns {string} Only the base file name.
+     * @memberof FileService
+     */
+    pathExtractFileName(fileName: string): string {
+        return path.basename(fileName);
+    }
+
 }

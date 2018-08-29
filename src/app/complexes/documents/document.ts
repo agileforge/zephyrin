@@ -16,6 +16,14 @@ export class Document implements DocumentModel {
     protected _content: Uint8Array;
 
     /**
+     * File name of document. It could be used to save or
+     * give a name in attachment or download.
+     * @type {string}
+     * @memberof DocumentModel
+     */
+    fileName: string;
+
+    /**
      * Gets the mime type of template document.
      * @abstract
      * @type {string}
@@ -32,11 +40,11 @@ export class Document implements DocumentModel {
     get content(): Uint8Array { return this._content; }
 
 
-    static fromFile(injector: Injector, fileName: string): DocumentModel {
+    static fromFile(injector: Injector, sourceFileName: string): DocumentModel {
         const documentInjector = ReflectiveInjector.resolveAndCreate(
             [
                 Document,
-                { provide: FILE_NAME, useValue: fileName }
+                { provide: FILE_NAME, useValue: sourceFileName }
             ],
             injector);
         const document = documentInjector.resolveAndInstantiate([Document]);
@@ -50,9 +58,9 @@ export class Document implements DocumentModel {
      */
     constructor(
         private _fileService: FileService,
-        @Inject(FILE_NAME) private fileName: string
+        @Inject(FILE_NAME) private sourceFileName: string
     ) {
-        this.loadFromFile(this.fileName);
+        this.loadFromFile(this.sourceFileName);
     }
 
     /**
@@ -62,15 +70,16 @@ export class Document implements DocumentModel {
      * @returns {Document} Created Document.
      * @memberof Document
      */
-    private loadFromFile(fileName: string) {
+    private loadFromFile(sourceFileName: string) {
         const that = this;
-        this.mimeType = Utils.getMimeType(fileName);
+        this.fileName = this._fileService.pathExtractFileName(sourceFileName);
+        this.mimeType = Utils.getMimeType(sourceFileName);
 
         if (!this.mimeType) {
-            throw new Error(`No mime type found for the file '${fileName}'. This file is not supported.`);
+            throw new Error(`No mime type found for the file '${sourceFileName}'. This file is not supported.`);
         }
 
-        return this._fileService.readBytes(fileName).subscribe(data => {
+        return this._fileService.readBytes(sourceFileName).subscribe(data => {
             that._content = data;
         });
     }
