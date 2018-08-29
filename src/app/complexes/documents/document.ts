@@ -24,6 +24,13 @@ export class Document implements DocumentModel {
     fileName: string;
 
     /**
+     * Full path to source file of this document.
+     * @type {string}
+     * @memberof DocumentModel
+     */
+    fullName?: string;
+
+    /**
      * Gets the mime type of template document.
      * @abstract
      * @type {string}
@@ -73,6 +80,7 @@ export class Document implements DocumentModel {
     private loadFromFile(sourceFileName: string) {
         const that = this;
         this.fileName = this._fileService.pathExtractFileName(sourceFileName);
+        this.fullName = sourceFileName;
         this.mimeType = Utils.getMimeType(sourceFileName);
 
         if (!this.mimeType) {
