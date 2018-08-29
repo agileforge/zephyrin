@@ -40,6 +40,7 @@
     "@types/nodemailer": "^4.6.2",
     "@types/nodemailer-direct-transport": "^1.0.31",
     "@types/nodemailer-smtp-transport": "^2.7.4",
+    "convert-excel-to-json": "^1.4.0",
     "docx-pdf": "0.0.1",
     "docxtemplater": "^3.8.3",
     "nodemailer": "^4.6.8",
