@@ -24,7 +24,13 @@ module.exports = function (config) {
             // externals: {
             //     "child_process": "require('child_process')"
             // },
-            node: { fs: 'empty', child_process: 'empty' },
+            node: { 
+                fs: 'empty', 
+                child_process: 'empty', 
+                tls: 'empty', 
+                net: 'empty', 
+                dns: 'empty' 
+            },
         },
         reporters: ['progress', 'kjhtml'],
         port: 9876,

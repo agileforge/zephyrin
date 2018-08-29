@@ -93,7 +93,7 @@ export class MailerEngineService {
                     // Send the email
                     merger.subscribe(document => {
                         if (document.content) {
-                            mail.attachments.push(document.content);
+                            mail.attachments.push(document);
                         }
                         that._mailSenderService.send(mail).subscribe(() => {
                             return that._mailingLoggerService.success(mail, rowNum);

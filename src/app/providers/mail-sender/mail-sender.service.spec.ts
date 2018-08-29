@@ -5,11 +5,21 @@
 
 import { TestBed, inject } from '@angular/core/testing';
 import { MailSenderService } from './mail-sender.service';
+import { FileService } from '../file/file.service';
+import { LogService } from '../log-service';
+import { ElectronService } from '../electron.service';
+import { ConfigService } from '../config/config.service';
 
 describe('MailSenderService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [MailSenderService]
+      providers: [
+          MailSenderService,
+          ConfigService,
+          FileService,
+          LogService,
+          ElectronService,
+        ]
     });
   });
 

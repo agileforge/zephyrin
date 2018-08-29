@@ -3,6 +3,8 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import { DocumentModel } from '../../complexes/documents/documentModel';
+
 /**
  * Represents a simplified email data.
  * @export
@@ -51,5 +53,5 @@ export interface MailModel {
      * @type {object[]}
      * @memberof MailModel
      */
-    attachments: Uint8Array[];
+    attachments: DocumentModel[];
 }

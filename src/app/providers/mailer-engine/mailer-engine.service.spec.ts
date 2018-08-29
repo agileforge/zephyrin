@@ -440,8 +440,8 @@ describe('MailerEngineService', () => {
             const encoder = new TextEncoder();
             const fileContent = encoder.encode('Hello {title}');
             const renderedContent = encoder.encode('Hello some title');
-            const templateDocument = <DocumentModel>{ mimeType: MIMETYPE_TXT, content: fileContent };
-            const renderedDocument = <DocumentModel>{ mimeType: MIMETYPE_TXT, content: renderedContent };
+            const templateDocument = <DocumentModel>{ fileName: 'some.txt', mimeType: MIMETYPE_TXT, content: fileContent };
+            const renderedDocument = <DocumentModel>{ fileName: 'some.pdf', mimeType: MIMETYPE_TXT, content: renderedContent };
 
             const data = <MailingData>{
                 subject: 'My subject is: {subject}',
@@ -469,7 +469,7 @@ describe('MailerEngineService', () => {
             // Assert
             expect(mails[0].attachments.length).toEqual(1);
             const attachment = mails[0].attachments[0];
-            expect(renderedContent).toEqual(attachment);
+            expect(renderedDocument).toEqual(attachment);
         });
     });
 });
