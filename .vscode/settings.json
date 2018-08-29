@@ -1,0 +1,29 @@
+{
+    "cSpell.words": [
+        "DOCX",
+        "FILEDATE",
+        "ISODATE",
+        "Templater",
+        "Zephyrin",
+        "devkit",
+        "docxtemplater",
+        "fdescribe",
+        "irow",
+        "jszip",
+        "kjhtml",
+        "lcovonly",
+        "memorystream",
+        "nodebuffer",
+        "nodomain",
+        "noemail",
+        "officedocument",
+        "openxmlformats",
+        "polyfills",
+        "somedomain",
+        "spreadsheetml",
+        "unknownext",
+        "wordprocessingml",
+        "yyyymmdd"
+    ],
+    "git.ignoreLimitWarning": true
+}
