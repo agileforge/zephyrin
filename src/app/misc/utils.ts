@@ -53,6 +53,27 @@ export default class Utils {
         }
     }
 
+        /**
+     * Get the corresponding extension for the specified mimeType.
+     * @static
+     * @param {string} mimeType The mime type
+     * @returns {string} The extension for the specified mimeType.
+     * @memberof Utils
+     */
+    static getMimeTypeExtension(mimeType: string): string {
+        if (!mimeType) {
+            return '';
+        }
+
+        switch (mimeType) {
+            case MIMETYPE_TXT: return '.txt';
+            case MIMETYPE_DOCX: return '.docx';
+            case MIMETYPE_XLSX: return '.xlsx';
+            case MIMETYPE_PDF: return '.pdf';
+            default: return '';
+        }
+    }
+
     /**
      * Try to get a property value from an object case insensitively.
      * @static

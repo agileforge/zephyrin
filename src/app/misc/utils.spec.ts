@@ -72,6 +72,36 @@ describe('utils', () => {
 
     });
 
+    describe('getMimeTypeExtension', () => {
+
+        it('should return empty string if not found', () => {
+            // Act
+            const result = Utils.getMimeTypeExtension('nonExistingMimeType');
+
+            // Assert
+            expect(result).toEqual('');
+        });
+
+        it('should return empty string if mimeType is null or undefined', () => {
+            // Act
+            const resultNull = Utils.getMimeTypeExtension(null);
+            const resultUndefined = Utils.getMimeTypeExtension(undefined);
+
+            // Assert
+            expect(resultNull).toEqual('');
+            expect(resultUndefined).toEqual('');
+        });
+
+        it('should return right extension', () => {
+            // Act & assert
+            expect(Utils.getMimeTypeExtension(MIMETYPE_PDF)).toEqual('.pdf');
+            expect(Utils.getMimeTypeExtension(MIMETYPE_DOCX)).toEqual('.docx');
+            expect(Utils.getMimeTypeExtension(MIMETYPE_XLSX)).toEqual('.xlsx');
+            expect(Utils.getMimeTypeExtension(MIMETYPE_TXT)).toEqual('.txt');
+        });
+
+    });
+
     describe('getPropertyCI', () => {
         it ('should return value if property name exactly same', async() => {
             // Arrange
