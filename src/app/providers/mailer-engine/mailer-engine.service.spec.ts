@@ -7,7 +7,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { MailerEngineService } from './mailer-engine.service';
 import { ConfigService } from '../config/config.service';
 import { MailSenderService } from '../mail-sender/mail-sender.service';
-import { MailingData } from './mailingData';
+import { MailingDataModel } from './mailingDataModel';
 import { MailingDataSource } from './mailingDataSource';
 import { of, throwError } from 'rxjs';
 import { MailModel } from '../mail-sender/mailModel';
@@ -81,7 +81,7 @@ describe('MailerEngineService', () => {
 
         it('should log on mail successfully sent', async () => {
             // Arrange
-            const data = <MailingData>{
+            const data = <MailingDataModel>{
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
@@ -105,7 +105,7 @@ describe('MailerEngineService', () => {
 
         it('should log fail when mail sending fail', async () => {
             // Arrange
-            const data = <MailingData>{
+            const data = <MailingDataModel>{
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
@@ -135,7 +135,7 @@ describe('MailerEngineService', () => {
 
         it('should log fail row doesn\'t contains email os email is not valid', async () => {
             // Arrange
-            const data = <MailingData>{
+            const data = <MailingDataModel>{
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
@@ -187,7 +187,7 @@ describe('MailerEngineService', () => {
     describe('sending', () => {
         it('should send a mail', async () => {
             // Arrange
-            const data = <MailingData>{
+            const data = <MailingDataModel>{
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
@@ -209,7 +209,7 @@ describe('MailerEngineService', () => {
 
         it('should send a mail to each address in source', async () => {
             // Arrange
-            const data = <MailingData>{
+            const data = <MailingDataModel>{
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
@@ -232,7 +232,7 @@ describe('MailerEngineService', () => {
 
         it('should send a mail to valid address only', async () => {
             // Arrange
-            const data = <MailingData>{
+            const data = <MailingDataModel>{
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
@@ -257,7 +257,7 @@ describe('MailerEngineService', () => {
 
         it('should not send a mail to null address', async () => {
             // Arrange
-            const data = <MailingData>{
+            const data = <MailingDataModel>{
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
@@ -281,7 +281,7 @@ describe('MailerEngineService', () => {
 
         it('should not send a mail where email field not defined', async () => {
             // Arrange
-            const data = <MailingData>{
+            const data = <MailingDataModel>{
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
@@ -308,7 +308,7 @@ describe('MailerEngineService', () => {
 
         it('should prepare email data correctly', async () => {
             // Arrange
-            const data = <MailingData>{
+            const data = <MailingDataModel>{
                 subject: 'SomeSubject',
                 body: '<h1>Some HTML code</h1>',
                 template: null,
@@ -366,7 +366,7 @@ describe('MailerEngineService', () => {
 
         it('should prepare email data and replace place holders in subject and body', async () => {
             // Arrange
-            const data = <MailingData>{
+            const data = <MailingDataModel>{
                 subject: 'My subject is: {subject}',
                 body: '<h1>{title}</h1><h2>{subtitle}</h2>',
                 template: null,
@@ -402,7 +402,7 @@ describe('MailerEngineService', () => {
 
         it('should not replace place holders that doesn\'t exists', async () => {
             // Arrange
-            const data = <MailingData>{
+            const data = <MailingDataModel>{
                 subject: 'My subject is: {subject}',
                 body: '<h1>{title}</h1><h2>{non_existing_field}</h2>',
                 template: null,
@@ -443,7 +443,7 @@ describe('MailerEngineService', () => {
             const templateDocument = <DocumentModel>{ fileName: 'some.txt', mimeType: MIMETYPE_TXT, content: fileContent };
             const renderedDocument = <DocumentModel>{ fileName: 'some.pdf', mimeType: MIMETYPE_TXT, content: renderedContent };
 
-            const data = <MailingData>{
+            const data = <MailingDataModel>{
                 subject: 'My subject is: {subject}',
                 body: '<h1>{title}</h1>',
                 template: templateDocument,

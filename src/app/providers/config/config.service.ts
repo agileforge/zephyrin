@@ -45,7 +45,7 @@ export class ConfigService {
      save(): Observable<void> {
         this._logger.debug(`Saving config to file '${this._fileName}'.`);
         const text = JSON.stringify(this.config, null, 2);
-        const result = this._fileService.writeText(text, this._fileName);
+        const result = this._fileService.writeText(this._fileName, text);
         this._logger.info(`File '${this._fileName}' successfully saved.`);
         return result;
     }

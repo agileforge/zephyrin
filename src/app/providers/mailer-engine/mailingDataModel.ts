@@ -9,9 +9,16 @@ import { DocumentModel } from '../../complexes/documents/documentModel';
 /**
  * Represents all information to be able to make a mailing.
  * @export
- * @interface MailingData
+ * @interface MailingDataModel
  */
-export interface MailingData {
+export interface MailingDataModel {
+
+    /**
+     * The mailing name. Useful to identify the mailing in logs.
+     * @type {string}
+     * @memberof MailingDataModel
+     */
+    name?: string;
     /**
      * The subject of the mail.
      *

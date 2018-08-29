@@ -109,7 +109,7 @@ export class RenderEnginePdf extends RenderEngine {
         const tmpTargetFileName = this._fileService.pathJoin(__dirname, 'tmp', new Date().getTime() + '.pdf');
 
         return from([
-            this._fileService.writeBytes(document.content, tmpSourceFileName),
+            this._fileService.writeBytes(tmpSourceFileName, document.content),
             this.convertDocxToPdf(tmpSourceFileName, tmpTargetFileName),
             this._fileService.readBytes(tmpTargetFileName)
         ])

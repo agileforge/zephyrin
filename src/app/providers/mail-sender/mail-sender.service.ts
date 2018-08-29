@@ -93,6 +93,7 @@ export class MailSenderService {
                     observer.onError(error);
                 }
                 that._logger.info(`Mail successfully sent to '${mailOptions.to}'.`);
+                observer.onNext();
             });
         });
     }

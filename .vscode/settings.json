@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "DOCX",
+        "FILEDATE",
         "Templater",
         "Zephyrin",
         "devkit",
@@ -14,9 +15,14 @@
         "nodebuffer",
         "nodomain",
         "noemail",
+        "officedocument",
+        "openxmlformats",
         "polyfills",
         "somedomain",
-        "unknownext"
+        "spreadsheetml",
+        "unknownext",
+        "wordprocessingml",
+        "yyyymmdd"
     ],
     "git.ignoreLimitWarning": true
 }

@@ -1,10 +1,12 @@
+import { MergeableRowDataModel } from '../data-loader/mergeableRowDataModel';
+
 /*---------------------------------------------------------------------------------------------
  * Copyright (c) agileforge. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
 /**
-* Represents the source of data where mails mus be sended. The data value can
+* Represents the source of data where mails must be sent. The data value can
 * be compared to table. Each row of array is a dictionary of key/value where
 * key is the field name and value the value of field in current row.
 *
@@ -36,14 +38,16 @@ export interface MailingDataSource {
      */
     firstNameField?: string;
     /**
-     * Array of key value pair (field/value) that represents the data table
-     * used to do the mailing.
-     * @type {{
-     *         [field: string]: string;
-     *     }[]}
+     * If data source comes from a file, store the file name here.
+     * @type {string}
      * @memberof MailingDataSource
      */
-    data: {
-        [field: string]: string;
-    }[];
+    fileName?: string;
+    /**
+     * Array of key value pair (field/value) that represents the data table
+     * used to do the mailing.
+     * @type {MergeableRowDataModel[]}
+     * @memberof MailingDataSource
+     */
+    data: MergeableRowDataModel[];
 }

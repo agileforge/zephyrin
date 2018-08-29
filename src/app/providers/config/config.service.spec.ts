@@ -57,7 +57,7 @@ describe('ConfigService', () => {
             let fileName: string;
             let text: string;
 
-            spyOn(fileServiceStub, 'writeText').and.callFake((t, fn) => {
+            spyOn(fileServiceStub, 'writeText').and.callFake((fn, t) => {
                 fileName = fn;
                 text = t;
             });

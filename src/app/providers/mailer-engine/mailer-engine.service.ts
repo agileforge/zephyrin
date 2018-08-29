@@ -5,7 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { MailSenderService } from '../mail-sender/mail-sender.service';
-import { MailingData } from './mailingData';
+import { MailingDataModel } from './mailingDataModel';
 import { MailModel } from '../mail-sender/mailModel';
 import { EMAIL_REGEX } from '../../misc/const';
 import { ConfigService } from '../config/config.service';
@@ -50,7 +50,7 @@ export class MailerEngineService {
      * @param {MailingDataSource} mailingDataSource
      * @memberof MailerEngineService
      */
-    sendMails(mailingDataSource: MailingData): Observable<void> {
+    sendMails(mailingDataSource: MailingDataModel): Observable<void> {
         const that = this;
         const config = this._configService.config;
 
