@@ -5,6 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { DocumentModel } from '../../../complexes/documents/documentModel';
+import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
 // import { RenderedDocument } from '../../../complexes/documents/rendered-document';
 
 /**
@@ -27,6 +28,6 @@ export abstract class DocumentMerger {
      * @returns {DocumentModel} Merged document.
      * @memberof DocumentMerger
      */
-    abstract merge(data: any, template: DocumentModel): DocumentModel;
+    abstract merge(data: MergeableRowDataModel, template: DocumentModel): DocumentModel;
 
 }

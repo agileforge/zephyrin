@@ -13,6 +13,7 @@ import { DocumentMergerWord } from './document-merger-word';
 import { RenderEnginePdf } from '../render-engines/render-engine-pdf.service';
 import { RenderEngineTxt } from '../render-engines/render-engine-txt.service';
 import { Observable } from 'rxjs';
+import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
 
 /**
  * Service that is able to merge data with a document template.
@@ -40,7 +41,7 @@ export class DocumentMergerService {
      * @returns {DocumentModel} Merged and rendered document.
      * @memberof DocumentMergerService
      */
-    mergeAndRender(data: any, template: DocumentModel, renderingType: string): Observable<DocumentModel> {
+    mergeAndRender(data: MergeableRowDataModel, template: DocumentModel, renderingType: string): Observable<DocumentModel> {
         // // Get merger by mime type and merge template
         const merger = this.getDocumentMerger(template.mimeType);
         const document = merger.merge(data, template);

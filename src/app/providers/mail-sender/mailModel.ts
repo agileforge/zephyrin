@@ -48,8 +48,8 @@ export interface MailModel {
      */
     body: string;
     /**
-     * Array of byte array that represents attachements for the email.
-     * Each row is a byte array that represents an attachement.
+     * Array of byte array that represents attachments for the email.
+     * Each row is a byte array that represents an attachment.
      * @type {object[]}
      * @memberof MailModel
      */

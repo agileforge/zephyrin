@@ -3,6 +3,8 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import { MergeableRowDataModel } from '../data-loader/mergeableRowDataModel';
+
 /**
  * Error thrown when an email address is null or invalid.
  * @export
@@ -22,7 +24,7 @@ export class InvalidEmailAddressError extends Error {
      * @type {{ [field: string]: string }}
      * @memberof InvalidEmailAddressError
      */
-    row: any;
+    row: MergeableRowDataModel;
     /**
      * The field name that must contains the email address value.
      * @type {string}
@@ -44,7 +46,7 @@ export class InvalidEmailAddressError extends Error {
      * @param {number} rowNum The row number in the data table that cause the error.
      * @memberof InvalidEmailAddressError
      */
-    constructor(emailAddress: string, emailField: string, row: any, rowNum: number) {
+    constructor(emailAddress: string, emailField: string, row: MergeableRowDataModel, rowNum: number) {
         let message: string;
         if (typeof emailAddress === 'undefined') {
             message = `The field '${emailField}' not found in row at line ${rowNum}.`;

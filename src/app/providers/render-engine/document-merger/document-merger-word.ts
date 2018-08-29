@@ -11,6 +11,7 @@ import { JSZip } from 'jszip';
 import { FileService } from '../../file/file.service';
 import { LogService } from '../../log-service';
 import { MIMETYPE_DOCX } from '../../../misc/const';
+import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
 
 /**
  * Service that is able to merge data with a text document template.
@@ -37,7 +38,7 @@ export class DocumentMergerWord extends DocumentMerger {
      * @returns {DocumentModel} Merged text document.
      * @memberof DocumentMerger
      */
-    merge(data: any, template: DocumentModel): DocumentModel {
+    merge(data: MergeableRowDataModel, template: DocumentModel): DocumentModel {
         // var path = require('path');
 
         // Load the docx file as a binary

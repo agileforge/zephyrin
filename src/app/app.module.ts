@@ -24,6 +24,8 @@ import { DocumentMergerTxt } from './providers/render-engine/document-merger/doc
 import { DocumentMergerWord } from './providers/render-engine/document-merger/document-merger-word';
 import { RenderEngineTxt } from './providers/render-engine/render-engines/render-engine-txt.service';
 import { RenderEnginePdf } from './providers/render-engine/render-engines/render-engine-pdf.service';
+import { DataLoaderService } from './providers/data-loader/data-loader.service';
+import { ExcelDataLoader } from './providers/data-loader/excel-data-loader';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -57,6 +59,9 @@ export function HttpLoaderFactory(http: HttpClient) {
         ConfigService,
         DocumentMergerService,
         FileService,
+        // Data loaders
+        DataLoaderService,
+        ExcelDataLoader,
         // Mergers
         DocumentMergerTxt,
         DocumentMergerWord,

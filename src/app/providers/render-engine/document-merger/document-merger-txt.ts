@@ -8,6 +8,7 @@ import { DocumentModel } from '../../../complexes/documents/documentModel';
 import Utils from '../../../misc/utils';
 import { DocumentMerger } from './document-merger';
 import { TextEncoder, TextDecoder } from 'text-encoding';
+import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
 
 /**
  * Service that is able to merge data with a text document template.
@@ -37,7 +38,7 @@ export class DocumentMergerTxt extends DocumentMerger {
      * @returns {DocumentModel} Merged text document.
      * @memberof DocumentMerger
      */
-    merge(data: any, template: DocumentModel): DocumentModel {
+    merge(data: MergeableRowDataModel, template: DocumentModel): DocumentModel {
         // Gets clear text
         const text = this._decoder.decode(template.content);
         // Find and replace placeholders with data

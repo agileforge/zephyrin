@@ -108,6 +108,16 @@ export class FileService {
     }
 
     /**
+     * Check if a file exists on disk.
+     * @param {string} fileName The file to check.
+     * @returns {boolean} True if exists; otherwise False.
+     * @memberof FileService
+     */
+    fileExists(fileName: string): boolean {
+        return this._electron.fs.existsSync(fileName);
+    }
+
+    /**
      * Join all arguments together and normalize the resulting path.
      * Arguments must be strings. In v0.8, non-string arguments were
      * silently ignored. In v0.10 and up, an exception is thrown.

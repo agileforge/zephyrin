@@ -16,6 +16,8 @@ import { DocumentMergerService } from '../render-engine/document-merger/document
 import { Observable, from, of } from 'rxjs';
 import { merge, map, last } from 'rxjs/operators';
 import { DocumentModel } from '../../complexes/documents/documentModel';
+import { MergeableRowDataModel } from '../data-loader/mergeableRowDataModel';
+import { resource } from 'selenium-webdriver/http';
 
 /**
  * Service that is able to merge and then send email with attachment
@@ -61,13 +63,15 @@ export class MailerEngineService {
         let rowCounter = 0;
         return from(mailingDataSource.datasource.data)
             .pipe(
-                map(row => <{ rowNum: number, row: any }>{ rowNum: ++rowCounter, row }),
+                map(row => <{ rowNum: number, row: MergeableRowDataModel }>{ rowNum: ++rowCounter, row }),
                 merge(3),
                 map(irow => {
                     const rowNum = irow.rowNum;
                     const row = irow.row;
 
-                    const emailAddress = row[emailField];
+                    const emailAddress = this.getValueAsString(row, emailField);
+                    const lastName = this.getValueAsString(row, lastNameField);
+                    const firstName = this.getValueAsString(row, firstNameField);
                     // Check if email is valid
                     if (!EMAIL_REGEX.test(emailAddress)) {
                         const error = new InvalidEmailAddressError(emailAddress, emailField, row, rowNum);
@@ -78,7 +82,7 @@ export class MailerEngineService {
                     // Email address is valid, prepare data
                     const mail = <MailModel>{
                         from: Utils.getEmailAddress(config.sender.emailAddress, config.sender.fullName),
-                        to: [Utils.getEmailAddress(emailAddress, row[lastNameField], row[firstNameField])],
+                        to: [Utils.getEmailAddress(emailAddress, lastName, firstName)],
                         subject: that.replaceFields(mailingDataSource.subject, row),
                         body: that.replaceFields(mailingDataSource.body, row),
                         attachments: []
@@ -107,6 +111,23 @@ export class MailerEngineService {
     }
 
     /**
+     * Get the value of the specified fieldName in row as string.
+     * If value is undefined or null, return it as is.
+     * @private
+     * @param {MergeableRowDataModel} row Data where search field.
+     * @param {string} fieldName Field to search.
+     * @returns {string} Result or null or undefined.
+     * @memberof MailerEngineService
+     */
+    private getValueAsString(row: MergeableRowDataModel, fieldName: string): any {
+        const value = row[fieldName];
+        if (!value) {
+            return value;
+        }
+        return value.toString();
+    }
+
+    /**
      * Replace placeholders in form {field_name} by found value in data.
      * If a placeholder is not found in data, leave it as is.
      * @private
@@ -114,7 +135,7 @@ export class MailerEngineService {
      * @param {{ [field: string]: string }} data The dictionary that contains data.
      * @memberof MailerEngineService
      */
-    private replaceFields(value: string, data: { [field: string]: string }): string {
+    private replaceFields(value: string, data: MergeableRowDataModel): string {
         return value.replace(this._placeHolderPattern, (match, $1, $2) => {
             return data[$2] || $1; // If field not exists in data let it as is.
         });

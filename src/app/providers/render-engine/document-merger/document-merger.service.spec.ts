@@ -17,6 +17,7 @@ import { TextEncoder } from 'text-encoding';
 import { LogService } from '../../log-service';
 import { ElectronService } from '../../electron.service';
 import { of } from 'rxjs';
+import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
 
 export class MockDocumentMergerService extends DocumentMergerService {
 
