@@ -18,6 +18,7 @@ export class ConfigSenderComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        const that = this;
         this._configService.config.sender = this._configService.config.sender || <SenderConfigModel>{};
         const fb = this._formBuilder;
         const config = this._configService.config.sender;
@@ -26,6 +27,13 @@ export class ConfigSenderComponent implements OnInit {
             email: fb.control(config.emailAddress, [Validators.required, Validators.email]),
             fullName: fb.control(config.fullName),
         });
+
+        this.sender.valueChanges.subscribe(() => {
+            if (that.sender.valid) {
+                that._configService.save();
+            }
+        });
+
     }
 
 }

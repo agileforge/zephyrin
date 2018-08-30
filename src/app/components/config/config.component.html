@@ -1,7 +1,10 @@
 <div style="width:400px">
     <mat-toolbar>
-        <mat-icon>settings</mat-icon>
-        Settings
+        <div fxLayout="row" fxLayoutAlign="start center" fxFill>
+            <mat-icon>settings</mat-icon>
+            <div fxFlex>Settings</div>
+            <div><button mat-mini-fab (click)="close.emit()"><mat-icon>close</mat-icon></button></div>
+        </div>
     </mat-toolbar>
     <mat-accordion>
         <mat-expansion-panel>

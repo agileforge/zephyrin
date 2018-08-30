@@ -19,6 +19,7 @@ export class ConfigSmtpComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        const that = this;
         this._configService.config.smtp = this._configService.config.smtp || <SmtpConfigModel>{};
         const fb = this._formBuilder;
         const config = this._configService.config.smtp;
@@ -29,6 +30,12 @@ export class ConfigSmtpComponent implements OnInit {
             isSsl: fb.control(config.isSsl),
             userName: fb.control(config.userName, Validators.required),
             password: fb.control(config.password, Validators.required),
+        });
+
+        this.smtp.valueChanges.subscribe(() => {
+            if (that.smtp.valid) {
+                that._configService.save();
+            }
         });
     }
 

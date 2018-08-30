@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { FileService } from '../file/file.service';
 import { LogService } from '../log-service';
 import { map } from 'rxjs/operators';
+import { ElectronService } from '../electron.service';
 
 /**
  * Provides user configuration services.
@@ -26,7 +27,7 @@ export class ConfigService {
         },
     };
 
-    private _fileName = this._fileService.pathJoin(__dirname, 'config.json');
+    private _fileName: string;
 
     /**
      *Creates an instance of ConfigServiceService.
@@ -34,15 +35,17 @@ export class ConfigService {
      */
     constructor(
         private _logger: LogService,
-        private _fileService: FileService
-    ) { }
+        private _fileService: FileService,
+    ) {
+        this._fileName = this._fileService.pathJoin(this._fileService.currentDir, 'config.json');
+    }
 
     /**
      * Saves the configuration.
      * @returns {Observable<ConfigModel>}
      * @memberof ConfigService
      */
-     save(): Observable<void> {
+    save(): Observable<void> {
         this._logger.debug(`Saving config to file '${this._fileName}'.`);
         const text = JSON.stringify(this.config, null, 2);
         const result = this._fileService.writeText(this._fileName, text);

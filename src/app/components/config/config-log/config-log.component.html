@@ -1,3 +1,8 @@
-<p>
-  config-log works!
-</p>
+<form [formGroup]="mailingLog" novalidate>
+    <div fyLayout="row" fxLayoutAlign="start center">
+        <mat-form-field>
+            <input formControlName="directoryPath" matInput placeholder="Directory">
+        </mat-form-field>
+        <button mat-mini-fab><mat-icon>folder_open</mat-icon></button>
+    </div>
+</form>
