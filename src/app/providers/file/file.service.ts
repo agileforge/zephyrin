@@ -42,11 +42,12 @@ export class FileService {
             this._electron.fs.readFile(fileName, (err, data) => {
                 if (err) {
                     that._logger.error(`Error reading file '${fileName}': '${err.message}'`);
-                    observer.onError(err);
+                    observer.error(err);
                     return;
                 }
                 that._logger.debug(`File '${fileName}' read successfully.`);
-                observer.onNext(new Uint8Array(data));
+                observer.next(new Uint8Array(data));
+                observer.complete();
             });
         });
     }
@@ -64,11 +65,12 @@ export class FileService {
             this._electron.fs.writeFile(fileName, content.buffer, err => {
                 if (err) {
                     that._logger.error(`Error while writing to file '${fileName}': '${err.message}'`);
-                    observer.onError(err);
+                    observer.error(err);
                     return;
                 }
                 that._logger.debug(`File '${fileName}' written successfully.`);
-                observer.onNext();
+                observer.next();
+                observer.complete();
             });
         });
     }
@@ -87,11 +89,12 @@ export class FileService {
             this._electron.fs.writeFile(fileName, text, error => {
                 if (error) {
                     that._logger.error(`Error while writing to file '${fileName}': '${error.message}'`);
-                    observer.onError(error);
+                    observer.error(error);
                     return;
                 }
                 that._logger.debug(`File '${fileName}' written successfully.`);
-                observer.onNext();
+                observer.next();
+                observer.complete();
             });
         });
     }
@@ -111,11 +114,12 @@ export class FileService {
             this._electron.fs.appendFile(fileName, text, error => {
                 if (error) {
                     that._logger.error(`Error while writing to file '${fileName}': '${error.message}'`);
-                    observer.onError(error);
+                    observer.error(error);
                     return;
                 }
                 that._logger.debug(`File '${fileName}' written successfully.`);
-                observer.onNext();
+                observer.next();
+                observer.complete();
             });
         });
     }
@@ -133,10 +137,11 @@ export class FileService {
             this._electron.fs.readFile(fileName, 'utf8', (err, data) => {
                 if (err) {
                     that._logger.error(`Error while reading file '${fileName}': '${err.message}'`);
-                    observer.onError(err);
+                    observer.error(err);
                 }
                 that._logger.debug(`File '${fileName}' read successfully.`);
-                observer.onNext(data);
+                observer.next(data);
+                observer.complete();
             });
         });
     }
@@ -161,9 +166,10 @@ export class FileService {
         return Observable.create(observer => {
             this._electron.fs.copyFile(source, dest, error => {
                 if (error) {
-                    observer.onError(error);
+                    observer.error(error);
                 } else {
-                    observer.onNext();
+                    observer.next();
+                    observer.complete();
                 }
             });
         });
@@ -180,9 +186,10 @@ export class FileService {
         return Observable.create(observer => {
             this._electron.fs.rename(source, dest, error => {
                 if (error) {
-                    observer.onError(error);
+                    observer.error(error);
                 } else {
-                    observer.onNext();
+                    observer.next();
+                    observer.complete();
                 }
             });
         });

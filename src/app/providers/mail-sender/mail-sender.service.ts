@@ -90,10 +90,11 @@ export class MailSenderService {
             that._transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     that._logger.error(`Mail to '${mailOptions.to}' has not been sent:\n${error.message}`);
-                    observer.onError(error);
+                    observer.error(error);
                 }
                 that._logger.info(`Mail successfully sent to '${mailOptions.to}'.`);
-                observer.onNext();
+                observer.next();
+                observer.complete();
             });
         });
     }

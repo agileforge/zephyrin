@@ -2,6 +2,7 @@ import 'zone.js/dist/zone-mix';
 import 'reflect-metadata';
 import '../polyfills';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
@@ -26,6 +27,31 @@ import { RenderEngineTxt } from './providers/render-engine/render-engines/render
 import { RenderEnginePdf } from './providers/render-engine/render-engines/render-engine-pdf.service';
 import { DataLoaderService } from './providers/data-loader/data-loader.service';
 import { ExcelDataLoader } from './providers/data-loader/excel-data-loader';
+import { ConfigComponent } from './components/config/config.component';
+import { ConfigSmtpComponent } from './components/config/config-smtp/config-smtp.component';
+import { ConfigSenderComponent } from './components/config/config-sender/config-sender.component';
+import { ConfigLogComponent } from './components/config/config-log/config-log.component';
+import { MailingComponent } from './components/mailing/mailing.component';
+import { MailingMailComponent } from './components/mailing/mailing-mail/mailing-mail.component';
+import { MailingMergeComponent } from './components/mailing/mailing-merge/mailing-merge.component';
+import { MailingExecuteComponent } from './components/mailing/mailing-execute/mailing-execute.component';
+
+// Material
+import { MatButtonModule } from '@angular/material';
+import { MatToolbarModule } from '@angular/material';
+import { MatIconModule } from '@angular/material';
+import { MatSidenavModule } from '@angular/material';
+import { MatCardModule } from '@angular/material';
+import { MatInputModule } from '@angular/material';
+import { MatSelectModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material';
+import { MatFormFieldModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material';
+import { MatExpansionModule } from '@angular/material';
+import { MatCheckboxModule } from '@angular/material';
+import { MatRadioModule } from '@angular/material';
+import { MatProgressSpinnerModule } from '@angular/material';
+
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -36,10 +62,19 @@ export function HttpLoaderFactory(http: HttpClient) {
     declarations: [
         AppComponent,
         HomeComponent,
-        WebviewDirective
+        WebviewDirective,
+        ConfigComponent,
+        ConfigSmtpComponent,
+        ConfigSenderComponent,
+        ConfigLogComponent,
+        MailingComponent,
+        MailingMailComponent,
+        MailingMergeComponent,
+        MailingExecuteComponent
     ],
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         FormsModule,
         HttpClientModule,
         AppRoutingModule,
@@ -50,6 +85,21 @@ export function HttpLoaderFactory(http: HttpClient) {
                 deps: [HttpClient]
             }
         }),
+        // Material
+        MatButtonModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatSidenavModule,
+        MatCardModule,
+        MatInputModule,
+        MatSelectModule,
+        MatTooltipModule,
+        MatFormFieldModule,
+        MatDialogModule,
+        MatExpansionModule,
+        MatCheckboxModule,
+        MatRadioModule,
+        MatProgressSpinnerModule,
     ],
     providers: [
         ElectronService,

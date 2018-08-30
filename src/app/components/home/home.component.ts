@@ -1,15 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+// import { MatSidenav } from '@angular/material';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+    // @ViewChild('sidenav') sidenav: MatSidenav;
 
-  ngOnInit() {
-  }
+    // reason = '';
 
+    constructor() { }
+
+    ngOnInit() {
+    }
+
+
+    // close(reason: string) {
+    //     this.reason = reason;
+    //     this.sidenav.close();
+    // }
 }
