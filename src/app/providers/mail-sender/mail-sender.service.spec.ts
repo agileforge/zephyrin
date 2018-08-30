@@ -21,6 +21,9 @@ describe('MailSenderService', () => {
           ElectronService,
         ]
     });
+
+    const fileServiceStub = TestBed.get(FileService);
+    spyOnProperty(fileServiceStub, 'currentDir', 'get').and.returnValue('/');
   });
 
   it('should be created', inject([MailSenderService], (service: MailSenderService) => {

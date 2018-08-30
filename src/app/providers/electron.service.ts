@@ -36,4 +36,11 @@ export class ElectronService {
         return window && window.process && window.process.type;
     }
 
+    /**
+     * Gets the current directory.
+     * @readonly
+     * @type {string}
+     * @memberof ElectronService
+     */
+    get currentDir(): string { return this.remote.app.getAppPath(); }
 }

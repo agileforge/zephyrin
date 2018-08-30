@@ -44,10 +44,14 @@ describe('MailerEngineService', () => {
                 ElectronService,
             ]
         });
+
+        const fileServiceStub = TestBed.get(FileService);
+        spyOnProperty(fileServiceStub, 'currentDir', 'get').and.returnValue('/');
         configServiceStub = TestBed.get(ConfigService);
         mailSenderServiceStub = TestBed.get(MailSenderService);
         mailingLoggerServiceStub = TestBed.get(MailingLoggerService);
         documentMergerServiceStub = TestBed.get(DocumentMergerService);
+
         target = TestBed.get(MailerEngineService);
 
         const config = <ConfigModel>{

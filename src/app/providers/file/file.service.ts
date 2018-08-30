@@ -20,8 +20,6 @@ import * as path from 'path';
 })
 export class FileService {
 
-    private _currentDir: string;
-
     /**
      *Creates an instance of FileService.
      * @memberof FileService
@@ -30,8 +28,6 @@ export class FileService {
         private _logger: LogService,
         private _electron: ElectronService
     ) {
-        // this._currentDir = __dirname;
-        this._currentDir = _electron.remote.app.getAppPath();
     }
 
     /**
@@ -40,7 +36,7 @@ export class FileService {
      * @type {string}
      * @memberof FileService
      */
-    get currentDir(): string { return this._currentDir; }
+    get currentDir(): string { return this._electron.currentDir; }
 
     /**
      * Reads a the specified fileName and returns his content as a byte array.

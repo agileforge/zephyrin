@@ -45,8 +45,8 @@ describe('MailingLoggerService', () => {
 
         now = new Date(2018, 11, 21, 13, 55, 55);
 
-        target = TestBed.get(MailingLoggerService);
         fileServiceStub = TestBed.get(FileService);
+        spyOnProperty(fileServiceStub, 'currentDir', 'get').and.returnValue('/');
         dateStub = TestBed.get(DateProviderService);
         configStub = TestBed.get(ConfigService);
 
@@ -58,6 +58,8 @@ describe('MailingLoggerService', () => {
         spyOn(fileServiceStub, 'writeBytes').and.returnValue(empty());
         spyOn(fileServiceStub, 'copyFile').and.returnValue(empty());
         spyOn(fileServiceStub, 'appendText').and.returnValue(empty());
+
+        target = TestBed.get(MailingLoggerService);
 
         config = <ConfigModel>{
             smtp: <SmtpConfigModel>{
@@ -242,7 +244,7 @@ describe('MailingLoggerService', () => {
             // Arrange
             const fileName = '/bad-address.log';
 
-            const row = <MergeableRowDataModel> {
+            const row = <MergeableRowDataModel>{
                 a: 'a',
                 b: 5
             };

@@ -10,7 +10,6 @@ import { SenderConfigModel, SmtpConfigModel } from '../../../providers/config/co
 })
 export class ConfigSmtpComponent implements OnInit {
 
-
     smtp: FormGroup;
 
     constructor(
