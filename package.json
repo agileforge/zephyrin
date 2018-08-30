@@ -50,6 +50,7 @@
     "docx-pdf": "0.0.1",
     "docxtemplater": "^3.8.3",
     "material-design-icons": "^3.0.1",
+    "ng2-ckeditor": "^1.2.1",
     "nodemailer": "^4.6.8",
     "pdfkit": "^0.8.3",
     "text-encoding": "^0.6.4",

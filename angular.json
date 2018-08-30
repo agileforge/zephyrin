@@ -28,7 +28,9 @@
               "src/styles.scss",
               "src/material.scss"
             ],
-            "scripts": []
+            "scripts": [
+                "src/assets/lib/ckeditor/ckeditor.js"
+            ]
           },
           "configurations": {
             "dev": {

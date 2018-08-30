@@ -1,1 +1,39 @@
-<button mat-button (click)="configClick.emit()">Open/Close</button>
+<mat-toolbar>
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxFill>
+        <button mat-mini-fab (click)="configClick.emit()"><mat-icon>menu</mat-icon></button>
+        <div>Zephyrin - The template mailer</div>
+        <div></div>
+    </div>
+</mat-toolbar>
+<mat-accordion>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="menu-icon r90">merge_type</mat-icon>Merging
+                </div>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <app-mailing-merge></app-mailing-merge>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="menu-icon">mail</mat-icon>EMail
+                </div>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <app-mailing-mail></app-mailing-mail>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="menu-icon">send</mat-icon>Send
+                </div>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <app-mailing-execute></app-mailing-execute>
+    </mat-expansion-panel>
+</mat-accordion>

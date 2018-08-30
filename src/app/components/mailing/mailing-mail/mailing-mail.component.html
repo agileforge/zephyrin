@@ -1,3 +1,11 @@
-<p>
-  mailing-mail works!
-</p>
+<form [formGroup]="email" novalidate>
+    <mat-form-field>
+        <input formControlName="subject" matInput placeholder="Subject">
+        <!-- <mat-hint *ngIf="emailFormGroup.hasError('required', ['subject'])" [ngStyle]="{'color': 'red'}" align="start">{{
+            'Le sujet est objigatoire.' | lexicon }}</mat-hint> -->
+    </mat-form-field>
+
+    <div class="editor-container">
+        <ckeditor formControlName="body" formControlName="body" [readonly]="false"></ckeditor>
+    </div>
+</form>
