@@ -1,3 +1,38 @@
-<p>
-  config works!
-</p>
+<div style="width:400px">
+    <mat-toolbar>
+        <mat-icon>settings</mat-icon>
+        Settings
+    </mat-toolbar>
+    <mat-accordion>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon>person</mat-icon>Sender
+                    </div>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <app-config-sender></app-config-sender>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon>mail</mat-icon>SMTP
+                    </div>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <app-config-smtp></app-config-smtp>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon>list</mat-icon>Log
+                    </div>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <app-config-log></app-config-log>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>
