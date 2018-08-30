@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ConfigService } from '../../../providers/config/config.service';
-import { SenderConfigModel, SmtpConfigModel } from '../../../providers/config/configModel';
+import { SmtpConfigModel } from '../../../providers/config/configModel';
+import { filter, map, debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'app-config-smtp',
@@ -9,6 +10,8 @@ import { SenderConfigModel, SmtpConfigModel } from '../../../providers/config/co
     styleUrls: ['./config-smtp.component.scss']
 })
 export class ConfigSmtpComponent implements OnInit {
+
+    @Output() configChanged = new EventEmitter<SmtpConfigModel>();
 
     smtp: FormGroup;
 
@@ -19,11 +22,13 @@ export class ConfigSmtpComponent implements OnInit {
 
     ngOnInit() {
         const that = this;
-        this._configService.config.smtp = this._configService.config.smtp || <SmtpConfigModel>{};
-        const fb = this._formBuilder;
-        const config = this._configService.config.smtp;
 
-        this.smtp = fb.group({
+        // Create form
+        that._configService.config.smtp = that._configService.config.smtp || <SmtpConfigModel>{};
+        const fb = that._formBuilder;
+        const config = that._configService.config.smtp;
+
+        that.smtp = fb.group({
             host: fb.control(config.host, [Validators.required]),
             port: fb.control(config.port, Validators.pattern(/\d*/)),
             isSsl: fb.control(config.isSsl),
@@ -31,12 +36,18 @@ export class ConfigSmtpComponent implements OnInit {
             password: fb.control(config.password, Validators.required),
         });
 
-        this.smtp.valueChanges.subscribe(() => {
-            if (that.smtp.valid) {
-                that._configService.save();
-            }
+        // Update when data are ready
+        that._configService.configSubject.subscribe(conf => {
+            that.smtp.setValue(conf.smtp, { emitEvent: false });
+        });
+
+        this.smtp.valueChanges.pipe(
+            filter(() => that.smtp.valid),
+            debounceTime(400),
+            map(() => <SmtpConfigModel>that.smtp.getRawValue())
+        ).subscribe(c => {
+            that.configChanged.emit(c);
         });
     }
-
 
 }

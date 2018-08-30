@@ -5,7 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { ConfigModel } from './configModel';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { FileService } from '../file/file.service';
 import { LogService } from '../log-service';
 import { map } from 'rxjs/operators';
@@ -26,6 +26,8 @@ export class ConfigService {
             directoryPath: this._fileService.pathJoin(__dirname, 'logs'),
         },
     };
+
+    configSubject = new ReplaySubject<ConfigModel>();
 
     private _fileName: string;
 
@@ -65,6 +67,7 @@ export class ConfigService {
             map(t => {
                 that.config = <ConfigModel>JSON.parse(t);
                 this._logger.info(`Config successfully loaded from file '${this._fileName}':\n${t}.`);
+                this.configSubject.next(this.config);
                 return that.config;
             })
         );

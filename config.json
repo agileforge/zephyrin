@@ -1,7 +1,16 @@
 {
   "mailingLog": {
-    "directoryPath": "/home/paf/projects/zephyrin/node_modules/electron/dist/resources/electron.asar/renderer/logs"
+    "directoryPath": "/home/paf/projects/zephyrin/logs"
   },
-  "sender": {},
-  "smtp": {}
+  "sender": {
+    "email": "paf@klfdlkfd",
+    "fullName": "jklhlkj nmbg"
+  },
+  "smtp": {
+    "host": "mail.horus.ch",
+    "port": 223,
+    "isSsl": true,
+    "userName": "paf",
+    "password": "Sea6NSun"
+  }
 }

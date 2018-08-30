@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ConfigService } from '../../../providers/config/config.service';
-import { SenderConfigModel, MailingLogConfigModel } from '../../../providers/config/configModel';
-import { ElectronService } from '../../../providers/electron.service';
+import { MailingLogConfigModel } from '../../../providers/config/configModel';
 import { LogService } from '../../../providers/log-service';
+import { filter, map, debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'app-config-log',
@@ -11,6 +11,8 @@ import { LogService } from '../../../providers/log-service';
     styleUrls: ['./config-log.component.scss']
 })
 export class ConfigLogComponent implements OnInit {
+
+    @Output() configChanged = new EventEmitter<MailingLogConfigModel>();
 
     mailingLog: FormGroup;
 
@@ -31,12 +33,16 @@ export class ConfigLogComponent implements OnInit {
             directoryPath: fb.control(config.directoryPath),
         });
 
-        this.mailingLog.valueChanges.subscribe(() => {
-            if (that.mailingLog.valid) {
-                that._configService.save().subscribe(() => {
-                    that._logger.debug('Saved finish');
-                });
-            }
+        that._configService.configSubject.subscribe(conf => {
+            that.mailingLog.setValue(conf.mailingLog, { emitEvent: false });
+        });
+
+        this.mailingLog.valueChanges.pipe(
+            filter(() => that.mailingLog.valid),
+            debounceTime(400),
+            map(() => <MailingLogConfigModel>that.mailingLog.getRawValue())
+        ).subscribe(c => {
+            that.configChanged.emit(c);
         });
     }
 

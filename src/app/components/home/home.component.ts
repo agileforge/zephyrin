@@ -8,18 +8,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-    // @ViewChild('sidenav') sidenav: MatSidenav;
-
-    // reason = '';
-
     constructor() { }
 
     ngOnInit() {
     }
 
-
-    // close(reason: string) {
-    //     this.reason = reason;
-    //     this.sidenav.close();
-    // }
 }

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfigService } from '../../../providers/config/config.service';
 import { SenderConfigModel } from '../../../providers/config/configModel';
+import { filter, map, debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'app-config-sender',
@@ -9,6 +10,8 @@ import { SenderConfigModel } from '../../../providers/config/configModel';
     styleUrls: ['./config-sender.component.scss']
 })
 export class ConfigSenderComponent implements OnInit {
+
+    @Output() configChanged = new EventEmitter<SenderConfigModel>();
 
     sender: FormGroup;
 
@@ -23,17 +26,22 @@ export class ConfigSenderComponent implements OnInit {
         const fb = this._formBuilder;
         const config = this._configService.config.sender;
 
-        this.sender = fb.group( {
+        this.sender = fb.group({
             email: fb.control(config.emailAddress, [Validators.required, Validators.email]),
             fullName: fb.control(config.fullName),
         });
 
-        this.sender.valueChanges.subscribe(() => {
-            if (that.sender.valid) {
-                that._configService.save();
-            }
+        that._configService.configSubject.subscribe(conf => {
+            that.sender.setValue(conf.sender, { emitEvent: false });
         });
 
+        this.sender.valueChanges.pipe(
+            filter(() => that.sender.valid),
+            debounceTime(400),
+            map(() => <SenderConfigModel>that.sender.getRawValue())
+        ).subscribe(c => {
+            that.configChanged.emit(c);
+        });
     }
 
 }

@@ -45,8 +45,8 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    trace(message: any) {
-        this.log(LogLevel.trace, message);
+    trace(...message: any[]) {
+        this.log(LogLevel.trace, ...message);
     }
 
     /**
@@ -54,8 +54,8 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    debug(message: any) {
-        this.log(LogLevel.debug, message);
+    debug(...message: any[]) {
+        this.log(LogLevel.debug, ...message);
     }
 
     /**
@@ -63,8 +63,8 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    info(message: any) {
-        this.log(LogLevel.info, message);
+    info(...message: any[]) {
+        this.log(LogLevel.info, ...message);
     }
 
     /**
@@ -72,8 +72,8 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    warn(message: any) {
-        this.log(LogLevel.warn, message);
+    warn(...message: any[]) {
+        this.log(LogLevel.warn, ...message);
     }
 
     /**
@@ -81,8 +81,8 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    error(message: any) {
-        this.log(LogLevel.error, message);
+    error(...message: any[]) {
+        this.log(LogLevel.error, ...message);
     }
 
     /**
@@ -90,8 +90,8 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    fatal(message: any) {
-        this.log(LogLevel.fatal, message);
+    fatal(...message: any[]) {
+        this.log(LogLevel.fatal, ...message);
     }
 
     /**
@@ -100,28 +100,30 @@ export class LogService {
      * @param {string} message The message to log.
      * @memberof LogService
      */
-    log(level: LogLevel, message: any) {
+    log(level: LogLevel, ...message: any[]) {
         if (!this._log) {
-            console.log(message);
+            console.log(...message);
             return;
         }
-        switch (level) {
-            case LogLevel.trace:
-                this._log.debug(message);
-                break;
-            case LogLevel.debug:
-                this._log.verbose(message);
-                break;
-            case LogLevel.info:
-                this._log.info(message);
-                break;
-            case LogLevel.warn:
-                this._log.warn(message);
-                break;
-            case LogLevel.error:
-            case LogLevel.fatal:
-                this._log.error(message);
-                break;
-        }
+        message.forEach(m => {
+            switch (level) {
+                case LogLevel.trace:
+                    this._log.debug(m);
+                    break;
+                case LogLevel.debug:
+                    this._log.verbose(m);
+                    break;
+                case LogLevel.info:
+                    this._log.info(m);
+                    break;
+                case LogLevel.warn:
+                    this._log.warn(m);
+                    break;
+                case LogLevel.error:
+                case LogLevel.fatal:
+                    this._log.error(m);
+                    break;
+            }
+        });
     }
 }
