@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { RenderEngine } from './render-engine';
-import { DocumentModel } from '../../../complexes/documents/documentModel';
-import { MIMETYPE_TXT, MIMETYPE_DOCX, MIMETYPE_PDF } from '../../../misc/const';
+import * as docxConverter from 'docx-pdf';
+import { BehaviorSubject, from, Observable, ReplaySubject } from 'rxjs';
+import { concatAll, last, map } from 'rxjs/operators';
 // import * as PDFDocument from 'pdfkit';
 // import * as MemoryStream from 'memorystream';
 import { TextDecoder } from 'text-encoding';
+import { MIMETYPE_DOCX, MIMETYPE_PDF, MIMETYPE_TXT } from '../../../misc/const';
+import { DocumentModel } from '../../document/documentModel';
 import { FileService } from '../../file/file.service';
-import { Observable, from, ReplaySubject, pipe, BehaviorSubject } from 'rxjs';
-import { last, map, concatAll } from 'rxjs/operators';
-import * as docxConverter from 'docx-pdf';
 import { LogService } from '../../log-service';
+import { RenderEngine } from './render-engine';
 /**
  * Provide an engine that is able to render a document to a PDF document.
  * @export

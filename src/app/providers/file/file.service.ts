@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
+import * as path from 'path';
 import { Observable } from 'rxjs';
 import { ElectronService } from '../electron.service';
 import { LogService } from '../log-service';
-import * as path from 'path';
 
 /**
  * File service to access to local files.
@@ -46,7 +46,7 @@ export class FileService {
      */
     readBytes(fileName: string): Observable<Uint8Array> {
         const that = this;
-        this._logger.debug(`Starting to write a text content to file '${fileName}'.`);
+        this._logger.debug(`Starting to read bytes from file '${fileName}'.`);
         return Observable.create(observer => {
             this._electron.fs.readFile(fileName, (err, data) => {
                 if (err) {

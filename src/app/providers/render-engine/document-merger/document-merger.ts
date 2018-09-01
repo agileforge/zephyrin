@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { DocumentModel } from '../../../complexes/documents/documentModel';
 import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
+import { DocumentModel } from '../../document/documentModel';
 // import { RenderedDocument } from '../../../complexes/documents/rendered-document';
 
 /**

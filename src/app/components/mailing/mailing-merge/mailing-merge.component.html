@@ -23,7 +23,7 @@
         </button>
     </div>
 
-    <mat-card *ngIf="datasourceLoaded" style="margin-top: 10px;">
+    <mat-card *ngIf="availableFields?.length > 0" style="margin-top: 10px;">
         <mat-card-header>Data binding for mailing</mat-card-header>
 
         <div fyLayout="row" fxLayoutAlign="space-around center">

@@ -3,8 +3,8 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import { DocumentModel } from '../document/documentModel';
 import { MailingDataSource } from './mailingDataSource';
-import { DocumentModel } from '../../complexes/documents/documentModel';
 
 /**
  * Represents all information to be able to make a mailing.

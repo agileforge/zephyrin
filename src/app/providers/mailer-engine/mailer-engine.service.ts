@@ -4,20 +4,19 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { MailSenderService } from '../mail-sender/mail-sender.service';
-import { MailingDataModel } from './mailingDataModel';
-import { MailModel } from '../mail-sender/mailModel';
+import { from, Observable, of } from 'rxjs';
+import { last, map, merge } from 'rxjs/operators';
 import { EMAIL_REGEX } from '../../misc/const';
-import { ConfigService } from '../config/config.service';
 import Utils from '../../misc/utils';
-import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
-import { InvalidEmailAddressError } from './invalidEmailAddressError';
-import { DocumentMergerService } from '../render-engine/document-merger/document-merger.service';
-import { Observable, from, of } from 'rxjs';
-import { merge, map, last } from 'rxjs/operators';
-import { DocumentModel } from '../../complexes/documents/documentModel';
+import { ConfigService } from '../config/config.service';
 import { MergeableRowDataModel } from '../data-loader/mergeableRowDataModel';
-import { resource } from 'selenium-webdriver/http';
+import { DocumentModel } from '../document/documentModel';
+import { MailSenderService } from '../mail-sender/mail-sender.service';
+import { MailModel } from '../mail-sender/mailModel';
+import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
+import { DocumentMergerService } from '../render-engine/document-merger/document-merger.service';
+import { InvalidEmailAddressError } from './invalidEmailAddressError';
+import { MailingDataModel } from './mailingDataModel';
 
 /**
  * Service that is able to merge and then send email with attachment

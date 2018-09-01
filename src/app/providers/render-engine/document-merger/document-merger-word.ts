@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { DocumentModel } from '../../../complexes/documents/documentModel';
-import { DocumentMerger } from './document-merger';
 import { DocxTemplater } from 'docxtemplater';
 import { JSZip } from 'jszip';
-import { FileService } from '../../file/file.service';
-import { LogService } from '../../log-service';
 import { MIMETYPE_DOCX } from '../../../misc/const';
 import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
+import { DocumentModel } from '../../document/documentModel';
+import { FileService } from '../../file/file.service';
+import { LogService } from '../../log-service';
+import { DocumentMerger } from './document-merger';
 
 /**
  * Service that is able to merge data with a text document template.

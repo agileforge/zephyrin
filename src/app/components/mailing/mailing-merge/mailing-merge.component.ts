@@ -1,13 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, Injector } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { MailingDataModel } from '../../../providers/mailer-engine/mailingDataModel';
-import { filter, debounceTime, map, merge } from 'rxjs/operators';
-import { DocumentModel } from '../../../complexes/documents/documentModel';
-import { Document } from '../../../complexes/documents/document';
-import { empty, Observable } from 'rxjs';
+import { Component, ElementRef, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { debounceTime, filter } from 'rxjs/operators';
 import { DataLoaderService } from '../../../providers/data-loader/data-loader.service';
-import { MergeableRowDataModel } from '../../../providers/data-loader/mergeableRowDataModel';
-import { FileService } from '../../../providers/file/file.service';
+import { DocumentService } from '../../../providers/document/document.service';
+import { MailingDataModel } from '../../../providers/mailer-engine/mailingDataModel';
+import { MailingDataSource } from '../../../providers/mailer-engine/mailingDataSource';
 
 @Component({
     selector: 'app-mailing-merge',
@@ -15,6 +12,7 @@ import { FileService } from '../../../providers/file/file.service';
     styleUrls: ['./mailing-merge.component.scss']
 })
 export class MailingMergeComponent implements OnInit {
+
     @Output() dataChanged = new EventEmitter<MailingDataModel>();
     @Input() set mailingData(value: MailingDataModel) { this.setMailingData(value); }
     get mailingData(): MailingDataModel { return this._mailingData; }
@@ -25,15 +23,17 @@ export class MailingMergeComponent implements OnInit {
     merge: FormGroup;
     sourceFileAccept = '.xlsx';
     templateFileAccept = '.docx';
+    availableFields: string[] = [];
 
+    @ViewChild('sourceFileInput') private _sourceFileInput: ElementRef;
+    @ViewChild('templateFileInput') private _templateFileInput: ElementRef;
     private _mailingData: MailingDataModel;
-    private _availableFields: string[] = [];
 
     constructor(
         private _injector: Injector,
         private _formBuilder: FormBuilder,
         private _dataLoaderService: DataLoaderService,
-        private _fileService: FileService,
+        private _documentService: DocumentService,
     ) { }
 
     ngOnInit() {
@@ -80,13 +80,19 @@ export class MailingMergeComponent implements OnInit {
     private sourceFileNameChanged(fileName: string) {
         const that = this;
 
+        if ((fileName || '') === '') {
+            this.mailingData.datasource = <MailingDataSource>{};
+            this._sourceFileInput.nativeElement.value = '';
+            return;
+        }
+
         if (!this.mailingData.datasource || this.mailingData.datasource.fileName !== fileName) {
             this._dataLoaderService.fromFile(fileName).subscribe(rows => {
                 that.mailingData.datasource.data = rows;
                 that.mailingData.datasource.fileName = fileName;
-                that._availableFields = [];
+                that.availableFields = [];
                 if (rows.length > 0) {
-                    that._availableFields = Object.keys(rows[0]);
+                    that.availableFields = Object.keys(rows[0]);
                 }
             });
         }
@@ -99,8 +105,15 @@ export class MailingMergeComponent implements OnInit {
 
     private templateFileNameChanged(fileName: string) {
         const that = this;
+
+        if ((fileName || '') === '') {
+            this.mailingData.template = null;
+            this._templateFileInput.nativeElement.value = '';
+            return;
+        }
+
         if (!this.mailingData.template || this.mailingData.template.fullName !== fileName) {
-            Document.fromFile(this._injector, fileName).subscribe(document => {
+            this._documentService.loadFromFile(fileName).subscribe(document => {
                 that.mailingData.template = document;
             });
         }
@@ -122,7 +135,9 @@ export class MailingMergeComponent implements OnInit {
     }
 
     private getAvailableFields(...excludedFields: string[]): string[] {
-        return this._availableFields.filter(f => excludedFields.findIndex(i => i !== f));
+        const that = this;
+        return this.availableFields.filter(f =>
+            excludedFields.findIndex(formControlName => that.merge.get(formControlName).value === f) === -1);
     }
 
 }

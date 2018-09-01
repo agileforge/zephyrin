@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { DocumentModel } from '../../../complexes/documents/documentModel';
-import { DocumentMerger } from './document-merger';
+import { Observable } from 'rxjs';
+import { MIMETYPE_DOCX, MIMETYPE_PDF, MIMETYPE_TXT } from '../../../misc/const';
+import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
+import { DocumentModel } from '../../document/documentModel';
 import { RenderEngine } from '../render-engines/render-engine';
-import { DocumentMergerTxt } from './document-merger-txt';
-import { MIMETYPE_TXT, MIMETYPE_DOCX, MIMETYPE_PDF } from '../../../misc/const';
-import { DocumentMergerWord } from './document-merger-word';
 import { RenderEnginePdf } from '../render-engines/render-engine-pdf.service';
 import { RenderEngineTxt } from '../render-engines/render-engine-txt.service';
-import { Observable } from 'rxjs';
-import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
+import { DocumentMerger } from './document-merger';
+import { DocumentMergerTxt } from './document-merger-txt';
+import { DocumentMergerWord } from './document-merger-word';
 
 /**
  * Service that is able to merge data with a document template.
