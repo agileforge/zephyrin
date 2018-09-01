@@ -29,6 +29,7 @@ import { DocumentMergerWord } from './providers/render-engine/document-merger/do
 import { RenderEngineTxt } from './providers/render-engine/render-engines/render-engine-txt.service';
 import { RenderEnginePdf } from './providers/render-engine/render-engines/render-engine-pdf.service';
 import { DataLoaderService } from './providers/data-loader/data-loader.service';
+import { DocumentService } from './providers/document/document.service';
 import { ExcelDataLoader } from './providers/data-loader/excel-data-loader';
 import { ConfigComponent } from './components/config/config.component';
 import { ConfigSmtpComponent } from './components/config/config-smtp/config-smtp.component';
@@ -115,6 +116,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         ConfigService,
         DocumentMergerService,
         FileService,
+        DocumentService,
         // Data loaders
         DataLoaderService,
         ExcelDataLoader,
