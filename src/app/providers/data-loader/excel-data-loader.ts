@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DataLoader } from './data-loader';
-import { FileService } from '../file/file.service';
 import { MergeableRowDataModel } from './mergeableRowDataModel';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import * as excelToJson from 'convert-excel-to-json';
 import { LogService } from '../log-service';
 
@@ -22,7 +21,7 @@ export class ExcelDataLoader extends DataLoader {
      */
     load(fileName: string): Observable<MergeableRowDataModel[]> {
         this._logger.debug(`Starting to load data from Excel file '${fileName}'.`);
-        return Observable.create(new Promise((resolve, reject) => {
+        return from(new Promise((resolve, reject) => {
             try {
                 const result = excelToJson({
                     sourceFile: fileName,

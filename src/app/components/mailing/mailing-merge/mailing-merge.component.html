@@ -4,7 +4,7 @@
     </mat-form-field>
     <div fyLayout="row" fxLayoutAlign="start center">
         <mat-form-field>
-            <input formControlName="datasourceFileName" matInput placeholder="Data source file">
+            <input formControlName="sourceFileName" matInput placeholder="Data source file">
         </mat-form-field>
         <button (click)="sourceFileInput.click()" mat-mini-fab style="margin-left:10px;">
             <mat-icon>folder_open</mat-icon>
@@ -23,7 +23,7 @@
         </button>
     </div>
 
-    <mat-card *ngIf="datasourceLoaded || true" style="margin-top: 10px;">
+    <mat-card *ngIf="datasourceLoaded" style="margin-top: 10px;">
         <mat-card-header>Data binding for mailing</mat-card-header>
 
         <div fyLayout="row" fxLayoutAlign="space-around center">
