@@ -1,8 +1,8 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { debounceTime, filter, map } from 'rxjs/operators';
 import { ConfigService } from '../../../providers/config/config.service';
 import { SenderConfigModel } from '../../../providers/config/configModel';
-import { filter, map, debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'app-config-sender',
@@ -27,7 +27,7 @@ export class ConfigSenderComponent implements OnInit {
         const config = this._configService.config.sender;
 
         this.sender = fb.group({
-            email: fb.control(config.emailAddress, [Validators.required, Validators.email]),
+            emailAddress: fb.control(config.emailAddress, [Validators.required, Validators.email]),
             fullName: fb.control(config.fullName),
         });
 

@@ -3,14 +3,8 @@
     "directoryPath": "/home/paf/projects/zephyrin/logs"
   },
   "sender": {
-    "email": "paf@klfdlkfd",
-    "fullName": "jklhlkj nmbg"
+    "emailAddress": "paf@enigme.ch",
+    "fullName": "Pascal Fluck"
   },
-  "smtp": {
-    "host": "mail.horus.ch",
-    "port": 223,
-    "isSsl": true,
-    "userName": "paf",
-    "password": "Sea6NSun"
-  }
+  "smtp": {}
 }

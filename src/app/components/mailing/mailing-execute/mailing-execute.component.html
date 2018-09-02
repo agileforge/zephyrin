@@ -1,3 +1,36 @@
-<p>
-  mailing-execute works!
-</p>
+<form [formGroup]="send">
+    <div fxLayout="column" fxLayoutAlign="start start" fxFill>
+        <mat-checkbox #test formControlName="test">Test it, before really send mails</mat-checkbox>
+        <mat-card *ngIf="test.checked" style="margin-top: 10px;">
+            <mat-card-header>
+                <h3>Test configuration</h3>
+            </mat-card-header>
+            <mat-form-field style="margin-top:10px;">
+                <input matInput formControlName="testEmailAddress" placeholder="Email address for test(s)">
+            </mat-form-field>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFill>
+                <mat-radio-group formControlName="testType">
+                    <div fxLayout="column" fxLayoutAlign="start start">
+                        <mat-radio-button value="one">Single</mat-radio-button>
+                        <div class="explanation" fxLayout="row" fxLayoutAlign="start center">
+                            <div>Send only one email to the test address, but take the data of line</div>
+                            <input type="number" formControlName="testLineNumber" style="width: 50px; margin-left: 5px">
+                        </div>
+                        <mat-radio-button value="all">All</mat-radio-button>
+                        <div class="explanation">Send to all lines in source data, but always to the test address.</div>
+                    </div>
+                </mat-radio-group>
+            </div>
+        </mat-card>
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <button mat-button style="margin: 30px" [disabled]="!send?.valid">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon>send</mat-icon>
+                    <mat-icon style="margin-left:-12px; margin-right:10px">linear_scale</mat-icon>
+                    GO !
+                </div>
+            </button>
+            <div>This will send {{ emailCount }} email to {{ receiverText }}.</div>
+        </div>
+    </div>
+</form>
