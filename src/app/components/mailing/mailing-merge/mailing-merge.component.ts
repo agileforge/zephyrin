@@ -1,8 +1,9 @@
-import { Component, ElementRef, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs/operators';
 import { DataLoaderService } from '../../../providers/data-loader/data-loader.service';
 import { DocumentService } from '../../../providers/document/document.service';
+import { FileService } from '../../../providers/file/file.service';
 import { MailingDataModel } from '../../../providers/mailer-engine/mailingDataModel';
 import { MailingDataSource } from '../../../providers/mailer-engine/mailingDataSource';
 
@@ -30,8 +31,8 @@ export class MailingMergeComponent implements OnInit {
     private _mailingData: MailingDataModel;
 
     constructor(
-        private _injector: Injector,
         private _formBuilder: FormBuilder,
+        private _fileService: FileService,
         private _dataLoaderService: DataLoaderService,
         private _documentService: DocumentService,
     ) { }
@@ -80,9 +81,10 @@ export class MailingMergeComponent implements OnInit {
     private sourceFileNameChanged(fileName: string) {
         const that = this;
 
-        if ((fileName || '') === '') {
+        if ((fileName || '') === '' || !this._fileService.fileExists(fileName)) {
             this.mailingData.datasource = <MailingDataSource>{};
             this._sourceFileInput.nativeElement.value = '';
+            this.availableFields = [];
             return;
         }
 
@@ -106,7 +108,7 @@ export class MailingMergeComponent implements OnInit {
     private templateFileNameChanged(fileName: string) {
         const that = this;
 
-        if ((fileName || '') === '') {
+        if ((fileName || '') === '' || !this._fileService.fileExists(fileName)) {
             this.mailingData.template = null;
             this._templateFileInput.nativeElement.value = '';
             return;
