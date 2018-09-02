@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-dialog-content>
+    <div fxLayout="row" fxLayoutAlign="start center" fxFill>
+        <div flLayout="column" fxLayoutAlign="center center" fxFill>
+            <mat-progress-spinner mode="determinate" [value]="progress"></mat-progress-spinner>
+            <div>{{ progress }}%</div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button><mat-icon>send</mat-icon>Send now !</button>
+    <button mat-button [mat-dialog-close]="DialogResponse.Cancel">Cancel</button>
+</mat-dialog-actions>

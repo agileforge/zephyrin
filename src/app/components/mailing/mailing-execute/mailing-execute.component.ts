@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogResponse } from '../../../enums/dialog-response.enum';
 import { ConfigService } from '../../../providers/config/config.service';
 import { DialogService } from '../../../providers/dialog/dialog.service';
 import { MailingDataModel } from '../../../providers/mailer-engine/mailingDataModel';
+import { MailingExecuteProgressComponent } from '../mailing-execute-progress/mailing-execute-progress.component';
 
 @Component({
     selector: 'app-mailing-execute',
@@ -72,12 +72,28 @@ export class MailingExecuteComponent implements OnInit {
         return `addresses specified in source file`;
     }
 
-    sendMails() {
-        this._dialogService.confirm('Send', `You are going to send ${this.emailCount} emails. Are you sure ?`)
-            .subscribe(response => {
-                if (response === DialogResponse.Yes) {
-                    const mailDataCopy = <MailingDataModel>Object.assign({}, this.mailingData);
-                }
+    private getMailingDataToSend(): MailingDataModel {
+        if (this.send.get('test').value === true) {
+            const mailDataToSend = <MailingDataModel>Object.assign({}, this.mailingData);
+            const testEmailAddress = this.send.get('testEmailAddress').value;
+            // Replace all email with test email
+            mailDataToSend.datasource.data.forEach(row => {
+                row[mailDataToSend.datasource.mailAddressField] = testEmailAddress;
             });
+
+            if (this.send.get('testType').value === 'one') {
+                const lineNum = <number>this.send.get('testLineNumber').value;
+                mailDataToSend.datasource.data = [mailDataToSend.datasource.data[lineNum]];
+            }
+            return mailDataToSend;
+        }
+
+        return this.mailingData;
+    }
+
+    sendMails() {
+        this._dialogService.dialog(MailingExecuteProgressComponent, dr => {
+            dr.componentInstance.setData(this.getMailingDataToSend());
+        }).subscribe();
     }
 }

@@ -22,6 +22,7 @@ import { ConfigSmtpComponent } from './components/config/config-smtp/config-smtp
 import { ConfigComponent } from './components/config/config.component';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { HomeComponent } from './components/home/home.component';
+import { MailingExecuteProgressComponent } from './components/mailing/mailing-execute-progress/mailing-execute-progress.component';
 import { MailingExecuteComponent } from './components/mailing/mailing-execute/mailing-execute.component';
 import { MailingMailComponent } from './components/mailing/mailing-mail/mailing-mail.component';
 import { MailingMergeComponent } from './components/mailing/mailing-merge/mailing-merge.component';
@@ -66,6 +67,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         MailingMergeComponent,
         MailingExecuteComponent,
         DialogComponent,
+        MailingExecuteProgressComponent,
     ],
     imports: [
         BrowserModule,
@@ -121,6 +123,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ],
     entryComponents: [
         DialogComponent,
+        MailingExecuteProgressComponent,
     ],
     bootstrap: [AppComponent]
 })
