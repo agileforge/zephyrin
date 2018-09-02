@@ -23,7 +23,7 @@
             </div>
         </mat-card>
         <div fxLayout="row" fxLayoutAlign="start center">
-            <button mat-button style="margin: 30px" [disabled]="!send?.valid">
+            <button mat-button style="margin: 30px" [disabled]="!send?.valid" (click)="sendMails()">
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <mat-icon>send</mat-icon>
                     <mat-icon style="margin-left:-12px; margin-right:10px">linear_scale</mat-icon>

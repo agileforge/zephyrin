@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DialogResponse } from '../../../enums/dialog-response.enum';
 import { ConfigService } from '../../../providers/config/config.service';
+import { DialogService } from '../../../providers/dialog/dialog.service';
 import { MailingDataModel } from '../../../providers/mailer-engine/mailingDataModel';
 
 @Component({
@@ -14,9 +16,12 @@ export class MailingExecuteComponent implements OnInit {
 
     send: FormGroup;
 
+    emailCount: number;
+
     constructor(
         private _formBuilder: FormBuilder,
         private _configService: ConfigService,
+        private _dialogService: DialogService,
     ) { }
 
     ngOnInit() {
@@ -31,6 +36,10 @@ export class MailingExecuteComponent implements OnInit {
             testEmailAddress: fb.control(senderEmailAddress, Validators.email),
         });
 
+        this.send.valueChanges.subscribe(() => {
+            this.emailCount = this.getEmailCount();
+        });
+
         this._configService.configSubject.subscribe(config => {
             const emailControl = this.send.get('testEmailAddress');
             if (!emailControl.value && config && config.sender) {
@@ -39,7 +48,7 @@ export class MailingExecuteComponent implements OnInit {
         });
     }
 
-    get emailCount(): number {
+    private getEmailCount(): number {
         if (this.send.get('test').value === true && this.send.get('testType').value === 'one') {
             return 1;
         }
@@ -61,5 +70,14 @@ export class MailingExecuteComponent implements OnInit {
         }
 
         return `addresses specified in source file`;
+    }
+
+    sendMails() {
+        this._dialogService.confirm('Send', `You are going to send ${this.emailCount} emails. Are you sure ?`)
+            .subscribe(response => {
+                if (response === DialogResponse.Yes) {
+                    const mailDataCopy = <MailingDataModel>Object.assign({}, this.mailingData);
+                }
+            });
     }
 }
