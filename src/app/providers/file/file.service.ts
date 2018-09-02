@@ -4,7 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import * as path from 'path';
 import { Observable } from 'rxjs';
 import { ElectronService } from '../electron.service';
 import { LogService } from '../log-service';
@@ -161,6 +160,12 @@ export class FileService {
      * @memberof FileService
      */
     makeDir(directoryPath: string): void {
+        const pathDirs = directoryPath.split(this._electron.path.sep);
+        const parentDir = pathDirs.slice(0, pathDirs.length - 1).join(this._electron.path.sep);
+
+        if (!this._electron.fs.existsSync(parentDir)) {
+            this.makeDir(parentDir);
+        }
         this._electron.fs.mkdirSync(directoryPath);
     }
 
@@ -223,7 +228,7 @@ export class FileService {
      * @memberof FileService
      */
     pathJoin(...paths: string[]): string {
-        return path.join(...paths);
+        return this._electron.path.join(...paths);
     }
 
     /**
@@ -234,7 +239,7 @@ export class FileService {
      * @memberof FileService
      */
     pathExtractFileName(fileName: string): string {
-        return path.basename(fileName);
+        return this._electron.path.basename(fileName);
     }
 
 }

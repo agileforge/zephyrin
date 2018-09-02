@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { from, Observable, of } from 'rxjs';
 import { last, map, merge } from 'rxjs/operators';
 import { EMAIL_REGEX } from '../../misc/const';
@@ -28,6 +28,8 @@ import { MailingDataModel } from './mailingDataModel';
     providedIn: 'root'
 })
 export class MailerEngineService {
+
+    progress = new EventEmitter<{ count: number, total: number, percent: number }>();
 
     private _placeHolderPattern = /(\{([\w\d_\-\.]*)\})/ig;
 
@@ -64,6 +66,7 @@ export class MailerEngineService {
 
         // And send it all
         let rowCounter = 0;
+        const rowTotal = mailingDataSource.datasource.data.length;
         return from(mailingDataSource.datasource.data)
             .pipe(
                 map(row => <{ rowNum: number, row: MergeableRowDataModel }>{ rowNum: ++rowCounter, row }),
@@ -103,6 +106,12 @@ export class MailerEngineService {
                             mail.attachments.push(document);
                         }
                         that._mailSenderService.send(mail).subscribe(() => {
+                            this.progress.emit({
+                                count: rowNum,
+                                total: rowTotal,
+                                percent: rowNum / rowTotal * 100
+                            });
+
                             return that._mailingLoggerService.success(mail, rowNum);
                         }, err => {
                             return that._mailingLoggerService.sendFail(mail, err, rowNum);
