@@ -83,7 +83,7 @@ export class MailingExecuteComponent implements OnInit {
 
             if (this.send.get('testType').value === 'one') {
                 const lineNum = <number>this.send.get('testLineNumber').value;
-                mailDataToSend.datasource.data = [mailDataToSend.datasource.data[lineNum]];
+                mailDataToSend.datasource.data = [mailDataToSend.datasource.data[lineNum - 1]];
             }
             return mailDataToSend;
         }
@@ -94,6 +94,7 @@ export class MailingExecuteComponent implements OnInit {
     sendMails() {
         this._dialogService.dialog(MailingExecuteProgressComponent, dr => {
             dr.componentInstance.setData(this.getMailingDataToSend());
-        }).subscribe();
+        },
+            { width: '400px', height: '250px' }).subscribe();
     }
 }

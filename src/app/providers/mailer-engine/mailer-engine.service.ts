@@ -5,7 +5,7 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import { from, Observable, of } from 'rxjs';
-import { last, map, merge } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { EMAIL_REGEX } from '../../misc/const';
 import Utils from '../../misc/utils';
 import { ConfigService } from '../config/config.service';
@@ -62,7 +62,7 @@ export class MailerEngineService {
         const renderType = mailingDataSource.renderType;
 
         // Initialize the mailing log
-        that._mailingLoggerService.initial(mailingDataSource);
+        that._mailingLoggerService.initial(mailingDataSource).subscribe();
 
         // And send it all
         let rowCounter = 0;
@@ -70,8 +70,7 @@ export class MailerEngineService {
         return from(mailingDataSource.datasource.data)
             .pipe(
                 map(row => <{ rowNum: number, row: MergeableRowDataModel }>{ rowNum: ++rowCounter, row }),
-                merge(3),
-                map(irow => {
+                mergeMap(irow => {
                     const rowNum = irow.rowNum;
                     const row = irow.row;
 
@@ -101,24 +100,23 @@ export class MailerEngineService {
                     }
 
                     // Send the email
-                    merger.subscribe(document => {
+                    return merger.pipe(map(document => {
                         if (document.content) {
                             mail.attachments.push(document);
                         }
-                        that._mailSenderService.send(mail).subscribe(() => {
+                        that._mailSenderService.send(mail).pipe(map(() => {
                             this.progress.emit({
                                 count: rowNum,
                                 total: rowTotal,
                                 percent: rowNum / rowTotal * 100
                             });
 
-                            return that._mailingLoggerService.success(mail, rowNum);
+                            that._mailingLoggerService.success(mail, rowNum).subscribe();
                         }, err => {
-                            return that._mailingLoggerService.sendFail(mail, err, rowNum);
-                        });
-                    });
-                }),
-                last()
+                            that._mailingLoggerService.sendFail(mail, err, rowNum).subscribe();
+                        }));
+                    }));
+                }, 1),
             );
     }
 

@@ -4,21 +4,21 @@
     </mat-form-field>
     <div fyLayout="row" fxLayoutAlign="start center">
         <mat-form-field>
-            <input formControlName="sourceFileName" matInput placeholder="Data source file">
-        </mat-form-field>
-        <button (click)="sourceFileInput.click()" mat-mini-fab style="margin-left:10px;">
-            <mat-icon>folder_open</mat-icon>
-            <input #sourceFileInput type="file" [accept]="sourceFileAccept" (change)="sourceFileSelected($event)" style="display:none;"
-            />
-        </button>
-    </div>
-    <div fyLayout="row" fxLayoutAlign="start center">
-        <mat-form-field>
             <input formControlName="templateFileName" matInput placeholder="Template file">
         </mat-form-field>
         <button (click)="templateFileInput.click()" mat-mini-fab style="margin-left:10px;">
             <mat-icon>folder_open</mat-icon>
             <input #templateFileInput type="file" [accept]="templateFileAccept" (change)="templateFileSelected($event)" style="display:none;"
+            />
+        </button>
+    </div>
+    <div fyLayout="row" fxLayoutAlign="start center">
+        <mat-form-field>
+            <input formControlName="sourceFileName" matInput placeholder="Data source file">
+        </mat-form-field>
+        <button (click)="sourceFileInput.click()" mat-mini-fab style="margin-left:10px;">
+            <mat-icon>folder_open</mat-icon>
+            <input #sourceFileInput type="file" [accept]="sourceFileAccept" (change)="sourceFileSelected($event)" style="display:none;"
             />
         </button>
     </div>

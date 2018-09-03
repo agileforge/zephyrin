@@ -3,6 +3,7 @@ export enum DialogResponse {
     Yes = 2,
     No = 3,
     Cancel = 4,
-    Save = 5
+    Save = 5,
+    Close = 6
 }
 

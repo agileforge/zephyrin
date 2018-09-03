@@ -42,7 +42,7 @@ export class DocumentMergerService {
      * @memberof DocumentMergerService
      */
     mergeAndRender(data: MergeableRowDataModel, template: DocumentModel, renderingType: string): Observable<DocumentModel> {
-        // // Get merger by mime type and merge template
+        // Get merger by mime type and merge template
         const merger = this.getDocumentMerger(template.mimeType);
         const document = merger.merge(data, template);
         // Get renderEngine according renderingType and render document

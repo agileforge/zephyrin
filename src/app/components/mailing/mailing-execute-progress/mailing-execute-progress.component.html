@@ -1,13 +1,21 @@
 <h2 mat-dialog-title>{{ title }}</h2>
-<mat-dialog-content>
-    <div fxLayout="row" fxLayoutAlign="start center" fxFill>
-        <div flLayout="column" fxLayoutAlign="center center" fxFill>
-            <mat-progress-spinner mode="determinate" [value]="progress"></mat-progress-spinner>
-            <div>{{ progress }}%</div>
-        </div>
+<mat-dialog-content style="height: 146px;">
+    <div *ngIf="!sending">
+        You are about to send {{ data?.datasource?.data?.length }} emails. Are you sure ?
+    </div>
+    <div *ngIf="sending" fxLayout="column" fxLayoutAlign="center center" fxFill>
+        <mat-progress-spinner mode="determinate" [value]="progress"></mat-progress-spinner>
+        <div style="margin-top: 10px">Sending {{ count }}/{{ total }} ({{ progress }}%)</div>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-button><mat-icon>send</mat-icon>Send now !</button>
-    <button mat-button [mat-dialog-close]="DialogResponse.Cancel">Cancel</button>
+    <button *ngIf="!sending && !sent" mat-button (click)="send()">
+        <mat-icon>send</mat-icon>Yes, send it all now !
+    </button>
+    <button *ngIf="!sending || sent" mat-button [mat-dialog-close]="DialogResponse.Close">
+        <mat-icon>close</mat-icon>Close
+    </button>
+    <button *ngIf="sending" mat-button [mat-dialog-close]="DialogResponse.Cancel" (click)="cancel()">
+        <mat-icon>cancel</mat-icon>Cancel
+    </button>
 </mat-dialog-actions>

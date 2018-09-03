@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { DocxTemplater } from 'docxtemplater';
-import { JSZip } from 'jszip';
+import * as DocxTemplater from 'docxtemplater';
+import * as JSZip from 'jszip';
 import { MIMETYPE_DOCX } from '../../../misc/const';
 import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
 import { DocumentModel } from '../../document/documentModel';

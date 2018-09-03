@@ -160,6 +160,10 @@ export class FileService {
      * @memberof FileService
      */
     makeDir(directoryPath: string): void {
+        if (this._electron.fs.existsSync(directoryPath)) {
+            return;
+        }
+
         const pathDirs = directoryPath.split(this._electron.path.sep);
         const parentDir = pathDirs.slice(0, pathDirs.length - 1).join(this._electron.path.sep);
 

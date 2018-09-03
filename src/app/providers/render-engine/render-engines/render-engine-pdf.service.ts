@@ -5,8 +5,8 @@
 
 import { Injectable } from '@angular/core';
 import * as docxConverter from 'docx-pdf';
-import { BehaviorSubject, from, Observable, ReplaySubject } from 'rxjs';
-import { concatAll, last, map } from 'rxjs/operators';
+import { BehaviorSubject, concat, Observable } from 'rxjs';
+import { last, map } from 'rxjs/operators';
 // import * as PDFDocument from 'pdfkit';
 // import * as MemoryStream from 'memorystream';
 import { TextDecoder } from 'text-encoding';
@@ -105,19 +105,19 @@ export class RenderEnginePdf extends RenderEngine {
      * @memberof RenderEnginePdf
      */
     private renderFromDocx(document: DocumentModel): Observable<DocumentModel> {
-        const tmpSourceFileName = this._fileService.pathJoin(__dirname, 'tmp', new Date().getTime() + '.docx');
-        const tmpTargetFileName = this._fileService.pathJoin(__dirname, 'tmp', new Date().getTime() + '.pdf');
+        const tempDir = this._fileService.pathJoin(this._fileService.currentDir, 'tmp');
+        this._fileService.makeDir(tempDir);
+        const tmpSourceFileName = this._fileService.pathJoin(tempDir, new Date().getTime() + '.docx');
+        const tmpTargetFileName = this._fileService.pathJoin(tempDir, new Date().getTime() + '.pdf');
 
-        return from([
+        return concat(
             this._fileService.writeBytes(tmpSourceFileName, document.content),
             this.convertDocxToPdf(tmpSourceFileName, tmpTargetFileName),
             this._fileService.readBytes(tmpTargetFileName)
-        ])
-            .pipe(
-                concatAll(),
-                last<Uint8Array>(),
-                map(fileContent => <DocumentModel>{ mimeType: MIMETYPE_PDF, content: fileContent })
-            );
+        ).pipe(
+            last(),
+            map(fileContent => <DocumentModel>{ mimeType: MIMETYPE_PDF, content: fileContent })
+        );
     }
 
     /**
@@ -130,15 +130,17 @@ export class RenderEnginePdf extends RenderEngine {
      */
     private convertDocxToPdf(fromFileName, toFileName): Observable<void> {
         const that = this;
-        const subject = new ReplaySubject<void>();
-        docxConverter(fromFileName, toFileName, function (err, result) {
-            if (err) {
-                that._logger.error(`docx-pdf was unable to convert the document: ${err.message}`);
-                throw err;
-            }
-            subject.next();
+        return Observable.create(observer => {
+            docxConverter(fromFileName, toFileName, function (err, result) {
+                if (err) {
+                    that._logger.error(`docx-pdf was unable to convert the document: ${err.message}`);
+                    observer.error(err);
+                    return;
+                }
+                that._logger.debug(`File '${fromFileName}' has been successfully rendered as PDF in file '${toFileName}'.`);
+                observer.next();
+                observer.complete();
+            });
         });
-
-        return subject;
     }
 }
