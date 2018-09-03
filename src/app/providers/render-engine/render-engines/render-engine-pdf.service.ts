@@ -7,8 +7,6 @@ import { Injectable } from '@angular/core';
 import * as docxConverter from 'docx-pdf';
 import { BehaviorSubject, concat, Observable } from 'rxjs';
 import { last, map } from 'rxjs/operators';
-// import * as PDFDocument from 'pdfkit';
-// import * as MemoryStream from 'memorystream';
 import { TextDecoder } from 'text-encoding';
 import { MIMETYPE_DOCX, MIMETYPE_PDF, MIMETYPE_TXT } from '../../../misc/const';
 import { DocumentModel } from '../../document/documentModel';

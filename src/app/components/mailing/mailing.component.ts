@@ -27,10 +27,6 @@ export class MailingComponent implements OnInit {
     }
 
     private loadLocally() {
-
-        // '/home/paf/projects/zephyrin/tmp/test.docx';
-
-
         const dataJson = localStorage.getItem('zephyrin-mailing-data');
         if (dataJson) {
             this.mailingData = <MailingDataModel>JSON.parse(dataJson);

@@ -70,7 +70,7 @@ export class FileService {
         const that = this;
         this._logger.debug(`Starting to write a binary content to file '${fileName}'.`);
         return Observable.create(observer => {
-            this._electron.fs.writeFile(fileName, content.buffer, err => {
+            this._electron.fs.writeFile(fileName, new Buffer(content), err => {
                 if (err) {
                     that._logger.error(`Error while writing to file '${fileName}': '${err.message}'`);
                     observer.error(err);
