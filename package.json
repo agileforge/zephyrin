@@ -50,12 +50,14 @@
     "docx-pdf": "0.0.1",
     "docxtemplater": "^3.8.3",
     "jszip": "^2.6.1",
+    "mammoth": "^1.4.6",
     "material-design-icons": "^3.0.1",
     "ng2-ckeditor": "^1.2.1",
     "nodemailer": "^4.6.8",
     "pdfkit": "^0.8.3",
     "text-encoding": "^0.6.4",
-    "typeface-roboto": "0.0.54"
+    "typeface-roboto": "0.0.54",
+    "winston": "^3.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.6.3",
@@ -75,6 +77,7 @@
     "@types/jasmine": "2.8.7",
     "@types/jasminewd2": "2.0.3",
     "@types/node": "^8.9.4",
+    "@types/winston": "^2.4.4",
     "brfs": "^2.0.1",
     "codelyzer": "4.2.1",
     "core-js": "2.5.6",

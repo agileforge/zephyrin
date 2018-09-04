@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
-
 /*---------------------------------------------------------------------------------------------
  * Copyright (c) agileforge. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+
+import { Injectable } from '@angular/core';
+import * as winston from 'winston';
+import { format } from 'winston';
 
 /**
  * Enumerates all possible log level
@@ -26,19 +28,32 @@ export enum LogLevel {
 @Injectable()
 export class LogService {
 
-    private _log: any;
+    private _logger: winston.Logger;
+
+    private get logger(): winston.Logger {
+        if (this._logger) {
+            return this._logger;
+        }
+
+        this._logger = winston.createLogger({
+            level: 'verbose',
+            format: format.combine(
+                format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+                format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+            ),
+            transports: [
+                new winston.transports.Console({ format: format.printf(info => info.message) }),
+                new winston.transports.File({ filename: 'logs/zephyrin.error.log', level: 'error' }),
+                new winston.transports.File({ filename: 'logs/zephyrin.log', level: 'info' })
+            ]
+        });
+    }
 
     /**
      *Creates an instance of LogService.
      * @memberof LogService
      */
-    constructor() {
-        // try {
-        //     this._log = (<any>window).log;
-        // } catch (err) {
-        //     console.log('Cannot get logger.', err);
-        // }
-    }
+    constructor() { }
 
     /**
      * Log in trace level.
@@ -101,29 +116,37 @@ export class LogService {
      * @memberof LogService
      */
     log(level: LogLevel, ...message: any[]) {
-        if (!this._log) {
+        if (!message || message.length === 0) {
+            return;
+        }
+        if (!this.logger) {
             console.log(...message);
             return;
         }
-        message.forEach(m => {
-            switch (level) {
-                case LogLevel.trace:
-                    this._log.debug(m);
-                    break;
-                case LogLevel.debug:
-                    this._log.verbose(m);
-                    break;
-                case LogLevel.info:
-                    this._log.info(m);
-                    break;
-                case LogLevel.warn:
-                    this._log.warn(m);
-                    break;
-                case LogLevel.error:
-                case LogLevel.fatal:
-                    this._log.error(m);
-                    break;
-            }
-        });
+        const msg = message[0];
+        let meta = [];
+        if (message.length > 1) {
+            meta = message.slice(1);
+        }
+        switch (level) {
+            case LogLevel.trace:
+                this.logger.verbose(msg, ...meta);
+                break;
+            case LogLevel.debug:
+                this.logger.debug(msg, ...meta);
+                break;
+            case LogLevel.info:
+                this.logger.info(msg, ...meta);
+                break;
+            case LogLevel.warn:
+                this.logger.warn(msg, ...meta);
+                break;
+            case LogLevel.error:
+                this.logger.error(msg, ...meta);
+                break;
+            case LogLevel.fatal:
+                this.logger.emerg(msg, ...meta);
+                break;
+        }
     }
 }
