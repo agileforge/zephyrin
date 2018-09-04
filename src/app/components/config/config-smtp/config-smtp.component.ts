@@ -1,8 +1,8 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { debounceTime, filter, map } from 'rxjs/operators';
 import { ConfigService } from '../../../providers/config/config.service';
 import { SmtpConfigModel } from '../../../providers/config/configModel';
-import { filter, map, debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'app-config-smtp',
@@ -31,7 +31,7 @@ export class ConfigSmtpComponent implements OnInit {
         that.smtp = fb.group({
             host: fb.control(config.host, [Validators.required]),
             port: fb.control(config.port, Validators.pattern(/\d*/)),
-            isSsl: fb.control(config.isSsl),
+            isSsl: fb.control(false),
             userName: fb.control(config.userName, Validators.required),
             password: fb.control(config.password, Validators.required),
         });

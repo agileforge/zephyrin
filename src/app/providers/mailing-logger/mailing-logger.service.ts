@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { MailModel } from '../mail-sender/mailModel';
-import { InvalidEmailAddressError } from '../mailer-engine/invalidEmailAddressError';
-import { Observable, empty, merge } from 'rxjs';
-import { MailingDataModel } from '../mailer-engine/mailingDataModel';
-import { FileService } from '../file/file.service';
 import * as dateFormat from 'dateformat';
-import { LogService } from '../log-service';
-import { DateProviderService } from '../date-provider/date-provider.service';
+import { merge, Observable } from 'rxjs';
 import { FILEDATE_FORMAT, ISODATE_FORMAT } from '../../misc/const';
 import { ConfigService } from '../config/config.service';
+import { DateProviderService } from '../date-provider/date-provider.service';
+import { FileService } from '../file/file.service';
+import { LogService } from '../log-service';
+import { MailModel } from '../mail-sender/mailModel';
+import { InvalidEmailAddressError } from '../mailer-engine/invalidEmailAddressError';
+import { MailingDataModel } from '../mailer-engine/mailingDataModel';
 
 /**
  * Service to log mails when sent.
@@ -41,6 +41,8 @@ export class MailingLoggerService {
      * @memberof MailingLoggerService
      */
     initial(mailingData: MailingDataModel): Observable<void> {
+        const that = this;
+        this._logger.debug('Starting to log the initial mailing data...');
         // Get and create log directory
         const directoryPath = this.getDirectory(mailingData.name);
 
@@ -59,6 +61,7 @@ export class MailingLoggerService {
         const dataJson = JSON.stringify(mailingData, null, 2);
         mailingData.datasource.data = data;
         mailingData.template = template;
+        this._logger.debug('Mailing data without rows is:', dataJson);
 
         // Save it all
         return merge(

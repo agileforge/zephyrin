@@ -5,9 +5,11 @@
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { MIMETYPE_DOCX, MIMETYPE_PDF, MIMETYPE_TXT } from '../../../misc/const';
 import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
 import { DocumentModel } from '../../document/documentModel';
+import { FileService } from '../../file/file.service';
 import { RenderEngine } from '../render-engines/render-engine';
 import { RenderEnginePdf } from '../render-engines/render-engine-pdf.service';
 import { RenderEngineTxt } from '../render-engines/render-engine-txt.service';
@@ -29,7 +31,8 @@ export class DocumentMergerService {
         private _mergerTxt: DocumentMergerTxt,
         private _mergerWord: DocumentMergerWord,
         private _renderPdf: RenderEnginePdf,
-        private _renderTxt: RenderEngineTxt
+        private _renderTxt: RenderEngineTxt,
+        private _fileService: FileService,
     ) { }
 
     /**
@@ -42,12 +45,18 @@ export class DocumentMergerService {
      * @memberof DocumentMergerService
      */
     mergeAndRender(data: MergeableRowDataModel, template: DocumentModel, renderingType: string): Observable<DocumentModel> {
+        const that = this;
         // Get merger by mime type and merge template
         const merger = this.getDocumentMerger(template.mimeType);
         const document = merger.merge(data, template);
         // Get renderEngine according renderingType and render document
         const renderer = this.getRenderEngine(renderingType);
-        const renderedDocument = renderer.render(document);
+        const renderedDocument = renderer.render(document).pipe(
+            map(rDoc => {
+                rDoc.fileName = that._fileService.changeExtension(template.fileName, '.pdf');
+                return rDoc;
+            })
+        );
         return renderedDocument;
     }
 

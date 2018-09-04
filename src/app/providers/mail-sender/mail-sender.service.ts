@@ -4,16 +4,16 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { MailModel } from './mailModel';
-import { Observable } from 'rxjs';
 import * as nodemailer from 'nodemailer';
-import { ConfigModel } from '../config/configModel';
 import { Transporter } from 'nodemailer';
-import Utils from '../../misc/utils';
 import { MailOptions } from 'nodemailer/lib/json-transport';
-import { LogService } from '../log-service';
 import { Attachment } from 'nodemailer/lib/mailer';
+import { Observable } from 'rxjs';
+import Utils from '../../misc/utils';
 import { ConfigService } from '../config/config.service';
+import { ConfigModel } from '../config/configModel';
+import { LogService } from '../log-service';
+import { MailModel } from './mailModel';
 
 /**
  * Service that provide facilities to send emails.
@@ -89,8 +89,9 @@ export class MailSenderService {
             // Send mail with defined transport object
             that._transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    that._logger.error(`Mail to '${mailOptions.to}' has not been sent:\n${error.message}`);
+                    that._logger.error(`Mail to '${mailOptions.to}' has not been sent:\n${error.message}`, error);
                     observer.error(error);
+                    return;
                 }
                 that._logger.info(`Mail successfully sent to '${mailOptions.to}'.`);
                 observer.next();

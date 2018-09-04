@@ -5,12 +5,13 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import { from, Observable, of } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { concatMap, map, mergeMap } from 'rxjs/operators';
 import { EMAIL_REGEX } from '../../misc/const';
 import Utils from '../../misc/utils';
 import { ConfigService } from '../config/config.service';
 import { MergeableRowDataModel } from '../data-loader/mergeableRowDataModel';
 import { DocumentModel } from '../document/documentModel';
+import { LogService } from '../log-service';
 import { MailSenderService } from '../mail-sender/mail-sender.service';
 import { MailModel } from '../mail-sender/mailModel';
 import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
@@ -38,6 +39,7 @@ export class MailerEngineService {
      * @memberof MailerEngineService
      */
     constructor(
+        private _logger: LogService,
         private _configService: ConfigService,
         private _mailSenderService: MailSenderService,
         private _mailingLoggerService: MailingLoggerService,
@@ -53,6 +55,7 @@ export class MailerEngineService {
      */
     sendMails(mailingDataSource: MailingDataModel): Observable<void> {
         const that = this;
+        that._logger.debug(`Starting to send ${mailingDataSource.datasource.data.length} email...`);
         const config = this._configService.config;
 
         const emailField = mailingDataSource.datasource.mailAddressField;
@@ -71,6 +74,7 @@ export class MailerEngineService {
             .pipe(
                 map(row => <{ rowNum: number, row: MergeableRowDataModel }>{ rowNum: ++rowCounter, row }),
                 mergeMap(irow => {
+                    that._logger.debug(`Processing mail of line '${irow.rowNum}'...`);
                     const rowNum = irow.rowNum;
                     const row = irow.row;
 
@@ -80,6 +84,7 @@ export class MailerEngineService {
                     // Check if email is valid
                     if (!EMAIL_REGEX.test(emailAddress)) {
                         const error = new InvalidEmailAddressError(emailAddress, emailField, row, rowNum);
+                        that._logger.error(error.message, error);
                         that._mailingLoggerService.emailAddressError(error);
                         return;
                     }
@@ -96,26 +101,34 @@ export class MailerEngineService {
                     // Eventually merge and render the attached document.
                     let merger = of(<DocumentModel>{ mimeType: renderType, content: null });
                     if (template) {
+                        that._logger.debug('Found template, merge and render it.');
                         merger = that._documentMergerService.mergeAndRender(row, template, renderType);
                     }
 
                     // Send the email
-                    return merger.pipe(map(document => {
-                        if (document.content) {
-                            mail.attachments.push(document);
-                        }
-                        that._mailSenderService.send(mail).pipe(map(() => {
-                            this.progress.emit({
-                                count: rowNum,
-                                total: rowTotal,
-                                percent: rowNum / rowTotal * 100
-                            });
-
-                            that._mailingLoggerService.success(mail, rowNum).subscribe();
-                        }, err => {
-                            that._mailingLoggerService.sendFail(mail, err, rowNum).subscribe();
+                    return merger.pipe(
+                        concatMap(document => {
+                            if (document.content) {
+                                mail.attachments.push(document);
+                            }
+                            that._logger.info(`Sending email to '${mail.to.join('\', \'')}'`);
+                            return that._mailSenderService.send(mail).pipe(
+                                concatMap(() => {
+                                    const progressData = {
+                                        count: rowNum,
+                                        total: rowTotal,
+                                        percent: rowNum / rowTotal * 100
+                                    };
+                                    that.progress.emit(progressData);
+                                    that._logger.info(`Email ${progressData.count}/${progressData.total} (${progressData.percent})`);
+                                    return that._mailingLoggerService.success(mail, rowNum);
+                                })
+                                // , err => {
+                                //     that._logger.error(`Email ${rowNum} fail to sent.`, err);
+                                //     return that._mailingLoggerService.sendFail(mail, err, rowNum);
+                                // })
+                            );
                         }));
-                    }));
                 }, 1),
             );
     }

@@ -43,6 +43,7 @@ import { DocumentMergerWord } from './providers/render-engine/document-merger/do
 import { DocumentMergerService } from './providers/render-engine/document-merger/document-merger.service';
 import { RenderEnginePdf } from './providers/render-engine/render-engines/render-engine-pdf.service';
 import { RenderEngineTxt } from './providers/render-engine/render-engines/render-engine-txt.service';
+import { DocxToPdfService } from './providers/toPdf/docx-to-pdf-service';
 
 
 
@@ -111,6 +112,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         FileService,
         DocumentService,
         DialogService,
+        DocxToPdfService,
         // Data loaders
         DataLoaderService,
         ExcelDataLoader,

@@ -69,6 +69,9 @@ export class DocumentMergerWord extends DocumentMerger {
             content: new Uint8Array(buf)
         };
         this._logger.trace(mergedDocument);
+        this._fileService
+            .writeBytes('/home/paf/Temp/merged.' + new Date().getTime().toString() + '.docx', mergedDocument.content)
+            .subscribe();
         return mergedDocument;
     }
 

@@ -4,14 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import * as docxConverter from 'docx-pdf';
-import { BehaviorSubject, concat, Observable } from 'rxjs';
-import { last, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { TextDecoder } from 'text-encoding';
-import { MIMETYPE_DOCX, MIMETYPE_PDF, MIMETYPE_TXT } from '../../../misc/const';
+import { MIMETYPE_DOCX, MIMETYPE_TXT } from '../../../misc/const';
 import { DocumentModel } from '../../document/documentModel';
 import { FileService } from '../../file/file.service';
 import { LogService } from '../../log-service';
+import { DocxToPdfService } from '../../toPdf/docx-to-pdf-service';
 import { RenderEngine } from './render-engine';
 /**
  * Provide an engine that is able to render a document to a PDF document.
@@ -32,7 +31,8 @@ export class RenderEnginePdf extends RenderEngine {
      */
     constructor(
         private _logger: LogService,
-        private _fileService: FileService
+        private _fileService: FileService,
+        private _docxToPdfService: DocxToPdfService
     ) {
         super();
     }
@@ -103,42 +103,7 @@ export class RenderEnginePdf extends RenderEngine {
      * @memberof RenderEnginePdf
      */
     private renderFromDocx(document: DocumentModel): Observable<DocumentModel> {
-        const tempDir = this._fileService.pathJoin(this._fileService.currentDir, 'tmp');
-        this._fileService.makeDir(tempDir);
-        const tmpSourceFileName = this._fileService.pathJoin(tempDir, new Date().getTime() + '.docx');
-        const tmpTargetFileName = this._fileService.pathJoin(tempDir, new Date().getTime() + '.pdf');
-
-        return concat(
-            this._fileService.writeBytes(tmpSourceFileName, document.content),
-            this.convertDocxToPdf(tmpSourceFileName, tmpTargetFileName),
-            this._fileService.readBytes(tmpTargetFileName)
-        ).pipe(
-            last(),
-            map(fileContent => <DocumentModel>{ mimeType: MIMETYPE_PDF, content: fileContent })
-        );
+        return this._docxToPdfService.convert(document.content);
     }
 
-    /**
-     *Converts the docx source file to a pdf file.
-     * @private
-     * @param {*} fromFileName File name of docx source.
-     * @param {*} toFileName File name of PDF target.
-     * @returns {Observable<{}>}
-     * @memberof RenderEnginePdf
-     */
-    private convertDocxToPdf(fromFileName, toFileName): Observable<void> {
-        const that = this;
-        return Observable.create(observer => {
-            docxConverter(fromFileName, toFileName, function (err, result) {
-                if (err) {
-                    that._logger.error(`docx-pdf was unable to convert the document: ${err.message}`);
-                    observer.error(err);
-                    return;
-                }
-                that._logger.debug(`File '${fromFileName}' has been successfully rendered as PDF in file '${toFileName}'.`);
-                observer.next();
-                observer.complete();
-            });
-        });
-    }
 }

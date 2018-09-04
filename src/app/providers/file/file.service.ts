@@ -38,6 +38,14 @@ export class FileService {
     get currentDir(): string { return this._electron.currentDir; }
 
     /**
+     * Gets the temp directory of OS.
+     * @readonly
+     * @type {string}
+     * @memberof FileService
+     */
+    get tempDir(): string { return this._electron.tempDir; }
+
+    /**
      * Reads a the specified fileName and returns his content as a byte array.
      * @param {string} fileName The file to read.
      * @returns {Observable<Uint8Array>} Byte array with file content.
@@ -181,11 +189,15 @@ export class FileService {
      * @memberof FileService
      */
     copyFile(source: string, dest: string): Observable<void> {
+        const that = this;
+        this._logger.debug(`Starting to copy file '${source}' to '${dest}'...`);
         return Observable.create(observer => {
             this._electron.fs.copyFile(source, dest, error => {
                 if (error) {
+                    that._logger.debug(`Fail to copy file '${source}' to '${dest}'...`, error);
                     observer.error(error);
                 } else {
+                    this._logger.debug(`File '${source}' has been successfully copied to '${dest}'...`);
                     observer.next();
                     observer.complete();
                 }
@@ -201,11 +213,15 @@ export class FileService {
      * @memberof FileService
      */
     moveFile(source: string, dest: string): Observable<void> {
+        const that = this;
+        this._logger.debug(`Starting to move file '${source}' to '${dest}'...`);
         return Observable.create(observer => {
             this._electron.fs.rename(source, dest, error => {
                 if (error) {
+                    that._logger.debug(`Fail to move file '${source}' to '${dest}'...`, error);
                     observer.error(error);
                 } else {
+                    this._logger.debug(`File '${source}' has been successfully moved to '${dest}'...`);
                     observer.next();
                     observer.complete();
                 }
@@ -246,4 +262,14 @@ export class FileService {
         return this._electron.path.basename(fileName);
     }
 
+    /**
+     * Change the extension of the specified file.
+     * @param {string} fileName File to change.
+     * @param {string} extension New extension including dot. Ex: '.ext'
+     * @memberof FileService
+     */
+    changeExtension(fileName: string, extension: string): string {
+        const pos = fileName.lastIndexOf('.');
+        return fileName.substr(0, pos < 0 ? fileName.length : pos) + extension;
+    }
 }
