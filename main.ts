@@ -33,7 +33,9 @@ function createWindow() {
     }
 
     win.setMenu(null);
-    win.webContents.openDevTools();
+    if (process.mainModule.filename.indexOf('app.asar') === -1) {
+        win.webContents.openDevTools();
+    }
 
     // Emitted when the window is closed.
     win.on('closed', () => {

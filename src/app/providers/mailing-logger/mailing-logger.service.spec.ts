@@ -3,22 +3,22 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TestBed, inject } from '@angular/core/testing';
-import { MailingLoggerService } from './mailing-logger.service';
-import { FileService } from '../file/file.service';
-import { ElectronService } from '../electron.service';
-import { LogService } from '../log-service';
-import { DateProviderService } from '../date-provider/date-provider.service';
-import { ConfigModel, SmtpConfigModel, SenderConfigModel, MailingLogConfigModel } from '../config/configModel';
-import { MailingDataModel } from '../mailer-engine/mailingDataModel';
-import { MIMETYPE_PDF, MIMETYPE_DOCX } from '../../misc/const';
-import { MailingDataSource } from '../mailer-engine/mailingDataSource';
-import { DocumentModel } from '../../complexes/documents/documentModel';
+import { inject, TestBed } from '@angular/core/testing';
 import { empty } from 'rxjs';
-import { MailModel } from '../mail-sender/mailModel';
+import { MIMETYPE_DOCX, MIMETYPE_PDF } from '../../misc/const';
 import { ConfigService } from '../config/config.service';
-import { InvalidEmailAddressError } from '../mailer-engine/invalidEmailAddressError';
+import { ConfigModel, MailingLogConfigModel, SenderConfigModel, SmtpConfigModel } from '../config/configModel';
 import { MergeableRowDataModel } from '../data-loader/mergeableRowDataModel';
+import { DateProviderService } from '../date-provider/date-provider.service';
+import { DocumentModel } from '../document/documentModel';
+import { ElectronService } from '../electron.service';
+import { FileService } from '../file/file.service';
+import { LogService } from '../log-service';
+import { MailModel } from '../mail-sender/mailModel';
+import { InvalidEmailAddressError } from '../mailer-engine/invalidEmailAddressError';
+import { MailingDataModel } from '../mailer-engine/mailingDataModel';
+import { MailingDataSource } from '../mailer-engine/mailingDataSource';
+import { MailingLoggerService } from './mailing-logger.service';
 
 describe('MailingLoggerService', () => {
 
