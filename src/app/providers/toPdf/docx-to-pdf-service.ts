@@ -5,7 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import * as childProcess from 'child_process';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
 import { MIMETYPE_PDF } from '../../misc/const';
 import { DocumentModel } from '../document/documentModel';
@@ -28,6 +28,8 @@ export class DocxToPdfService {
         const docxFileName = this._fileService.pathJoin(tempDir, (new Date().getTime()).toString() + '.docx');
         const pdfFileName = this._fileService.changeExtension(docxFileName, '.pdf');
 
+        let result: DocumentModel = null;
+
         return this._fileService.writeBytes(docxFileName, source).pipe(
             concatMap(() => that.getScriptFileName()),
             concatMap(fileName => that.spawn('cscript.exe', [
@@ -37,7 +39,13 @@ export class DocxToPdfService {
                 pdfFileName
             ])),
             concatMap(() => that._fileService.readBytes(pdfFileName)),
-            map(pdfContent => <DocumentModel>{ mimeType: MIMETYPE_PDF, content: pdfContent })
+            concatMap(pdfContent => {
+                result = <DocumentModel>{ mimeType: MIMETYPE_PDF, content: pdfContent };
+                return of(result);
+            }),
+            concatMap(() => that._fileService.deleteFile(docxFileName)),
+            concatMap(() => that._fileService.deleteFile(pdfFileName)),
+            map(() => result)
         );
     }
 

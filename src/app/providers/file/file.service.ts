@@ -234,6 +234,29 @@ export class FileService {
     }
 
     /**
+     * Deletes the specified fileName.
+     * @param {string} fileName File to delete.
+     * @returns {Observable<void>}
+     * @memberof FileService
+     */
+    deleteFile(fileName: string): Observable<void> {
+        const that = this;
+        this._logger.debug(`Starting to delete file '${fileName}'...`);
+        return Observable.create(observer => {
+            this._electron.fs.unlink(fileName, error => {
+                if (error) {
+                    that._logger.debug(`Fail to delete file '${fileName}'.`, error);
+                    observer.error(error);
+                } else {
+                    this._logger.debug(`File '${fileName}' has been successfully deleted.`);
+                    observer.next();
+                    observer.complete();
+                }
+            });
+        });
+    }
+
+    /**
      * Check if a file exists on disk.
      * @param {string} fileName The file to check.
      * @returns {boolean} True if exists; otherwise False.
