@@ -48,7 +48,7 @@ export class ElectronService {
      * @type {string}
      * @memberof ElectronService
      */
-    get currentDir(): string { return this.remote.app.getAppPath(); }
+    get currentDir(): string { return process.env.PORTABLE_EXECUTABLE_DIR; }
 
     /**
      * Return the temp directory of os.
