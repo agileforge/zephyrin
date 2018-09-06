@@ -38,6 +38,7 @@ import { FileService } from './providers/file/file.service';
 import { LogService } from './providers/log-service';
 import { MailSenderService } from './providers/mail-sender/mail-sender.service';
 import { MailerEngineService } from './providers/mailer-engine/mailer-engine.service';
+import { MessageHubService } from './providers/message-hub.service';
 import { DocumentMergerTxt } from './providers/render-engine/document-merger/document-merger-txt';
 import { DocumentMergerWord } from './providers/render-engine/document-merger/document-merger-word';
 import { DocumentMergerService } from './providers/render-engine/document-merger/document-merger.service';
@@ -113,6 +114,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         DocumentService,
         DialogService,
         DocxToPdfService,
+        MessageHubService,
         // Data loaders
         DataLoaderService,
         ExcelDataLoader,
