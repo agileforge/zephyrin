@@ -80,11 +80,11 @@ export class DocxToPdfService {
             concatMap(() => that.docxToHtml(docxFileName)),
             concatMap(html => that._fileService.writeText(htmlFileName, html)),
             concatMap(() => that.printToPdf(htmlFileName)),
-            map(document => {
-                const fileName = '/home/paf/Temp/' + new Date().getTime().toString() + '.pdf';
-                that._fileService.writeBytes(fileName, document.content).subscribe();
-                return document;
-            })
+            // map(document => {
+            //     const fileName = '/home/paf/Temp/' + new Date().getTime().toString() + '.pdf';
+            //     that._fileService.writeBytes(fileName, document.content).subscribe();
+            //     return document;
+            // })
         );
     }
 }

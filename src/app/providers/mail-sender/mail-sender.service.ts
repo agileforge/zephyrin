@@ -57,6 +57,9 @@ export class MailSenderService {
             auth: {
                 user: this._config.smtp.userName,
                 pass: this._config.smtp.password
+            },
+            tls: {
+                rejectUnauthorized: false
             }
         });
     }
