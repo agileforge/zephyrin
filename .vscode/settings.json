@@ -32,5 +32,8 @@
         "wordprocessingml",
         "yyyymmdd"
     ],
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.detectIndentation": false
 }

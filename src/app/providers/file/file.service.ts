@@ -43,7 +43,11 @@ export class FileService {
      * @type {string}
      * @memberof FileService
      */
-    get tempDir(): string { return this._electron.tempDir; }
+    get tempDir(): string {
+        const path = this.pathJoin(this._electron.tempDir, 'zephyrin');
+        this.makeDir(path);
+        return path;
+    }
 
     /**
      * Reads a the specified fileName and returns his content as a byte array.
