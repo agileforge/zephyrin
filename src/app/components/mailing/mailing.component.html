@@ -1,12 +1,14 @@
 <mat-toolbar>
     <div fxLayout="row" fxLayoutAlign="space-between center" fxFill>
-        <button mat-mini-fab (click)="configClick.emit()"><mat-icon>menu</mat-icon></button>
+        <button mat-mini-fab (click)="configClick.emit()">
+            <mat-icon>menu</mat-icon>
+        </button>
         <div>Zephyrin - The template mailer</div>
         <div></div>
     </div>
 </mat-toolbar>
 <mat-accordion>
-    <mat-expansion-panel>
+    <mat-expansion-panel #mailingMergePanel>
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <div fxLayout="row" fxLayoutAlign="start center">
@@ -16,7 +18,7 @@
         </mat-expansion-panel-header>
         <app-mailing-merge [mailingData]="mailingData"></app-mailing-merge>
     </mat-expansion-panel>
-    <mat-expansion-panel>
+    <mat-expansion-panel #mailingMailPanel>
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <div fxLayout="row" fxLayoutAlign="start center">

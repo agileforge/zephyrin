@@ -5,7 +5,7 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import { from, Observable, of } from 'rxjs';
-import { concatMap, map, mergeMap } from 'rxjs/operators';
+import { catchError, concatMap, map, mergeMap } from 'rxjs/operators';
 import { EMAIL_REGEX } from '../../misc/const';
 import Utils from '../../misc/utils';
 import { ConfigService } from '../config/config.service';
@@ -122,14 +122,14 @@ export class MailerEngineService {
                                     that.progress.emit(progressData);
                                     that._logger.info(`Email ${progressData.count}/${progressData.total} (${progressData.percent})`);
                                     return that._mailingLoggerService.success(mail, rowNum);
+                                }),
+                                catchError(err => {
+                                    that._logger.error(`Email ${rowNum} fail to send.`, err);
+                                    return that._mailingLoggerService.sendFail(mail, err, rowNum);
                                 })
-                                // , err => {
-                                //     that._logger.error(`Email ${rowNum} fail to sent.`, err);
-                                //     return that._mailingLoggerService.sendFail(mail, err, rowNum);
-                                // })
                             );
                         }));
-                }, 1),
+                }, 3),
             );
     }
 

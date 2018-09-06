@@ -4,12 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { ConfigModel } from './configModel';
 import { Observable, ReplaySubject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import Utils from '../../misc/utils';
 import { FileService } from '../file/file.service';
 import { LogService } from '../log-service';
-import { map } from 'rxjs/operators';
-import { ElectronService } from '../electron.service';
+import { ConfigModel } from './configModel';
 
 /**
  * Provides user configuration services.
@@ -21,12 +21,7 @@ import { ElectronService } from '../electron.service';
 })
 export class ConfigService {
 
-    config = <ConfigModel>{
-        mailingLog: {
-            directoryPath: this._fileService.pathJoin(__dirname, 'logs'),
-        },
-    };
-
+    config: ConfigModel;
     configSubject = new ReplaySubject<ConfigModel>();
 
     private _fileName: string;
@@ -39,6 +34,12 @@ export class ConfigService {
         private _logger: LogService,
         private _fileService: FileService,
     ) {
+        this.config = <ConfigModel>{
+            mailingLog: {
+                directoryPath: this._fileService.pathJoin(this._fileService.currentDir, 'logs'),
+            },
+        };
+
         this._fileName = this._fileService.pathJoin(this._fileService.currentDir, 'config.json');
     }
 
@@ -71,6 +72,23 @@ export class ConfigService {
                 return that.config;
             })
         );
+    }
+
+    /**
+     * Check if config is complient and ready.
+     * @returns {boolean} True id complient and ready; oterwise false.
+     * @memberof ConfigService
+     */
+    checkConfig(): boolean {
+        const cfg = this.config;
+        const ine = Utils.isNullOrEmpty;
+
+        return !ine(cfg) &&
+            !ine(cfg.sender) &&
+            !ine(cfg.sender.emailAddress) &&
+            !ine(cfg.smtp) &&
+            !ine(cfg.smtp.host) &&
+            !ine(cfg.smtp.userName);
     }
 
 }

@@ -1,8 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MSG_CONFIG_NOK, MSG_MISSING_DATASOURCE, MSG_MISSING_EMAILDATA } from '../../../misc/const';
+import Utils from '../../../misc/utils';
 import { ConfigService } from '../../../providers/config/config.service';
 import { DialogService } from '../../../providers/dialog/dialog.service';
 import { MailingDataModel } from '../../../providers/mailer-engine/mailingDataModel';
+import { MessageHubService } from '../../../providers/message-hub.service';
 import { MailingExecuteProgressComponent } from '../mailing-execute-progress/mailing-execute-progress.component';
 
 @Component({
@@ -22,6 +25,7 @@ export class MailingExecuteComponent implements OnInit {
         private _formBuilder: FormBuilder,
         private _configService: ConfigService,
         private _dialogService: DialogService,
+        private _messageHub: MessageHubService
     ) { }
 
     ngOnInit() {
@@ -92,6 +96,26 @@ export class MailingExecuteComponent implements OnInit {
     }
 
     sendMails() {
+        if (!this._configService.checkConfig()) {
+            this._messageHub.emitMessage(MSG_CONFIG_NOK, this._configService.config);
+            return;
+        }
+
+        if (!this.mailingData ||
+            !this.mailingData.datasource ||
+            !this.mailingData.datasource.data ||
+            this.mailingData.datasource.data.length === 0) {
+            this._messageHub.emit(MSG_MISSING_DATASOURCE);
+            return;
+        }
+
+        if (!this.mailingData ||
+            Utils.isNullOrEmpty(this.mailingData.subject) ||
+            Utils.isNullOrEmpty(this.mailingData.body)) {
+            this._messageHub.emit(MSG_MISSING_EMAILDATA);
+            return;
+        }
+
         this._dialogService.dialog(MailingExecuteProgressComponent, dr => {
             dr.componentInstance.setData(this.getMailingDataToSend());
         },
