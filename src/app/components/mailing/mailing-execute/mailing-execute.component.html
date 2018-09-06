@@ -14,7 +14,8 @@
                         <mat-radio-button value="one">Single</mat-radio-button>
                         <div class="explanation" fxLayout="row" fxLayoutAlign="start center">
                             <div>Send only one email to the test address, but take the data of line</div>
-                            <input type="number" formControlName="testLineNumber" style="width: 50px; margin-left: 5px">
+                            <input type="number" formControlName="testLineNumber" [max]="mailingData?.datasource?.data?.length"
+                                style="width: 50px; margin-left: 5px">
                         </div>
                         <mat-radio-button value="all">All</mat-radio-button>
                         <div class="explanation">Send to all lines in source data, but always to the test address.</div>

@@ -18,7 +18,6 @@ export class MailingExecuteComponent implements OnInit {
     @Input() mailingData: MailingDataModel;
 
     send: FormGroup;
-
     emailCount: number;
 
     constructor(
@@ -50,6 +49,7 @@ export class MailingExecuteComponent implements OnInit {
                 emailControl.setValue(config.sender.emailAddress, { emitEvent: false });
             }
         });
+
     }
 
     private getEmailCount(): number {
