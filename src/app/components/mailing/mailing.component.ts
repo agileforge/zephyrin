@@ -31,7 +31,7 @@ export class MailingComponent implements OnInit {
         this.loadLocally();
 
         this._messageHub.register(MSG_MISSING_DATASOURCE).subscribe(() => {
-            this._dialog.info('Datasource', 'Datasource missing, please provide it.').subscribe(() => {
+            this._dialog.info('Datasource', 'Datasource or email binding is missing, please provide it.').subscribe(() => {
                 this._mailingMergePanel.open();
             });
         });

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { DialogResponse } from '../../../enums/dialog-response.enum';
+import { LogService } from '../../../providers/log-service';
 import { MailerEngineService } from '../../../providers/mailer-engine/mailer-engine.service';
 import { MailingDataModel } from '../../../providers/mailer-engine/mailingDataModel';
 import { DialogComponent } from '../../dialog/dialog.component';
@@ -23,6 +24,7 @@ export class MailingExecuteProgressComponent implements OnInit {
     constructor(
         public dialogRef: MatDialogRef<DialogComponent>,
         private _mailerEngineService: MailerEngineService,
+        private _logger: LogService,
     ) { }
 
     ngOnInit() {
@@ -35,13 +37,13 @@ export class MailingExecuteProgressComponent implements OnInit {
     send() {
         this.sending = true;
         this.sent = false;
-        this._mailerEngineService.progress
-            .subscribe(progressValues => {
-                this.count = progressValues.count;
-                this.total = progressValues.total;
-                this.progress = progressValues.percent;
-            });
+        this.count = 0;
+        this.total = this.data.datasource.data.length;
         this._mailerEngineService.sendMails(this.data).subscribe(() => {
+            this.progress = ++this.count / this.total * 100;
+        }, err => {
+            this._logger.error(err.message, err);
+        }, () => {
             this.sending = false;
             this.sent = true;
         });

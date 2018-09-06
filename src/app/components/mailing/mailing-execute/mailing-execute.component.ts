@@ -103,6 +103,7 @@ export class MailingExecuteComponent implements OnInit {
 
         if (!this.mailingData ||
             !this.mailingData.datasource ||
+            Utils.isNullOrEmpty(this.mailingData.datasource.mailAddressField) ||
             !this.mailingData.datasource.data ||
             this.mailingData.datasource.data.length === 0) {
             this._messageHub.emit(MSG_MISSING_DATASOURCE);
@@ -119,6 +120,6 @@ export class MailingExecuteComponent implements OnInit {
         this._dialogService.dialog(MailingExecuteProgressComponent, dr => {
             dr.componentInstance.setData(this.getMailingDataToSend());
         },
-            { width: '400px', height: '250px' }).subscribe();
+            { width: '400px', height: '282px' }).subscribe();
     }
 }

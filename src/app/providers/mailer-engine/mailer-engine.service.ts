@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { from, Observable, of } from 'rxjs';
 import { catchError, concatMap, map, mergeMap } from 'rxjs/operators';
 import { EMAIL_REGEX } from '../../misc/const';
@@ -29,8 +29,6 @@ import { MailingDataModel } from './mailingDataModel';
     providedIn: 'root'
 })
 export class MailerEngineService {
-
-    progress = new EventEmitter<{ count: number, total: number, percent: number }>();
 
     private _placeHolderPattern = /(\{([\w\d_\-\.]*)\})/ig;
 
@@ -113,16 +111,7 @@ export class MailerEngineService {
                             }
                             that._logger.info(`Sending email to '${mail.to.join('\', \'')}'`);
                             return that._mailSenderService.send(mail).pipe(
-                                concatMap(() => {
-                                    const progressData = {
-                                        count: rowNum,
-                                        total: rowTotal,
-                                        percent: rowNum / rowTotal * 100
-                                    };
-                                    that.progress.emit(progressData);
-                                    that._logger.info(`Email ${progressData.count}/${progressData.total} (${progressData.percent})`);
-                                    return that._mailingLoggerService.success(mail, rowNum);
-                                }),
+                                concatMap(() => that._mailingLoggerService.success(mail, rowNum)),
                                 catchError(err => {
                                     that._logger.error(`Email ${rowNum} fail to send.`, err);
                                     return that._mailingLoggerService.sendFail(mail, err, rowNum);
