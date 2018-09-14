@@ -3,11 +3,11 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TestBed, inject } from '@angular/core/testing';
-import { DocumentMergerTxt } from './document-merger-txt';
+import { inject, TestBed } from '@angular/core/testing';
+import { TextDecoder, TextEncoder } from 'text-encoding';
 import { MIMETYPE_TXT } from '../../../misc/const';
-import { DocumentModel } from '../../../complexes/documents/documentModel';
-import { TextEncoder, TextDecoder } from 'text-encoding';
+import { DocumentModel } from '../../document/documentModel';
+import { DocumentMergerTxt } from './document-merger-txt';
 
 describe('DocumentMergerTxt', () => {
 
@@ -45,7 +45,7 @@ describe('DocumentMergerTxt', () => {
 
         // Assert
         const finalText = decoder.decode(mergedDocument.content);
-        const expectedText  = 'abc{d}ef5';
+        const expectedText = 'abc{d}ef5';
         expect(mergedDocument.mimeType).toEqual(MIMETYPE_TXT);
         expect(finalText).toEqual(expectedText);
     });
