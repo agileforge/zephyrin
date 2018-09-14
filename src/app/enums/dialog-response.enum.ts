@@ -1,3 +1,8 @@
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) agileforge. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 export enum DialogResponse {
     Ok = 1,
     Yes = 2,
@@ -6,4 +11,3 @@ export enum DialogResponse {
     Save = 5,
     Close = 6
 }
-

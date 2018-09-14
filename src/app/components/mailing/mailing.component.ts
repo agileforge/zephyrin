@@ -1,3 +1,8 @@
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) agileforge. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { MatExpansionPanel } from '@angular/material';
 import { MIMETYPE_PDF, MSG_MISSING_DATASOURCE, MSG_MISSING_EMAILDATA } from '../../misc/const';

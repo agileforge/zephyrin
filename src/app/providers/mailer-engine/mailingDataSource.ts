@@ -1,9 +1,9 @@
-import { MergeableRowDataModel } from '../data-loader/mergeableRowDataModel';
-
 /*---------------------------------------------------------------------------------------------
  * Copyright (c) agileforge. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+
+import { MergeableRowDataModel } from '../data-loader/mergeableRowDataModel';
 
 /**
 * Represents the source of data where mails must be sent. The data value can

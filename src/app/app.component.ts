@@ -1,8 +1,13 @@
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) agileforge. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import { Component } from '@angular/core';
-import { ElectronService } from './providers/electron.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AppConfig } from '../environments/environment';
 import { ConfigService } from './providers/config/config.service';
+import { ElectronService } from './providers/electron.service';
 import { LogService } from './providers/log-service';
 
 @Component({

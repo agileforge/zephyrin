@@ -1,25 +1,30 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) agileforge. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MailingExecuteProgressComponent } from './mailing-execute-progress.component';
 
+
 describe('MailingExecuteProgressComponent', () => {
-  let component: MailingExecuteProgressComponent;
-  let fixture: ComponentFixture<MailingExecuteProgressComponent>;
+    let component: MailingExecuteProgressComponent;
+    let fixture: ComponentFixture<MailingExecuteProgressComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MailingExecuteProgressComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [MailingExecuteProgressComponent]
+        })
+            .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MailingExecuteProgressComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(MailingExecuteProgressComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

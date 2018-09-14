@@ -1,9 +1,14 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) agileforge. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { debounceTime, filter, map } from 'rxjs/operators';
 import { ConfigService } from '../../../providers/config/config.service';
 import { MailingLogConfigModel } from '../../../providers/config/configModel';
 import { LogService } from '../../../providers/log-service';
-import { filter, map, debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'app-config-log',
@@ -45,9 +50,5 @@ export class ConfigLogComponent implements OnInit {
             that.configChanged.emit(c);
         });
     }
-
-    // selectDirectory() {
-    //     this._electronService.dialog.showOpenDialog(this._electronService.window, { properties: ['openDirectory'] });
-    // }
 
 }

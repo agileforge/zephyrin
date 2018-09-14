@@ -1,9 +1,9 @@
-import { FILE_COMPLIANT_REGEX, MIMETYPE_DOCX, MIMETYPE_PDF, MIMETYPE_TXT, MIMETYPE_XLSX } from './const';
-
 /*---------------------------------------------------------------------------------------------
  * Copyright (c) agileforge. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+
+import { FILE_COMPLIANT_REGEX, MIMETYPE_DOCX, MIMETYPE_PDF, MIMETYPE_TXT, MIMETYPE_XLSX } from './const';
 
 /**
  * Provides useful miscellaneous functions.

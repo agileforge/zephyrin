@@ -1,6 +1,11 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { SmtpConfigModel, SenderConfigModel, MailingLogConfigModel, ConfigModel } from '../../providers/config/configModel';
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) agileforge. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ConfigService } from '../../providers/config/config.service';
+import { MailingLogConfigModel, SenderConfigModel, SmtpConfigModel } from '../../providers/config/configModel';
 
 @Component({
     selector: 'app-config',

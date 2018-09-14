@@ -1,7 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) agileforge. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { HomeComponent } from './home.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
     let component: HomeComponent;
