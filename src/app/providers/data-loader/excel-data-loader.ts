@@ -1,10 +1,14 @@
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) agileforge. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import { Injectable } from '@angular/core';
-import { DataLoader } from './data-loader';
-import { FileService } from '../file/file.service';
-import { MergeableRowDataModel } from './mergeableRowDataModel';
-import { Observable } from 'rxjs';
 import * as excelToJson from 'convert-excel-to-json';
+import { from, Observable } from 'rxjs';
 import { LogService } from '../log-service';
+import { DataLoader } from './data-loader';
+import { MergeableRowDataModel } from './mergeableRowDataModel';
 
 @Injectable()
 export class ExcelDataLoader extends DataLoader {
@@ -22,7 +26,7 @@ export class ExcelDataLoader extends DataLoader {
      */
     load(fileName: string): Observable<MergeableRowDataModel[]> {
         this._logger.debug(`Starting to load data from Excel file '${fileName}'.`);
-        return Observable.create(new Promise((resolve, reject) => {
+        return from(new Promise((resolve, reject) => {
             try {
                 const result = excelToJson({
                     sourceFile: fileName,
@@ -35,7 +39,7 @@ export class ExcelDataLoader extends DataLoader {
                 const sheetOneData = <MergeableRowDataModel[]>result[sheetOneKey];
 
                 this._logger.info(`Data from Excel file '${fileName}' loaded successfully.`);
-                resolve(sheetOneData);
+                resolve(sheetOneData.slice(1, sheetOneData.length));
             } catch (error) {
                 this._logger.error(`Loading from Excel file '${fileName}' fail with error:\n${error}`);
                 reject(error);

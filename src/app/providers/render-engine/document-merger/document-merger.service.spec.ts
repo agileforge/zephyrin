@@ -3,21 +3,20 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TestBed, inject } from '@angular/core/testing';
-import { DocumentMergerService } from './document-merger.service';
-import { DocumentMerger } from './document-merger';
+import { inject, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { TextEncoder } from 'text-encoding';
+import { MIMETYPE_DOCX, MIMETYPE_PDF, MIMETYPE_TXT } from '../../../misc/const';
+import { DocumentModel } from '../../document/documentModel';
+import { ElectronService } from '../../electron.service';
+import { LogService } from '../../log-service';
 import { RenderEngine } from '../render-engines/render-engine';
-import { MIMETYPE_TXT, MIMETYPE_DOCX, MIMETYPE_PDF } from '../../../misc/const';
-import { DocumentModel } from '../../../complexes/documents/documentModel';
+import { RenderEnginePdf } from '../render-engines/render-engine-pdf.service';
+import { RenderEngineTxt } from '../render-engines/render-engine-txt.service';
+import { DocumentMerger } from './document-merger';
 import { DocumentMergerTxt } from './document-merger-txt';
 import { DocumentMergerWord } from './document-merger-word';
-import { RenderEngineTxt } from '../render-engines/render-engine-txt.service';
-import { RenderEnginePdf } from '../render-engines/render-engine-pdf.service';
-import { TextEncoder } from 'text-encoding';
-import { LogService } from '../../log-service';
-import { ElectronService } from '../../electron.service';
-import { of } from 'rxjs';
-import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
+import { DocumentMergerService } from './document-merger.service';
 
 export class MockDocumentMergerService extends DocumentMergerService {
 
@@ -88,6 +87,7 @@ describe('DocumentMergerService', () => {
         };
         const template = <DocumentModel>{
             mimeType: MIMETYPE_DOCX,
+            fileName: 'template.docx',
             content: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
         };
 
@@ -109,6 +109,7 @@ describe('DocumentMergerService', () => {
             };
             const template = <DocumentModel>{
                 mimeType: 'unknownMimeType',
+                fileName: 'template.docx',
                 content: encoder.encode('Hello {email} num {number}!')
             };
 
@@ -131,6 +132,7 @@ describe('DocumentMergerService', () => {
             };
             const template = <DocumentModel>{
                 mimeType: MIMETYPE_TXT,
+                fileName: 'template.docx',
                 content: encoder.encode('Hello {email} num {number}!')
             };
 
@@ -149,6 +151,7 @@ describe('DocumentMergerService', () => {
             };
             const template = <DocumentModel>{
                 mimeType: MIMETYPE_DOCX,
+                fileName: 'template.docx',
                 content: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
             };
 
@@ -167,6 +170,7 @@ describe('DocumentMergerService', () => {
             };
             const template = <DocumentModel>{
                 mimeType: MIMETYPE_DOCX,
+                fileName: 'template.docx',
                 content: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
             };
 
@@ -192,6 +196,7 @@ describe('DocumentMergerService', () => {
             };
             const template = <DocumentModel>{
                 mimeType: MIMETYPE_TXT,
+                fileName: 'template.docx',
                 content: encoder.encode('Hello {email} num {number}!')
             };
 
@@ -214,6 +219,7 @@ describe('DocumentMergerService', () => {
             };
             const template = <DocumentModel>{
                 mimeType: MIMETYPE_TXT,
+                fileName: 'template.docx',
                 content: encoder.encode('Hello {email} num {number}!')
             };
 
@@ -232,6 +238,7 @@ describe('DocumentMergerService', () => {
             };
             const template = <DocumentModel>{
                 mimeType: MIMETYPE_DOCX,
+                fileName: 'template.docx',
                 content: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
             };
 
@@ -250,6 +257,7 @@ describe('DocumentMergerService', () => {
             };
             const template = <DocumentModel>{
                 mimeType: MIMETYPE_DOCX,
+                fileName: 'template.docx',
                 content: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9])
             };
 

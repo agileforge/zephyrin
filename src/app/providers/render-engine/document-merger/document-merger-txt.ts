@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { DocumentModel } from '../../../complexes/documents/documentModel';
+import { TextDecoder, TextEncoder } from 'text-encoding';
 import Utils from '../../../misc/utils';
-import { DocumentMerger } from './document-merger';
-import { TextEncoder, TextDecoder } from 'text-encoding';
 import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
+import { DocumentModel } from '../../document/documentModel';
+import { DocumentMerger } from './document-merger';
 
 /**
  * Service that is able to merge data with a text document template.

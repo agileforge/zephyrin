@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-dialog-content>{{ message }}</mat-dialog-content>
+<mat-dialog-content style="color: #e51d00; margin-top: 7px;">{{ warn }}</mat-dialog-content>
+<mat-dialog-actions>
+    <button *ngIf="isButtonVisible(DialogButton.BtnOk)" mat-button [mat-dialog-close]="DialogResponse.Yes">Ok</button>
+    <button *ngIf="isButtonVisible(DialogButton.BtnYes)" mat-button [mat-dialog-close]="DialogResponse.Yes">Yes</button>
+    <button *ngIf="isButtonVisible(DialogButton.BtnNo)" mat-button [mat-dialog-close]="DialogResponse.No">No</button>
+    <button *ngIf="isButtonVisible(DialogButton.BtnSave)" mat-button [mat-dialog-close]="DialogResponse.Save">Save</button>
+    <button *ngIf="isButtonVisible(DialogButton.BtnCancel)" mat-button [mat-dialog-close]="DialogResponse.Cancel">Cancel</button>
+</mat-dialog-actions>

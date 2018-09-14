@@ -3,11 +3,11 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TestBed, inject } from '@angular/core/testing';
-import { RenderEngineTxt } from './render-engine-txt.service';
-import { DocumentModel } from '../../../complexes/documents/documentModel';
-import { MIMETYPE_TXT } from '../../../misc/const';
+import { inject, TestBed } from '@angular/core/testing';
 import { TextEncoder } from 'text-encoding';
+import { MIMETYPE_TXT } from '../../../misc/const';
+import { DocumentModel } from '../../document/documentModel';
+import { RenderEngineTxt } from './render-engine-txt.service';
 
 describe('RenderEnginePdfService', () => {
 

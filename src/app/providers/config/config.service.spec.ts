@@ -27,9 +27,11 @@ describe('ConfigService', () => {
         }
     };
     const configJson = JSON.stringify(config, null, 2);
+    const currentDir = '/my/path/to/dir/';
 
     let target: ConfigService;
     let fileServiceStub: FileService;
+    let electronServiceStub: ElectronService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -41,9 +43,14 @@ describe('ConfigService', () => {
             ]
         });
 
+        electronServiceStub = TestBed.get(ElectronService);
+        spyOnProperty(electronServiceStub, 'currentDir', 'get').and.returnValue(currentDir);
+
+        fileServiceStub = TestBed.get(FileService);
+        spyOnProperty(fileServiceStub, 'currentDir', 'get').and.returnValue(currentDir);
+
         target = TestBed.get(ConfigService);
         target.config = config;
-        fileServiceStub = TestBed.get(FileService);
     });
 
     it('should be created', inject([ConfigService], (service: ConfigService) => {
@@ -67,7 +74,7 @@ describe('ConfigService', () => {
             target.save();
 
             // Assert
-            expect(fileName).toEqual(__dirname + 'config.json');
+            expect(fileName).toEqual(currentDir + 'config.json');
             expect(text).toEqual(configJson);
         });
 
@@ -83,7 +90,7 @@ describe('ConfigService', () => {
             await target.load().toPromise();
 
             // Assert
-            expect(spy).toHaveBeenCalledWith(__dirname + 'config.json');
+            expect(spy).toHaveBeenCalledWith(currentDir + 'config.json');
         });
 
         it('should call return loaded config', async () => {

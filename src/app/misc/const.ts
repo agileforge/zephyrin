@@ -29,3 +29,12 @@ export const FILEDATE_FORMAT = 'yyyymmdd_HHMMss';
 export const ISODATE_FORMAT = 'yyyy-mm-dd HH:MM:ss';
 
 // #endregion
+
+// #region Message names
+
+export const MSG_CONFIG_NOK = 'config-nok';
+export const MSG_MISSING_DATASOURCE = 'missing-datasource';
+export const MSG_MISSING_EMAILDATA = 'missing-emaildata';
+export const MSG_CANCEL_SENDING = 'cancel-sending';
+
+// #endregion

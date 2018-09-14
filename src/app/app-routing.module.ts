@@ -1,6 +1,11 @@
-import { HomeComponent } from './components/home/home.component';
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) agileforge. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './components/home/home.component';
 
 const routes: Routes = [
     {
@@ -10,7 +15,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes, {useHash: true})],
+    imports: [RouterModule.forRoot(routes, { useHash: true })],
     exports: [RouterModule]
 })
 export class AppRoutingModule { }

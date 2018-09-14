@@ -4,20 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { MailSenderService } from '../mail-sender/mail-sender.service';
-import { MailingDataModel } from './mailingDataModel';
-import { MailModel } from '../mail-sender/mailModel';
+import { from, Observable, of } from 'rxjs';
+import { catchError, concatMap, map, mergeMap } from 'rxjs/operators';
 import { EMAIL_REGEX } from '../../misc/const';
-import { ConfigService } from '../config/config.service';
 import Utils from '../../misc/utils';
-import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
-import { InvalidEmailAddressError } from './invalidEmailAddressError';
-import { DocumentMergerService } from '../render-engine/document-merger/document-merger.service';
-import { Observable, from, of } from 'rxjs';
-import { merge, map, last } from 'rxjs/operators';
-import { DocumentModel } from '../../complexes/documents/documentModel';
+import { ConfigService } from '../config/config.service';
 import { MergeableRowDataModel } from '../data-loader/mergeableRowDataModel';
-import { resource } from 'selenium-webdriver/http';
+import { DocumentModel } from '../document/documentModel';
+import { LogService } from '../log-service';
+import { MailSenderService } from '../mail-sender/mail-sender.service';
+import { MailModel } from '../mail-sender/mailModel';
+import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
+import { DocumentMergerService } from '../render-engine/document-merger/document-merger.service';
+import { InvalidEmailAddressError } from './invalidEmailAddressError';
+import { MailingDataModel } from './mailingDataModel';
 
 /**
  * Service that is able to merge and then send email with attachment
@@ -37,6 +37,7 @@ export class MailerEngineService {
      * @memberof MailerEngineService
      */
     constructor(
+        private _logger: LogService,
         private _configService: ConfigService,
         private _mailSenderService: MailSenderService,
         private _mailingLoggerService: MailingLoggerService,
@@ -52,6 +53,7 @@ export class MailerEngineService {
      */
     sendMails(mailingDataSource: MailingDataModel): Observable<void> {
         const that = this;
+        that._logger.debug(`Starting to send ${mailingDataSource.datasource.data.length} email...`);
         const config = this._configService.config;
 
         const emailField = mailingDataSource.datasource.mailAddressField;
@@ -61,15 +63,16 @@ export class MailerEngineService {
         const renderType = mailingDataSource.renderType;
 
         // Initialize the mailing log
-        that._mailingLoggerService.initial(mailingDataSource);
+        that._mailingLoggerService.initial(mailingDataSource).subscribe();
 
         // And send it all
         let rowCounter = 0;
+        const rowTotal = mailingDataSource.datasource.data.length;
         return from(mailingDataSource.datasource.data)
             .pipe(
                 map(row => <{ rowNum: number, row: MergeableRowDataModel }>{ rowNum: ++rowCounter, row }),
-                merge(3),
-                map(irow => {
+                mergeMap(irow => {
+                    that._logger.debug(`Processing mail of line '${irow.rowNum}'...`);
                     const rowNum = irow.rowNum;
                     const row = irow.row;
 
@@ -79,6 +82,7 @@ export class MailerEngineService {
                     // Check if email is valid
                     if (!EMAIL_REGEX.test(emailAddress)) {
                         const error = new InvalidEmailAddressError(emailAddress, emailField, row, rowNum);
+                        that._logger.error(error.message, error);
                         that._mailingLoggerService.emailAddressError(error);
                         return;
                     }
@@ -95,22 +99,26 @@ export class MailerEngineService {
                     // Eventually merge and render the attached document.
                     let merger = of(<DocumentModel>{ mimeType: renderType, content: null });
                     if (template) {
+                        that._logger.debug('Found template, merge and render it.');
                         merger = that._documentMergerService.mergeAndRender(row, template, renderType);
                     }
 
                     // Send the email
-                    merger.subscribe(document => {
-                        if (document.content) {
-                            mail.attachments.push(document);
-                        }
-                        that._mailSenderService.send(mail).subscribe(() => {
-                            return that._mailingLoggerService.success(mail, rowNum);
-                        }, err => {
-                            return that._mailingLoggerService.sendFail(mail, err, rowNum);
-                        });
-                    });
-                }),
-                last()
+                    return merger.pipe(
+                        concatMap(document => {
+                            if (document.content) {
+                                mail.attachments.push(document);
+                            }
+                            that._logger.info(`Sending email to '${mail.to.join('\', \'')}'`);
+                            return that._mailSenderService.send(mail).pipe(
+                                concatMap(() => that._mailingLoggerService.success(mail, rowNum)),
+                                catchError(err => {
+                                    that._logger.error(`Email ${rowNum} fail to send.`, err);
+                                    return that._mailingLoggerService.sendFail(mail, err, rowNum);
+                                })
+                            );
+                        }));
+                }, 3),
             );
     }
 

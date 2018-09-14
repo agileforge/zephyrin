@@ -1,9 +1,9 @@
-import { FILE_COMPLIANT_REGEX, MIMETYPE_TXT, MIMETYPE_DOCX, MIMETYPE_XLSX, MIMETYPE_PDF } from './const';
-
 /*---------------------------------------------------------------------------------------------
  * Copyright (c) agileforge. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+
+import { FILE_COMPLIANT_REGEX, MIMETYPE_DOCX, MIMETYPE_PDF, MIMETYPE_TXT, MIMETYPE_XLSX } from './const';
 
 /**
  * Provides useful miscellaneous functions.
@@ -53,13 +53,13 @@ export default class Utils {
         }
     }
 
-        /**
-     * Get the corresponding extension for the specified mimeType.
-     * @static
-     * @param {string} mimeType The mime type
-     * @returns {string} The extension for the specified mimeType.
-     * @memberof Utils
-     */
+    /**
+ * Get the corresponding extension for the specified mimeType.
+ * @static
+ * @param {string} mimeType The mime type
+ * @returns {string} The extension for the specified mimeType.
+ * @memberof Utils
+ */
     static getMimeTypeExtension(mimeType: string): string {
         if (!mimeType) {
             return '';
@@ -83,10 +83,29 @@ export default class Utils {
      * @memberof Utils
      */
     static getPropertyCI(obj: object, property: string): object {
-        const foundProperty = Object.keys(obj).find(k => k.toLowerCase() === property.toLowerCase() );
+        const foundProperty = Object.keys(obj).find(k => k.toLowerCase() === property.toLowerCase());
         if (foundProperty) {
             return obj[foundProperty];
         }
         return undefined;
     }
+
+    /**
+     * Check if an object is not null or (for string) empty.
+     * @private
+     * @param {*} object
+     * @returns {boolean} True if null or empty; otherwise false.
+     * @memberof ConfigService
+     */
+    static isNullOrEmpty(object: any): boolean {
+        if (!object) {
+            return true;
+        }
+        if (typeof object === 'string') {
+            return object.trim() === '';
+        }
+
+        return false;
+    }
+
 }

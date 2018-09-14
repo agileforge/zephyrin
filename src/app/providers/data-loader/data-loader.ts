@@ -1,5 +1,10 @@
-import { MergeableRowDataModel } from './mergeableRowDataModel';
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) agileforge. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import { Observable } from 'rxjs';
+import { MergeableRowDataModel } from './mergeableRowDataModel';
 
 /**
  * Base class for data loaders.

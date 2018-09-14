@@ -4,16 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
+import * as dateFormat from 'dateformat';
+import { empty, merge, Observable } from 'rxjs';
+import { FILEDATE_FORMAT, ISODATE_FORMAT } from '../../misc/const';
+import Utils from '../../misc/utils';
+import { ConfigService } from '../config/config.service';
+import { DateProviderService } from '../date-provider/date-provider.service';
+import { FileService } from '../file/file.service';
+import { LogService } from '../log-service';
 import { MailModel } from '../mail-sender/mailModel';
 import { InvalidEmailAddressError } from '../mailer-engine/invalidEmailAddressError';
-import { Observable, empty, merge } from 'rxjs';
 import { MailingDataModel } from '../mailer-engine/mailingDataModel';
-import { FileService } from '../file/file.service';
-import * as dateFormat from 'dateformat';
-import { LogService } from '../log-service';
-import { DateProviderService } from '../date-provider/date-provider.service';
-import { FILEDATE_FORMAT, ISODATE_FORMAT } from '../../misc/const';
-import { ConfigService } from '../config/config.service';
 
 /**
  * Service to log mails when sent.
@@ -41,15 +42,20 @@ export class MailingLoggerService {
      * @memberof MailingLoggerService
      */
     initial(mailingData: MailingDataModel): Observable<void> {
+        const that = this;
+        this._logger.debug('Starting to log the initial mailing data...');
         // Get and create log directory
         const directoryPath = this.getDirectory(mailingData.name);
 
         // Build file names
         const configFileName = this._fileService.pathJoin(directoryPath, 'config.json');
         const dataFileName = this._fileService.pathJoin(directoryPath, 'mailing.json');
-        const templateFileName = this._fileService.pathJoin(directoryPath, mailingData.template.fileName);
+        let templateFileName = null;
         const datasourceFileName = this._fileService.pathJoin(
             directoryPath, this._fileService.pathExtractFileName(mailingData.datasource.fileName));
+        if (!Utils.isNullOrEmpty(mailingData.template) && !Utils.isNullOrEmpty(mailingData.template.fileName)) {
+            templateFileName = this._fileService.pathJoin(directoryPath, mailingData.template.fileName);
+        }
 
         // Get mailing data without template.
         const template = mailingData.template;
@@ -59,12 +65,13 @@ export class MailingLoggerService {
         const dataJson = JSON.stringify(mailingData, null, 2);
         mailingData.datasource.data = data;
         mailingData.template = template;
+        this._logger.debug('Mailing data without rows is:', dataJson);
 
         // Save it all
         return merge(
             this._fileService.writeText(configFileName, JSON.stringify(this._config.config, null, 2)),
             this._fileService.writeText(dataFileName, dataJson),
-            this._fileService.writeBytes(templateFileName, mailingData.template.content),
+            templateFileName ? this._fileService.writeBytes(templateFileName, mailingData.template.content) : empty(),
             this._fileService.copyFile(mailingData.datasource.fileName, datasourceFileName)
         );
     }
@@ -82,10 +89,6 @@ export class MailingLoggerService {
         return this._fileService.appendText(fileName, message);
     }
 
-    /**
-     * @param {MailModel} mail The mail that fail.
-     * @memberof MailingLoggerService
-     */
     /**
      * Log a mail that has fail when sending.
      * @param {MailModel} mail The mail data that fail while sending.
@@ -121,7 +124,9 @@ export class MailingLoggerService {
      * @memberof MailingLoggerService
      */
     private getDirectory(mailingName: string): string {
-        let directoryPath = this._config.config.mailingLog.directoryPath || this._fileService.pathJoin(__dirname, 'logs');
+        let directoryPath =
+            this._config.config.mailingLog.directoryPath ||
+            this._fileService.pathJoin(this._fileService.currentDir, 'logs');
         const sessionName = dateFormat(this._dateProvider.now(), FILEDATE_FORMAT);
 
         if (mailingName) {

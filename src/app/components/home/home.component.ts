@@ -1,15 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+/*---------------------------------------------------------------------------------------------
+ * Copyright (c) agileforge. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSidenav } from '@angular/material';
+import { MSG_CONFIG_NOK } from '../../misc/const';
+import { ConfigModel } from '../../providers/config/configModel';
+import { DialogService } from '../../providers/dialog/dialog.service';
+import { MessageHubService } from '../../providers/message-hub.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+    @ViewChild('sidenav') private _sidenav: MatSidenav;
 
-  ngOnInit() {
-  }
+    constructor(
+        private _messageHub: MessageHubService,
+        private _dialog: DialogService
+    ) { }
+
+    ngOnInit() {
+        const that = this;
+        this._messageHub.register(MSG_CONFIG_NOK).subscribe((config: ConfigModel) => {
+            this._dialog.info('Configuration', 'Missing configuration informations. Please set it.').subscribe(() => {
+                that._sidenav.open();
+            });
+        });
+    }
 
 }

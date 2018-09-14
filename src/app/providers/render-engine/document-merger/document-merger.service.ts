@@ -4,16 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { DocumentModel } from '../../../complexes/documents/documentModel';
-import { DocumentMerger } from './document-merger';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { MIMETYPE_DOCX, MIMETYPE_PDF, MIMETYPE_TXT } from '../../../misc/const';
+import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
+import { DocumentModel } from '../../document/documentModel';
+import { FileService } from '../../file/file.service';
 import { RenderEngine } from '../render-engines/render-engine';
-import { DocumentMergerTxt } from './document-merger-txt';
-import { MIMETYPE_TXT, MIMETYPE_DOCX, MIMETYPE_PDF } from '../../../misc/const';
-import { DocumentMergerWord } from './document-merger-word';
 import { RenderEnginePdf } from '../render-engines/render-engine-pdf.service';
 import { RenderEngineTxt } from '../render-engines/render-engine-txt.service';
-import { Observable } from 'rxjs';
-import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
+import { DocumentMerger } from './document-merger';
+import { DocumentMergerTxt } from './document-merger-txt';
+import { DocumentMergerWord } from './document-merger-word';
 
 /**
  * Service that is able to merge data with a document template.
@@ -29,7 +31,8 @@ export class DocumentMergerService {
         private _mergerTxt: DocumentMergerTxt,
         private _mergerWord: DocumentMergerWord,
         private _renderPdf: RenderEnginePdf,
-        private _renderTxt: RenderEngineTxt
+        private _renderTxt: RenderEngineTxt,
+        private _fileService: FileService,
     ) { }
 
     /**
@@ -42,12 +45,18 @@ export class DocumentMergerService {
      * @memberof DocumentMergerService
      */
     mergeAndRender(data: MergeableRowDataModel, template: DocumentModel, renderingType: string): Observable<DocumentModel> {
-        // // Get merger by mime type and merge template
+        const that = this;
+        // Get merger by mime type and merge template
         const merger = this.getDocumentMerger(template.mimeType);
         const document = merger.merge(data, template);
         // Get renderEngine according renderingType and render document
         const renderer = this.getRenderEngine(renderingType);
-        const renderedDocument = renderer.render(document);
+        const renderedDocument = renderer.render(document).pipe(
+            map(rDoc => {
+                rDoc.fileName = that._fileService.changeExtension(template.fileName, '.pdf');
+                return rDoc;
+            })
+        );
         return renderedDocument;
     }
 

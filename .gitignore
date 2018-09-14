@@ -8,6 +8,7 @@
 /release
 main.js
 src/**/*.js
+!/src/assets/**/*
 *.js.map
 
 # dependencies
@@ -47,3 +48,8 @@ package-lock.json
 # System Files
 .DS_Store
 Thumbs.db
+
+# App data
+config.json
+/logs
+/test

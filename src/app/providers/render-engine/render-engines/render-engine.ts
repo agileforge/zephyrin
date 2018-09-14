@@ -3,9 +3,9 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Injectable, Injector } from '@angular/core';
-import { DocumentModel } from '../../../complexes/documents/documentModel';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { DocumentModel } from '../../document/documentModel';
 
 @Injectable({
     providedIn: 'root'

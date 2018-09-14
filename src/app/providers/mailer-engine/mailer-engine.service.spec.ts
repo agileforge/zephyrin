@@ -3,24 +3,24 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TestBed, inject } from '@angular/core/testing';
-import { MailerEngineService } from './mailer-engine.service';
-import { ConfigService } from '../config/config.service';
-import { MailSenderService } from '../mail-sender/mail-sender.service';
-import { MailingDataModel } from './mailingDataModel';
-import { MailingDataSource } from './mailingDataSource';
+import { inject, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { MailModel } from '../mail-sender/mailModel';
-import { ConfigModel, SmtpConfigModel, SenderConfigModel, MailingLogConfigModel } from '../config/configModel';
-import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
-import { InvalidEmailAddressError } from './invalidEmailAddressError';
-import { MIMETYPE_PDF, MIMETYPE_TXT } from '../../misc/const';
-import { DocumentMergerService } from '../render-engine/document-merger/document-merger.service';
-import { DocumentModel } from '../../complexes/documents/documentModel';
 import { TextEncoder } from 'text-encoding';
+import { MIMETYPE_PDF, MIMETYPE_TXT } from '../../misc/const';
+import { ConfigService } from '../config/config.service';
+import { ConfigModel, MailingLogConfigModel, SenderConfigModel, SmtpConfigModel } from '../config/configModel';
+import { DocumentModel } from '../document/documentModel';
+import { ElectronService } from '../electron.service';
 import { FileService } from '../file/file.service';
 import { LogService } from '../log-service';
-import { ElectronService } from '../electron.service';
+import { MailSenderService } from '../mail-sender/mail-sender.service';
+import { MailModel } from '../mail-sender/mailModel';
+import { MailingLoggerService } from '../mailing-logger/mailing-logger.service';
+import { DocumentMergerService } from '../render-engine/document-merger/document-merger.service';
+import { InvalidEmailAddressError } from './invalidEmailAddressError';
+import { MailerEngineService } from './mailer-engine.service';
+import { MailingDataModel } from './mailingDataModel';
+import { MailingDataSource } from './mailingDataSource';
 
 describe('MailerEngineService', () => {
     let target: MailerEngineService;
@@ -44,10 +44,14 @@ describe('MailerEngineService', () => {
                 ElectronService,
             ]
         });
+
+        const fileServiceStub = TestBed.get(FileService);
+        spyOnProperty(fileServiceStub, 'currentDir', 'get').and.returnValue('/');
         configServiceStub = TestBed.get(ConfigService);
         mailSenderServiceStub = TestBed.get(MailSenderService);
         mailingLoggerServiceStub = TestBed.get(MailingLoggerService);
         documentMergerServiceStub = TestBed.get(DocumentMergerService);
+
         target = TestBed.get(MailerEngineService);
 
         const config = <ConfigModel>{

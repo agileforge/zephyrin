@@ -7,7 +7,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ElectronService } from '../electron.service';
 import { LogService } from '../log-service';
-import * as path from 'path';
 
 /**
  * File service to access to local files.
@@ -27,7 +26,28 @@ export class FileService {
     constructor(
         private _logger: LogService,
         private _electron: ElectronService
-    ) { }
+    ) {
+    }
+
+    /**
+     * Gets the current directory.
+     * @readonly
+     * @type {string}
+     * @memberof FileService
+     */
+    get currentDir(): string { return this._electron.currentDir; }
+
+    /**
+     * Gets the temp directory of OS.
+     * @readonly
+     * @type {string}
+     * @memberof FileService
+     */
+    get tempDir(): string {
+        const path = this.pathJoin(this._electron.tempDir, 'zephyrin');
+        this.makeDir(path);
+        return path;
+    }
 
     /**
      * Reads a the specified fileName and returns his content as a byte array.
@@ -37,16 +57,17 @@ export class FileService {
      */
     readBytes(fileName: string): Observable<Uint8Array> {
         const that = this;
-        this._logger.debug(`Starting to write a text content to file '${fileName}'.`);
+        this._logger.debug(`Starting to read bytes from file '${fileName}'.`);
         return Observable.create(observer => {
             this._electron.fs.readFile(fileName, (err, data) => {
                 if (err) {
                     that._logger.error(`Error reading file '${fileName}': '${err.message}'`);
-                    observer.onError(err);
+                    observer.error(err);
                     return;
                 }
                 that._logger.debug(`File '${fileName}' read successfully.`);
-                observer.onNext(new Uint8Array(data));
+                observer.next(new Uint8Array(data));
+                observer.complete();
             });
         });
     }
@@ -61,14 +82,15 @@ export class FileService {
         const that = this;
         this._logger.debug(`Starting to write a binary content to file '${fileName}'.`);
         return Observable.create(observer => {
-            this._electron.fs.writeFile(fileName, content.buffer, err => {
+            this._electron.fs.writeFile(fileName, new Buffer(content), err => {
                 if (err) {
                     that._logger.error(`Error while writing to file '${fileName}': '${err.message}'`);
-                    observer.onError(err);
+                    observer.error(err);
                     return;
                 }
                 that._logger.debug(`File '${fileName}' written successfully.`);
-                observer.onNext();
+                observer.next();
+                observer.complete();
             });
         });
     }
@@ -87,11 +109,12 @@ export class FileService {
             this._electron.fs.writeFile(fileName, text, error => {
                 if (error) {
                     that._logger.error(`Error while writing to file '${fileName}': '${error.message}'`);
-                    observer.onError(error);
+                    observer.error(error);
                     return;
                 }
                 that._logger.debug(`File '${fileName}' written successfully.`);
-                observer.onNext();
+                observer.next();
+                observer.complete();
             });
         });
     }
@@ -111,11 +134,12 @@ export class FileService {
             this._electron.fs.appendFile(fileName, text, error => {
                 if (error) {
                     that._logger.error(`Error while writing to file '${fileName}': '${error.message}'`);
-                    observer.onError(error);
+                    observer.error(error);
                     return;
                 }
                 that._logger.debug(`File '${fileName}' written successfully.`);
-                observer.onNext();
+                observer.next();
+                observer.complete();
             });
         });
     }
@@ -133,10 +157,11 @@ export class FileService {
             this._electron.fs.readFile(fileName, 'utf8', (err, data) => {
                 if (err) {
                     that._logger.error(`Error while reading file '${fileName}': '${err.message}'`);
-                    observer.onError(err);
+                    observer.error(err);
                 }
                 that._logger.debug(`File '${fileName}' read successfully.`);
-                observer.onNext(data);
+                observer.next(data);
+                observer.complete();
             });
         });
     }
@@ -147,6 +172,16 @@ export class FileService {
      * @memberof FileService
      */
     makeDir(directoryPath: string): void {
+        if (this._electron.fs.existsSync(directoryPath)) {
+            return;
+        }
+
+        const pathDirs = directoryPath.split(this._electron.path.sep);
+        const parentDir = pathDirs.slice(0, pathDirs.length - 1).join(this._electron.path.sep);
+
+        if (!this._electron.fs.existsSync(parentDir)) {
+            this.makeDir(parentDir);
+        }
         this._electron.fs.mkdirSync(directoryPath);
     }
 
@@ -158,12 +193,17 @@ export class FileService {
      * @memberof FileService
      */
     copyFile(source: string, dest: string): Observable<void> {
+        const that = this;
+        this._logger.debug(`Starting to copy file '${source}' to '${dest}'...`);
         return Observable.create(observer => {
             this._electron.fs.copyFile(source, dest, error => {
                 if (error) {
-                    observer.onError(error);
+                    that._logger.debug(`Fail to copy file '${source}' to '${dest}'...`, error);
+                    observer.error(error);
                 } else {
-                    observer.onNext();
+                    this._logger.debug(`File '${source}' has been successfully copied to '${dest}'...`);
+                    observer.next();
+                    observer.complete();
                 }
             });
         });
@@ -177,12 +217,40 @@ export class FileService {
      * @memberof FileService
      */
     moveFile(source: string, dest: string): Observable<void> {
+        const that = this;
+        this._logger.debug(`Starting to move file '${source}' to '${dest}'...`);
         return Observable.create(observer => {
             this._electron.fs.rename(source, dest, error => {
                 if (error) {
-                    observer.onError(error);
+                    that._logger.debug(`Fail to move file '${source}' to '${dest}'...`, error);
+                    observer.error(error);
                 } else {
-                    observer.onNext();
+                    this._logger.debug(`File '${source}' has been successfully moved to '${dest}'...`);
+                    observer.next();
+                    observer.complete();
+                }
+            });
+        });
+    }
+
+    /**
+     * Deletes the specified fileName.
+     * @param {string} fileName File to delete.
+     * @returns {Observable<void>}
+     * @memberof FileService
+     */
+    deleteFile(fileName: string): Observable<void> {
+        const that = this;
+        this._logger.debug(`Starting to delete file '${fileName}'...`);
+        return Observable.create(observer => {
+            this._electron.fs.unlink(fileName, error => {
+                if (error) {
+                    that._logger.debug(`Fail to delete file '${fileName}'.`, error);
+                    observer.error(error);
+                } else {
+                    this._logger.debug(`File '${fileName}' has been successfully deleted.`);
+                    observer.next();
+                    observer.complete();
                 }
             });
         });
@@ -207,7 +275,7 @@ export class FileService {
      * @memberof FileService
      */
     pathJoin(...paths: string[]): string {
-        return path.join(...paths);
+        return this._electron.path.join(...paths);
     }
 
     /**
@@ -218,7 +286,17 @@ export class FileService {
      * @memberof FileService
      */
     pathExtractFileName(fileName: string): string {
-        return path.basename(fileName);
+        return this._electron.path.basename(fileName);
     }
 
+    /**
+     * Change the extension of the specified file.
+     * @param {string} fileName File to change.
+     * @param {string} extension New extension including dot. Ex: '.ext'
+     * @memberof FileService
+     */
+    changeExtension(fileName: string, extension: string): string {
+        const pos = fileName.lastIndexOf('.');
+        return fileName.substr(0, pos < 0 ? fileName.length : pos) + extension;
+    }
 }

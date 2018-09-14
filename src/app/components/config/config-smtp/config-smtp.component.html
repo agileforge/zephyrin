@@ -1,0 +1,15 @@
+<form [formGroup]="smtp" novalidate>
+    <mat-form-field>
+        <input formControlName="host" matInput placeholder="Host">
+    </mat-form-field>
+    <mat-form-field>
+        <input type="number" formControlName="port" matInput placeholder="Port">
+    </mat-form-field>
+    <mat-form-field>
+        <input formControlName="userName" matInput placeholder="User name">
+    </mat-form-field>
+    <mat-form-field>
+        <input type="password" formControlName="password" matInput placeholder="Password">
+    </mat-form-field>
+    <mat-checkbox *ngIf="false" style="margin-bottom:5px;" formControlName="isSsl">Is SSL</mat-checkbox>
+</form>

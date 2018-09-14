@@ -4,11 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Injectable } from '@angular/core';
-import { ConfigModel } from './configModel';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import Utils from '../../misc/utils';
 import { FileService } from '../file/file.service';
 import { LogService } from '../log-service';
-import { map } from 'rxjs/operators';
+import { ConfigModel } from './configModel';
 
 /**
  * Provides user configuration services.
@@ -20,13 +21,10 @@ import { map } from 'rxjs/operators';
 })
 export class ConfigService {
 
-    config = <ConfigModel>{
-        mailingLog: {
-            directoryPath: this._fileService.pathJoin(__dirname, 'logs'),
-        },
-    };
+    config: ConfigModel;
+    configSubject = new ReplaySubject<ConfigModel>();
 
-    private _fileName = this._fileService.pathJoin(__dirname, 'config.json');
+    private _fileName: string;
 
     /**
      *Creates an instance of ConfigServiceService.
@@ -34,15 +32,23 @@ export class ConfigService {
      */
     constructor(
         private _logger: LogService,
-        private _fileService: FileService
-    ) { }
+        private _fileService: FileService,
+    ) {
+        this.config = <ConfigModel>{
+            mailingLog: {
+                directoryPath: this._fileService.pathJoin(this._fileService.currentDir, 'logs'),
+            },
+        };
+
+        this._fileName = this._fileService.pathJoin(this._fileService.currentDir, 'config.json');
+    }
 
     /**
      * Saves the configuration.
      * @returns {Observable<ConfigModel>}
      * @memberof ConfigService
      */
-     save(): Observable<void> {
+    save(): Observable<void> {
         this._logger.debug(`Saving config to file '${this._fileName}'.`);
         const text = JSON.stringify(this.config, null, 2);
         const result = this._fileService.writeText(this._fileName, text);
@@ -62,9 +68,27 @@ export class ConfigService {
             map(t => {
                 that.config = <ConfigModel>JSON.parse(t);
                 this._logger.info(`Config successfully loaded from file '${this._fileName}':\n${t}.`);
+                this.configSubject.next(this.config);
                 return that.config;
             })
         );
+    }
+
+    /**
+     * Check if config is complient and ready.
+     * @returns {boolean} True id complient and ready; oterwise false.
+     * @memberof ConfigService
+     */
+    checkConfig(): boolean {
+        const cfg = this.config;
+        const ine = Utils.isNullOrEmpty;
+
+        return !ine(cfg) &&
+            !ine(cfg.sender) &&
+            !ine(cfg.sender.emailAddress) &&
+            !ine(cfg.smtp) &&
+            !ine(cfg.smtp.host) &&
+            !ine(cfg.smtp.userName);
     }
 
 }
