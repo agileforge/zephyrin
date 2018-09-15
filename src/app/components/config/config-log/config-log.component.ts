@@ -8,7 +8,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { debounceTime, filter, map } from 'rxjs/operators';
 import { ConfigService } from '../../../providers/config/config.service';
 import { MailingLogConfigModel } from '../../../providers/config/configModel';
-import { LogService } from '../../../providers/log-service';
 
 @Component({
     selector: 'app-config-log',
@@ -23,8 +22,7 @@ export class ConfigLogComponent implements OnInit {
 
     constructor(
         private _formBuilder: FormBuilder,
-        private _configService: ConfigService,
-        private _logger: LogService,
+        private _configService: ConfigService
     ) { }
 
     ngOnInit() {

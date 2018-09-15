@@ -6,11 +6,15 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { DialogService } from '../../providers/dialog/dialog.service';
 import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
     let component: HomeComponent;
     let fixture: ComponentFixture<HomeComponent>;
+    const mockDialogService = {
+        close: jasmine.createSpy('dialog')
+    };
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -18,6 +22,12 @@ describe('HomeComponent', () => {
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             imports: [
                 TranslateModule.forRoot()
+            ],
+            providers: [
+                {
+                    provide: DialogService,
+                    useValue: mockDialogService
+                }
             ]
         })
             .compileComponents();

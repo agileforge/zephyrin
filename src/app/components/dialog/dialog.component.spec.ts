@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogModule, MatDialogRef } from '@angular/material';
 import { DialogComponent } from './dialog.component';
 
 
@@ -12,13 +12,21 @@ describe('DialogComponent', () => {
     let component: DialogComponent;
     let fixture: ComponentFixture<DialogComponent>;
 
+    const mockDialogRef = {
+        close: jasmine.createSpy('close')
+    };
+
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [MatDialogModule],
             declarations: [
                 DialogComponent
             ],
             providers: [
-                MatDialogRef<DialogComponent>
+                {
+                    provide: MatDialogRef,
+                    useValue: mockDialogRef
+                }
             ]
         }).compileComponents();
     }));
