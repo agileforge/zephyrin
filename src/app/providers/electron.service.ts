@@ -8,6 +8,7 @@ import * as childProcess from 'child_process';
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
 import { BrowserWindow, dialog, ipcRenderer, remote, webFrame } from 'electron';
+import { AppConfig } from '../../environments/environment';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -48,7 +49,13 @@ export class ElectronService {
      * @type {string}
      * @memberof ElectronService
      */
-    get currentDir(): string { return process.env.PORTABLE_EXECUTABLE_DIR; }
+    get currentDir(): string {
+        if (AppConfig.environment === 'LOCAL') {
+            return process.env.HOME;
+        } else {
+            return process.env.PORTABLE_EXECUTABLE_DIR;
+        }
+    }
 
     /**
      * Return the temp directory of os.
