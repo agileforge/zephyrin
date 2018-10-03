@@ -83,7 +83,8 @@ export class MailingExecuteComponent implements OnInit {
 
     private getMailingDataToSend(): MailingDataModel {
         if (this.send.get('test').value === true) {
-            const mailDataToSend = <MailingDataModel>Object.assign({}, this.mailingData);
+            const mailDataToSend = <MailingDataModel>(JSON.parse(JSON.stringify(this.mailingData)));
+            mailDataToSend.template = this.mailingData.template; // This fix issue with serialisation...
             const testEmailAddress = this.send.get('testEmailAddress').value;
             // Replace all email with test email
             mailDataToSend.datasource.data.forEach(row => {
