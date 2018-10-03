@@ -113,6 +113,7 @@ export class MailingLoggerService {
         const fileName = this._fileService.pathJoin(this._logDirectory, 'bad-address.log');
         const date = dateFormat(this._dateProvider.now(), ISODATE_FORMAT);
         const message = `${date} - ${error.message} It has been taken from field "${error.emailField}" in data source.\n`;
+        this._logger.error(`${error.message} It has been taken from field "${error.emailField}" in data source.`)
         return this._fileService.appendText(fileName, message);
     }
 

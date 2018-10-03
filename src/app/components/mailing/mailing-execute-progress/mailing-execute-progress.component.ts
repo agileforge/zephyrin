@@ -26,6 +26,7 @@ export class MailingExecuteProgressComponent implements OnInit {
     data: MailingDataModel;
     progress: number;
     count: number;
+    errCount: number;
     total: number;
 
     private _sendSubscription: Subscription;
@@ -48,8 +49,12 @@ export class MailingExecuteProgressComponent implements OnInit {
         this.sending = true;
         this.sent = false;
         this.count = 0;
+        this.errCount = 0;
         this.total = this.data.datasource.data.length;
-        this._sendSubscription = this._mailerEngineService.sendMails(this.data).subscribe(() => {
+        this._sendSubscription = this._mailerEngineService.sendMails(this.data).subscribe(data => {
+            if (data) {
+                this.errCount++;
+            }
             this.progress = Math.ceil(++this.count / this.total * 100);
         }, err => {
             this._logger.error(err.message, err);

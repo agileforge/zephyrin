@@ -1,11 +1,13 @@
 <h2 mat-dialog-title>Send</h2>
-<mat-dialog-content style="height: 146px;">
+<mat-dialog-content style="height: 166px;">
     <div *ngIf="!sending && !sent">
         You are about to send {{ data?.datasource?.data?.length }} emails. Are you sure ?
     </div>
     <div *ngIf="sending || sent" fxLayout="column" fxLayoutAlign="center center" fxFill>
         <mat-progress-spinner mode="determinate" [value]="progress"></mat-progress-spinner>
-        <div style="margin-top: 10px">Sending {{ count }}/{{ total }} ({{ progress }}%)</div>
+        <div style="margin-top: 10px">{{ count }}/{{ total }} proceeded ({{ progress }}%)</div>
+        <div style="color: greenyellow">{{ count - errCount }} email(s) sent successfully</div>
+        <div style="color: lightcoral" *ngIf="errCount > 0">{{ errCount }} error(s)</div>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>

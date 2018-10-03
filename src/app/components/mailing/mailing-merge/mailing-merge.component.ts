@@ -9,6 +9,7 @@ import { debounceTime, filter } from 'rxjs/operators';
 import { DataLoaderService } from '../../../providers/data-loader/data-loader.service';
 import { DocumentService } from '../../../providers/document/document.service';
 import { FileService } from '../../../providers/file/file.service';
+import { LogService } from '../../../providers/log-service';
 import { MailingDataModel } from '../../../providers/mailer-engine/mailingDataModel';
 import { MailingDataSource } from '../../../providers/mailer-engine/mailingDataSource';
 
@@ -40,6 +41,7 @@ export class MailingMergeComponent implements OnInit {
         private _fileService: FileService,
         private _dataLoaderService: DataLoaderService,
         private _documentService: DocumentService,
+        private _logger: LogService
     ) { }
 
     ngOnInit() {
@@ -87,6 +89,7 @@ export class MailingMergeComponent implements OnInit {
         const that = this;
 
         if ((fileName || '') === '' || !this._fileService.fileExists(fileName)) {
+            this._logger.debug(`Filename '${fileName}' doen't exists, set empty data.`);
             this.mailingData.datasource = <MailingDataSource>{};
             this._sourceFileInput.nativeElement.value = '';
             this.availableFields = [];
@@ -94,7 +97,9 @@ export class MailingMergeComponent implements OnInit {
         }
 
         if (!this.mailingData.datasource || this.mailingData.datasource.fileName !== fileName) {
+            this._logger.debug(`Loading file '${fileName}' to mailing data.`);
             this._dataLoaderService.fromFile(fileName).subscribe(rows => {
+                this._logger.debug(`File '${fileName}' loaded successfully and found ${rows.length} rows.`);
                 that.mailingData.datasource.data = rows;
                 that.mailingData.datasource.fileName = fileName;
                 that.availableFields = [];

@@ -83,8 +83,8 @@ export class MailerEngineService {
                     if (!EMAIL_REGEX.test(emailAddress)) {
                         const error = new InvalidEmailAddressError(emailAddress, emailField, row, rowNum);
                         that._logger.error(error.message, error);
-                        that._mailingLoggerService.emailAddressError(error);
-                        return;
+                        that._mailingLoggerService.emailAddressError(error).subscribe(_ => { });
+                        return of(error);
                     }
 
                     // Email address is valid, prepare data
@@ -114,7 +114,8 @@ export class MailerEngineService {
                                 concatMap(() => that._mailingLoggerService.success(mail, rowNum)),
                                 catchError(err => {
                                     that._logger.error(`Email ${rowNum} fail to send.`, err);
-                                    return that._mailingLoggerService.sendFail(mail, err, rowNum);
+                                    that._mailingLoggerService.sendFail(mail, err, rowNum).subscribe(() => { });
+                                    return of(err);
                                 })
                             );
                         }));
