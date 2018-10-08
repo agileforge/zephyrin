@@ -6,8 +6,8 @@
 import { Injectable } from '@angular/core';
 import * as dateFormat from 'dateformat';
 import { empty, merge, Observable } from 'rxjs';
-import { concatMap, filter, map } from 'rxjs/operators';
-import { FILEDATE_FORMAT, ISODATE_FORMAT, MSG_MAILINGDATA_LOADED } from '../../misc/const';
+import { concatMap, filter, map, startWith } from 'rxjs/operators';
+import { FILEDATE_FORMAT, ISODATE_FORMAT, MSG_MAILINGDATA_LOADED, MSG_MAILINGLOG_SAVED } from '../../misc/const';
 import Utils from '../../misc/utils';
 import { ConfigService } from '../config/config.service';
 import { DateProviderService } from '../date-provider/date-provider.service';
@@ -84,6 +84,8 @@ export class MailingLoggerService {
             this._fileService.writeText(dataFileName, dataJson),
             templateFileName ? this._fileService.writeBytes(templateFileName, mailingData.template.content) : empty(),
             this._fileService.copyFile(mailingData.datasource.fileName, datasourceFileName)
+        ).pipe(
+            startWith(that._messageHub.emit(MSG_MAILINGLOG_SAVED))
         );
     }
 

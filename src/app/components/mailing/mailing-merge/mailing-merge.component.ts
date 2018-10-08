@@ -7,7 +7,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { debounceTime, filter } from 'rxjs/operators';
-import { MSG_MAILINGDATA_LOADED } from '../../../misc/const';
+import { MSG_MAILINGDATA_LOADED, MSG_MAILINGLOG_SAVED } from '../../../misc/const';
 import { ConfigService } from '../../../providers/config/config.service';
 import { DataLoaderService } from '../../../providers/data-loader/data-loader.service';
 import { DocumentService } from '../../../providers/document/document.service';
@@ -108,6 +108,12 @@ export class MailingMergeComponent implements OnInit {
                 mailingData.template.fileName = templateFullPath;
             }
             that.setMailingData(mailingData, false);
+        });
+
+        this._messageHub.register(MSG_MAILINGLOG_SAVED).subscribe(_ => {
+            this._fileService.getDirectories(this._configService.config.mailingLog.directoryPath).subscribe(dirs => {
+                this.mailingNames = dirs;
+            });
         });
     }
 

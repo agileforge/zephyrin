@@ -37,7 +37,7 @@ export class MessageHubService {
      * @param {string} name The name of message type.
      * @memberof MessageHubService
      */
-    emit(name: string) {
+    emit(name: string): void {
         this.emitMessage(name, <string>null);
     }
 

@@ -37,5 +37,6 @@ export const MSG_MISSING_DATASOURCE = 'missing-datasource';
 export const MSG_MISSING_EMAILDATA = 'missing-emaildata';
 export const MSG_CANCEL_SENDING = 'cancel-sending';
 export const MSG_MAILINGDATA_LOADED = 'mailing-data-loaded';
+export const MSG_MAILINGLOG_SAVED = 'mailing-log-saved';
 
 // #endregion
