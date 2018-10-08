@@ -6,7 +6,8 @@
 import { Injectable } from '@angular/core';
 import * as dateFormat from 'dateformat';
 import { empty, merge, Observable } from 'rxjs';
-import { FILEDATE_FORMAT, ISODATE_FORMAT } from '../../misc/const';
+import { concatMap, filter, map } from 'rxjs/operators';
+import { FILEDATE_FORMAT, ISODATE_FORMAT, MSG_MAILINGDATA_LOADED } from '../../misc/const';
 import Utils from '../../misc/utils';
 import { ConfigService } from '../config/config.service';
 import { DateProviderService } from '../date-provider/date-provider.service';
@@ -15,6 +16,7 @@ import { LogService } from '../log-service';
 import { MailModel } from '../mail-sender/mailModel';
 import { InvalidEmailAddressError } from '../mailer-engine/invalidEmailAddressError';
 import { MailingDataModel } from '../mailer-engine/mailingDataModel';
+import { MessageHubService } from '../message-hub.service';
 
 /**
  * Service to log mails when sent.
@@ -32,6 +34,7 @@ export class MailingLoggerService {
         private _logger: LogService,
         private _config: ConfigService,
         private _fileService: FileService,
+        private _messageHub: MessageHubService,
         private _dateProvider: DateProviderService
     ) { }
 
@@ -58,13 +61,21 @@ export class MailingLoggerService {
         }
 
         // Get mailing data without template.
-        const template = mailingData.template;
+        const template = Object.assign({}, mailingData.template);
         const data = mailingData.datasource.data;
-        delete mailingData.template;
+        if (mailingData.template) {
+            delete mailingData.template.content;
+            delete mailingData.template.fileName;
+            delete mailingData.template.mimeType;
+        }
         delete mailingData.datasource.data;
         const dataJson = JSON.stringify(mailingData, null, 2);
         mailingData.datasource.data = data;
-        mailingData.template = template;
+        if (mailingData.template) {
+            mailingData.template.content = template.content;
+            mailingData.template.fileName = template.fileName;
+            mailingData.template.mimeType = template.mimeType;
+        }
         this._logger.debug('Mailing data without rows is:', dataJson);
 
         // Save it all
@@ -115,6 +126,46 @@ export class MailingLoggerService {
         const message = `${date} - ${error.message} It has been taken from field "${error.emailField}" in data source.\n`;
         this._logger.error(`${error.message} It has been taken from field "${error.emailField}" in data source.`)
         return this._fileService.appendText(fileName, message);
+    }
+
+    /**
+     * Loads an old mailing meta data.
+     * @param {string} path Path to directory where are the logs.
+     * @returns {Observable<MailingDataModel>} Datamodel that contains metadata.
+     * @memberof MailingLoggerService
+     */
+    load(path: string): void {
+        const that = this;
+        let lastDir: string = null;
+        const result = <MailingDataModel>{};
+        this._fileService.getDirectories(path).pipe(
+            filter(dirs => dirs.length > 0),
+            map(dirs => dirs.sort()[dirs.length - 1]),
+            map(dir => {
+                // Kee dir for later
+                lastDir = that._fileService.pathJoin(path, dir);
+                // Loads config
+                const configFileName = that._fileService.pathJoin(lastDir, 'config.json');
+                if (that._fileService.fileExists(configFileName)) {
+                    that._config.load(configFileName).subscribe();
+                }
+                return dir;
+            }),
+            concatMap(dir => {
+                // Loads meta data
+                const metaFileName = that._fileService.pathJoin(lastDir, 'mailing.json');
+                if (that._fileService.fileExists(metaFileName)) {
+                    return that._fileService.readText(metaFileName);
+                }
+            }),
+            // Then return the loaded data
+            map(data => Object.assign(result, JSON.parse(data)))
+        ).subscribe(data => {
+            this._messageHub.emitMessage(MSG_MAILINGDATA_LOADED, {
+                logPath: lastDir,
+                mailingData: data
+            });
+        });
     }
 
     /**

@@ -61,9 +61,12 @@ export class ConfigService {
      * @returns {Observable<ConfigModel>}
      * @memberof ConfigService
      */
-    load(): Observable<ConfigModel> {
+    load(fileName?: string): Observable<ConfigModel> {
         this._logger.debug(`Loading config from file '${this._fileName}'.`);
         const that = this;
+        if (fileName) {
+            this._fileName = fileName;
+        }
         return this._fileService.readText(this._fileName).pipe(
             map(t => {
                 that.config = <ConfigModel>JSON.parse(t);

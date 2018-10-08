@@ -1,15 +1,18 @@
 <form [formGroup]="merge" novalidate>
     <mat-form-field>
-        <input formControlName="name" matInput placeholder="Mailing name">
+        <input type="text" matInput formControlName="name" [matAutocomplete]="auto" placeholder="Mailing name">
     </mat-form-field>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="nameChanged($event)">
+        <mat-option *ngFor="let mailingName of mailingNames" [value]="mailingName">{{ mailingName }}</mat-option>
+    </mat-autocomplete>
     <div fyLayout="row" fxLayoutAlign="start center">
         <mat-form-field>
             <input formControlName="templateFileName" matInput placeholder="Template file">
         </mat-form-field>
         <button (click)="templateFileInput.click()" mat-mini-fab style="margin-left:10px;">
             <mat-icon>folder_open</mat-icon>
-            <input #templateFileInput type="file" [accept]="templateFileAccept" (change)="templateFileSelected($event)" style="display:none;"
-            />
+            <input #templateFileInput type="file" [accept]="templateFileAccept" (change)="templateFileSelected($event)"
+                style="display:none;" />
         </button>
     </div>
     <div fyLayout="row" fxLayoutAlign="start center">
@@ -18,8 +21,7 @@
         </mat-form-field>
         <button (click)="sourceFileInput.click()" mat-mini-fab style="margin-left:10px;">
             <mat-icon>folder_open</mat-icon>
-            <input #sourceFileInput type="file" [accept]="sourceFileAccept" (change)="sourceFileSelected($event)" style="display:none;"
-            />
+            <input #sourceFileInput type="file" [accept]="sourceFileAccept" (change)="sourceFileSelected($event)" style="display:none;" />
         </button>
     </div>
 
@@ -34,12 +36,14 @@
             </mat-form-field>
             <mat-form-field fxFlex="30%">
                 <mat-select formControlName="lastNameField" placeholder="Last name or full name column">
-                    <mat-option *ngFor="let fieldName of availableFieldsForLastName" [value]="fieldName">{{ fieldName }}</mat-option>
+                    <mat-option *ngFor="let fieldName of availableFieldsForLastName" [value]="fieldName">{{ fieldName
+                        }}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field fxFlex="30%">
                 <mat-select formControlName="firstNameField" placeholder="First name column">
-                    <mat-option *ngFor="let fieldName of availableFieldsForFirstName" [value]="fieldName">{{ fieldName }}</mat-option>
+                    <mat-option *ngFor="let fieldName of availableFieldsForFirstName" [value]="fieldName">{{ fieldName
+                        }}</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>

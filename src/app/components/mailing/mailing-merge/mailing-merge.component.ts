@@ -5,13 +5,18 @@
 
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { debounceTime, filter } from 'rxjs/operators';
+import { MSG_MAILINGDATA_LOADED } from '../../../misc/const';
+import { ConfigService } from '../../../providers/config/config.service';
 import { DataLoaderService } from '../../../providers/data-loader/data-loader.service';
 import { DocumentService } from '../../../providers/document/document.service';
 import { FileService } from '../../../providers/file/file.service';
 import { LogService } from '../../../providers/log-service';
 import { MailingDataModel } from '../../../providers/mailer-engine/mailingDataModel';
 import { MailingDataSource } from '../../../providers/mailer-engine/mailingDataSource';
+import { MailingLoggerService } from '../../../providers/mailing-logger/mailing-logger.service';
+import { MessageHubService } from '../../../providers/message-hub.service';
 
 @Component({
     selector: 'app-mailing-merge',
@@ -21,7 +26,7 @@ import { MailingDataSource } from '../../../providers/mailer-engine/mailingDataS
 export class MailingMergeComponent implements OnInit {
 
     @Output() dataChanged = new EventEmitter<MailingDataModel>();
-    @Input() set mailingData(value: MailingDataModel) { this.setMailingData(value); }
+    @Input() set mailingData(value: MailingDataModel) { this.setMailingData(value, false); }
     get mailingData(): MailingDataModel { return this._mailingData; }
     get availableFieldsForEmail(): string[] { return this.getAvailableFields('lastNameField', 'firstNameField'); }
     get availableFieldsForLastName(): string[] { return this.getAvailableFields('emailField', 'firstNameField'); }
@@ -31,6 +36,7 @@ export class MailingMergeComponent implements OnInit {
     sourceFileAccept = '.xlsx';
     templateFileAccept = '.docx';
     availableFields: string[] = [];
+    mailingNames: string[] = [];
 
     @ViewChild('sourceFileInput') private _sourceFileInput: ElementRef;
     @ViewChild('templateFileInput') private _templateFileInput: ElementRef;
@@ -41,12 +47,19 @@ export class MailingMergeComponent implements OnInit {
         private _fileService: FileService,
         private _dataLoaderService: DataLoaderService,
         private _documentService: DocumentService,
+        private _configService: ConfigService,
+        private _mailingLogger: MailingLoggerService,
+        private _messageHub: MessageHubService,
         private _logger: LogService
     ) { }
 
     ngOnInit() {
         const that = this;
         const fb = this._formBuilder;
+
+        this._fileService.getDirectories(this._configService.config.mailingLog.directoryPath).subscribe(dirs => {
+            this.mailingNames = dirs;
+        });
 
         this.merge = fb.group({
             name: fb.control(null),
@@ -77,6 +90,24 @@ export class MailingMergeComponent implements OnInit {
             debounceTime(400)
         ).subscribe(value => {
             that.templateFileNameChanged(value);
+        });
+
+        this._messageHub.register(MSG_MAILINGDATA_LOADED).subscribe(data => {
+            const fullData = <{ logPath: string, mailingData: MailingDataModel }>data;
+            const mailingData = Object.assign(that.mailingData, fullData.mailingData);
+            if (mailingData.datasource && mailingData.datasource.fileName) {
+                const fileName = that._fileService.pathExtractFileName(mailingData.datasource.fileName);
+                const sourceFullPath = that._fileService.pathJoin(fullData.logPath, fileName);
+                that.sourceFileNameChanged(sourceFullPath);
+                mailingData.datasource.fileName = sourceFullPath;
+            }
+            if (mailingData.template && mailingData.template.fullName) {
+                const fileName = that._fileService.pathExtractFileName(mailingData.template.fullName);
+                const templateFullPath = that._fileService.pathJoin(fullData.logPath, fileName);
+                that.templateFileNameChanged(templateFullPath);
+                mailingData.template.fileName = templateFullPath;
+            }
+            that.setMailingData(mailingData, false);
         });
     }
 
@@ -115,6 +146,14 @@ export class MailingMergeComponent implements OnInit {
         this.merge.get('templateFileName').setValue(fileName);
     }
 
+    nameChanged(e: MatAutocompleteSelectedEvent) {
+        const selectedPath = this._fileService.pathJoin(
+            this._configService.config.mailingLog.directoryPath,
+            e.option.value.toString());
+
+        this._mailingLogger.load(selectedPath);
+    }
+
     private templateFileNameChanged(fileName: string) {
         const that = this;
 
@@ -131,18 +170,18 @@ export class MailingMergeComponent implements OnInit {
         }
     }
 
-    private setMailingData(value: MailingDataModel): void {
+    private setMailingData(value: MailingDataModel, emitEvent: boolean): void {
         this._mailingData = value;
 
         if (value && this.merge) {
             this.merge.setValue({
                 name: value.name,
                 sourceFileName: value.datasource.fileName,
-                templateFileName: value.template.fullName,
+                templateFileName: value.template ? value.template.fullName : null,
                 emailField: value.datasource.mailAddressField,
                 lastNameField: value.datasource.lastNameField,
                 firstNameField: value.datasource.firstNameField
-            }, { emitEvent: false });
+            }, { emitEvent });
         }
     }
 

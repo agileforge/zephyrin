@@ -167,6 +167,28 @@ export class FileService {
     }
 
     /**
+     * Gets directories under the specified path.
+     * @param {string} path The parent path.
+     * @returns {Observable<string[]>} An array of strings that contains the sub directories.
+     * @memberof FileService
+     */
+    getDirectories(path: string): Observable<string[]> {
+        const that = this;
+        this._logger.debug(`Starting to get sub directories of path '${path}'.`);
+        return Observable.create(observer => {
+            this._electron.fs.readdir(path, (err, dirs) => {
+                if (err) {
+                    that._logger.error(`Error while getting sub directories of path '${path}': '${err.message}'`);
+                    observer.error(err);
+                }
+                that._logger.debug(`Sub directories of path '${path}' found successfully as:${dirs}`);
+                observer.next(dirs);
+                observer.complete();
+            });
+        });
+    }
+
+    /**
      * Creates the specified directoryPath.
      * @param {string} directoryPath Directory to create.
      * @memberof FileService
