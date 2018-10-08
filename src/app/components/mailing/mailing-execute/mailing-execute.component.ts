@@ -126,6 +126,6 @@ export class MailingExecuteComponent implements OnInit {
         this._dialogService.dialog(MailingExecuteProgressComponent, dr => {
             dr.componentInstance.setData(this.getMailingDataToSend());
         },
-            { width: '400px', height: '302px' }).subscribe();
+            { width: '400px', height: '322px' }).subscribe();
     }
 }

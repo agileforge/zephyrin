@@ -7,10 +7,10 @@ import { Injectable } from '@angular/core';
 import * as childProcess from 'child_process';
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
-import { BrowserWindow, dialog, ipcRenderer, remote, webFrame } from 'electron';
-import { AppConfig } from '../../environments/environment';
+import { BrowserWindow, dialog, ipcRenderer, remote, Shell, webFrame } from 'electron';
 import * as fs from 'fs';
 import * as path from 'path';
+import { AppConfig } from '../../environments/environment';
 
 @Injectable()
 export class ElectronService {
@@ -23,6 +23,7 @@ export class ElectronService {
     path: typeof path;
     dialog: typeof dialog;
     window: BrowserWindow;
+    shell: Shell;
 
     constructor() {
         // Conditional imports
@@ -31,6 +32,7 @@ export class ElectronService {
             this.webFrame = window.require('electron').webFrame;
             this.remote = window.require('electron').remote;
             this.window = this.remote.getCurrentWindow();
+            this.shell = window.require('electron').shell;
 
             this.childProcess = window.require('child_process');
             this.fs = window.require('fs');

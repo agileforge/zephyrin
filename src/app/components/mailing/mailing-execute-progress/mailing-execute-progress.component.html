@@ -1,13 +1,35 @@
 <h2 mat-dialog-title>Send</h2>
-<mat-dialog-content style="height: 166px;">
+<mat-dialog-content style="height: 186px;">
     <div *ngIf="!sending && !sent">
         You are about to send {{ data?.datasource?.data?.length }} emails. Are you sure ?
     </div>
     <div *ngIf="sending || sent" fxLayout="column" fxLayoutAlign="center center" fxFill>
         <mat-progress-spinner mode="determinate" [value]="progress"></mat-progress-spinner>
         <div style="margin-top: 10px">{{ count }}/{{ total }} proceeded ({{ progress }}%)</div>
-        <div style="color: greenyellow">{{ count - errCount }} email(s) sent successfully</div>
-        <div style="color: lightcoral" *ngIf="errCount > 0">{{ errCount }} error(s)</div>
+        <div fxLayout="row">
+            <div style="color: greenyellow">
+                {{ count - errCount - addressErrCount }} email(s) sent successfully
+            </div>
+            <a *ngIf="sent && (count - errCount - addressErrCount) > 0" (click)="openFile(successLogUrl)">
+                <mat-icon>link</mat-icon>
+            </a>
+        </div>
+        <div fxLayout="row" *ngIf="addressErrCount > 0">
+            <div style="color: orange">
+                {{ addressErrCount }} wrong mail address(s)
+            </div>
+            <a *ngIf="sent" (click)="openFile(badAddressLogUrl)">
+                <mat-icon>link</mat-icon>
+            </a>
+        </div>
+        <div fxLayout="row" *ngIf="errCount > 0">
+            <div style="color: lightcoral">
+                {{ errCount }} error(s)
+            </div>
+            <a *ngIf="sent" (click)="openFile(failLogUrl)">
+                <mat-icon>link</mat-icon>
+            </a>
+        </div>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>

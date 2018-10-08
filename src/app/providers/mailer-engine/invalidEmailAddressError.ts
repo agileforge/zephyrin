@@ -14,6 +14,13 @@ import { MergeableRowDataModel } from '../data-loader/mergeableRowDataModel';
 export class InvalidEmailAddressError extends Error {
 
     /**
+     * Type guard.
+     * @type {string} The type of object.
+     * @memberof InvalidEmailAddressError
+     */
+    type: string;
+
+    /**
      * The email that cause the error.
      * @type { string }
      * @memberof InvalidEmailAddressError
@@ -58,6 +65,7 @@ export class InvalidEmailAddressError extends Error {
 
         super(message);
 
+        this.type = 'InvalidEmailAddressError';
         this.emailAddress = emailAddress;
         this.emailField = emailField;
         this.row = row;

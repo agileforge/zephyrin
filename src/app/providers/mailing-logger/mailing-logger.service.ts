@@ -28,6 +28,10 @@ import { MessageHubService } from '../message-hub.service';
 })
 export class MailingLoggerService {
 
+    get successFileName(): string { return this._fileService.pathJoin(this._logDirectory, 'success.log'); }
+    get sendFailFileName(): string { return this._fileService.pathJoin(this._logDirectory, 'error.log'); }
+    get emailAddressErrorFileName(): string { return this._fileService.pathJoin(this._logDirectory, 'bad-address.log'); }
+
     private _logDirectory: string;
 
     constructor(
@@ -96,10 +100,9 @@ export class MailingLoggerService {
      * @memberof MailingLoggerService
      */
     success(mail: MailModel, rowNum: number): Observable<void> {
-        const fileName = this._fileService.pathJoin(this._logDirectory, 'success.log');
         const date = dateFormat(this._dateProvider.now(), ISODATE_FORMAT);
         const message = `${date} - From row ${rowNum} sent to "${mail.to[0]}"\n`;
-        return this._fileService.appendText(fileName, message);
+        return this._fileService.appendText(this.successFileName, message);
     }
 
     /**
@@ -110,10 +113,9 @@ export class MailingLoggerService {
      * @memberof MailingLoggerService
      */
     sendFail(mail: MailModel, error: Error, rowNum: number): Observable<void> {
-        const fileName = this._fileService.pathJoin(this._logDirectory, 'error.log');
         const date = dateFormat(this._dateProvider.now(), ISODATE_FORMAT);
         const message = `${date} - From row ${rowNum} fail to send email to "${mail.to[0]}": "${error.message}"\n`;
-        return this._fileService.appendText(fileName, message);
+        return this._fileService.appendText(this.sendFailFileName, message);
     }
 
     /**
@@ -123,11 +125,10 @@ export class MailingLoggerService {
      * @memberof MailingLoggerService
      */
     emailAddressError(error: InvalidEmailAddressError): Observable<void> {
-        const fileName = this._fileService.pathJoin(this._logDirectory, 'bad-address.log');
         const date = dateFormat(this._dateProvider.now(), ISODATE_FORMAT);
         const message = `${date} - ${error.message} It has been taken from field "${error.emailField}" in data source.\n`;
         this._logger.error(`${error.message} It has been taken from field "${error.emailField}" in data source.`)
-        return this._fileService.appendText(fileName, message);
+        return this._fileService.appendText(this.emailAddressErrorFileName, message);
     }
 
     /**

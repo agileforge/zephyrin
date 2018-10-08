@@ -51,7 +51,7 @@ export class MailerEngineService {
      * @param {MailingDataSource} mailingDataSource
      * @memberof MailerEngineService
      */
-    sendMails(mailingDataSource: MailingDataModel): Observable<void> {
+    sendMails(mailingDataSource: MailingDataModel): Observable<any> {
         const that = this;
         that._logger.debug(`Starting to send ${mailingDataSource.datasource.data.length} email...`);
         const config = this._configService.config;
@@ -83,7 +83,7 @@ export class MailerEngineService {
                     if (!EMAIL_REGEX.test(emailAddress)) {
                         const error = new InvalidEmailAddressError(emailAddress, emailField, row, rowNum);
                         that._logger.error(error.message, error);
-                        that._mailingLoggerService.emailAddressError(error).subscribe(_ => { });
+                        that._mailingLoggerService.emailAddressError(error).subscribe();
                         return of(error);
                     }
 
