@@ -35,6 +35,12 @@ function createWindow() {
         win.webContents.openDevTools();
     }
 
+    const pkge = require('./package.json');
+    win.setTitle(pkge.title + ' - ' + pkge.version);
+    win.on('page-title-updated', function (e) {
+        e.preventDefault();
+    });
+
     // Emitted when the window is closed.
     win.on('closed', () => {
         // Dereference the window object, usually you would store window
