@@ -20,10 +20,26 @@ export interface MailingDataModel {
      */
     name?: string;
     /**
+     * Provide a list of email addresses that will recieve copy of sent emails.
+     * This list is a string separated by ",", ";" or "|" char.
+     * @type {string}
+     * @memberof MailingDataModel
+     */
+    copyToAddresses: string;
+    /**
+     * Provide a list of email addresses that will recieve a blind copy of sent emails.
+     * This list is a string separated by ",", ";" or "|" char.
+     * Data source placeholders can also be used.
+     * @type {string}
+     * @memberof MailingDataModel
+     */
+    blindCopyToAddresses: string;
+    /**
      * The subject of the mail.
      *
      * This value can contains placeholders as '{field_name}' that will
      * be replaced with data found in the data array in datasource.
+     * Data source placeholders can also be used.
      * @type {string}
      * @memberof MailingData
      */

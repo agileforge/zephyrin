@@ -1,4 +1,27 @@
 <form [formGroup]="email" novalidate>
+
+    <div fxLayout="row">
+        <mat-form-field fxFlex style="margin-right:10px;">
+            <input matInput formControlName="copyToAddresses" placeholder="CC (you can use source placeholder)">
+        </mat-form-field>
+        <mat-form-field fxFlex="20%">
+            <mat-select placeholder="Field to add" (selectionChange)="addCopyPlaceholder($event, 'copyToAddresses')">
+                <mat-option *ngFor="let fieldName of fields" [value]="fieldName">{{ fieldName }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div fxLayout="row">
+        <mat-form-field fxFlex style="margin-right:10px;">
+            <input matInput formControlName="blindCopyToAddresses" placeholder="BCC (you can use source placeholder)">
+        </mat-form-field>
+        <mat-form-field fxFlex="20%">
+            <mat-select placeholder="Field to add" (selectionChange)="addCopyPlaceholder($event, 'blindCopyToAddresses')">
+                <mat-option *ngFor="let fieldName of fields" [value]="fieldName">{{ fieldName }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
     <mat-form-field>
         <input formControlName="subject" matInput placeholder="Subject">
         <!-- <mat-hint *ngIf="emailFormGroup.hasError('required', ['subject'])" [ngStyle]="{'color': 'red'}" align="start">{{

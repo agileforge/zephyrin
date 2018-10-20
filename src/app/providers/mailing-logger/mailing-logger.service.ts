@@ -127,7 +127,7 @@ export class MailingLoggerService {
     emailAddressError(error: InvalidEmailAddressError): Observable<void> {
         const date = dateFormat(this._dateProvider.now(), ISODATE_FORMAT);
         const message = `${date} - ${error.message} It has been taken from field "${error.emailField}" in data source.\n`;
-        this._logger.error(`${error.message} It has been taken from field "${error.emailField}" in data source.`)
+        this._logger.error(`${error.message} It has been taken from field "${error.emailField}" in data source.`);
         return this._fileService.appendText(this.emailAddressErrorFileName, message);
     }
 

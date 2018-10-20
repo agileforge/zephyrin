@@ -3,9 +3,8 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TestBed, inject } from '@angular/core/testing';
+import { MIMETYPE_DOCX, MIMETYPE_PDF, MIMETYPE_TXT, MIMETYPE_XLSX } from './const';
 import Utils from './utils';
-import { MIMETYPE_PDF, MIMETYPE_DOCX, MIMETYPE_XLSX, MIMETYPE_TXT } from './const';
 
 describe('utils', () => {
 
@@ -59,7 +58,7 @@ describe('utils', () => {
 
         it('should throw error if file path is not compliant', () => {
             // Act & Assert
-            expect( () => { Utils.getMimeType('someFileWithoutExt'); } ).toThrow();
+            expect(() => { Utils.getMimeType('someFileWithoutExt'); }).toThrow();
         });
 
         it('should return right mime types', () => {
@@ -103,7 +102,7 @@ describe('utils', () => {
     });
 
     describe('getPropertyCI', () => {
-        it ('should return value if property name exactly same', async() => {
+        it('should return value if property name exactly same', async () => {
             // Arrange
             const data = { one: 'one', two: 'two', three: 'three' };
 
@@ -114,7 +113,7 @@ describe('utils', () => {
             expect(result.toString()).toEqual('two');
         });
 
-        it ('should return value if property name not same case', async() => {
+        it('should return value if property name not same case', async () => {
             // Arrange
             const data = { one: 'one', two: 'two', three: 'three' };
 
@@ -125,7 +124,7 @@ describe('utils', () => {
             expect(result.toString()).toEqual('two');
         });
 
-        it ('should return undefined if property not found', async() => {
+        it('should return undefined if property not found', async () => {
             // Arrange
             const data = { one: 'one', two: 'two', three: 'three' };
 
@@ -134,6 +133,7 @@ describe('utils', () => {
 
             // Arrange
             expect(result).toBeUndefined();
-        });    });
+        });
+    });
 
 });

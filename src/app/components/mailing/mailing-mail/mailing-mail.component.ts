@@ -5,10 +5,13 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MSG_MAILINGDATA_LOADED } from '../../../misc/const';
+import { MatSelectChange } from '@angular/material';
+import { MSG_DATASOURCE_FIELDS_LOADED, MSG_MAILINGDATA_LOADED } from '../../../misc/const';
+import Utils from '../../../misc/utils';
 import { MailingDataModel } from '../../../providers/mailer-engine/mailingDataModel';
 import { MessageHubService } from '../../../providers/message-hub.service';
 
+const EMAIL_SEP = ',;|';
 @Component({
     selector: 'app-mailing-mail',
     templateUrl: './mailing-mail.component.html',
@@ -20,6 +23,7 @@ export class MailingMailComponent implements OnInit {
     get mailingData(): MailingDataModel { return this._mailingData; }
 
     email: FormGroup;
+    fields: string[];
 
     private _mailingData: MailingDataModel;
 
@@ -32,12 +36,16 @@ export class MailingMailComponent implements OnInit {
         const that = this;
         const fb = this._formBuilder;
         this.email = fb.group({
+            copyToAddresses: fb.control(null),
+            blindCopyToAddresses: fb.control(null),
             subject: fb.control(null, Validators.required),
             body: fb.control(null, Validators.required)
         });
 
         this.email.valueChanges.subscribe(() => {
             if (this.mailingData) {
+                this.mailingData.copyToAddresses = this.email.get('copyToAddresses').value;
+                this.mailingData.blindCopyToAddresses = this.email.get('blindCopyToAddresses').value;
                 this.mailingData.subject = this.email.get('subject').value;
                 this.mailingData.body = this.email.get('body').value;
             }
@@ -48,6 +56,10 @@ export class MailingMailComponent implements OnInit {
             const mailingData = fullData.mailingData;
             that.setMailingData(mailingData, true);
         });
+
+        this._messageHub.register(MSG_DATASOURCE_FIELDS_LOADED).subscribe((data: string[]) => {
+            that.fields = data;
+        });
     }
 
     private setMailingData(value: MailingDataModel, emitEvent: boolean): void {
@@ -55,10 +67,22 @@ export class MailingMailComponent implements OnInit {
 
         if (value && this.email) {
             this.email.setValue({
+                copyToAddresses: value.copyToAddresses || null,
+                blindCopyToAddresses: value.blindCopyToAddresses || null,
                 subject: value.subject,
                 body: value.body,
             }, { emitEvent });
         }
     }
 
+    addCopyPlaceholder(event: MatSelectChange, field: string) {
+        if (event.value) {
+            const chars = '\s' + EMAIL_SEP;
+            const container = this.email.get(field);
+            const currentValue: string = container.value || '';
+            const newValue = Utils.trimChar(Utils.trimChar(currentValue, chars) + ', {' + event.value + '}', chars);
+            container.setValue(newValue);
+            event.source.value = null;
+        }
+    }
 }

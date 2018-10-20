@@ -3,6 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import { MailingDataSource } from '../providers/mailer-engine/mailingDataSource';
 import { FILE_COMPLIANT_REGEX, MIMETYPE_DOCX, MIMETYPE_PDF, MIMETYPE_TXT, MIMETYPE_XLSX } from './const';
 
 /**
@@ -106,6 +107,58 @@ export default class Utils {
         }
 
         return false;
+    }
+
+
+    /**
+     * Get the list of fields considering first row is the field names.
+     * @static
+     * @param {MailingDataSource} datasource The datasource where are fields.
+     * @returns {string[]} An array containing the list of field names.
+     * @memberof Utils
+     */
+    static getFields(datasource: MailingDataSource): string[] {
+        let result: string[] = [];
+        if (datasource && datasource.data && datasource.data.length > 0) {
+            result = Object.keys(datasource.data[0]);
+        }
+        return result;
+    }
+
+    /**
+     * Remove the specified chars from the left part of string.
+     * @static
+     * @param {string} s String to trim.
+     * @param {string} [chars] Chers to remove.
+     * @returns Trimmed string.
+     * @memberof Utils
+     */
+    static trimCharLeft(s: string, chars?: string) {
+        return s.replace(new RegExp('^[' + (chars || '\s') + ']+'), '');
+    }
+
+    /**
+     * Remove the specified chars from the right part of string.
+     * @static
+     * @param {string} s String to trim.
+     * @param {string} [chars] Chers to remove.
+     * @returns Trimmed string.
+     * @memberof Utils
+     */
+    static trimCharRight(s: string, chars?: string) {
+        return s.replace(new RegExp('[' + (chars || '\s') + ']+$'), '');
+    }
+
+    /**
+     * Remove the specified chars from a string.
+     * @static
+     * @param {string} s String to trim.
+     * @param {string} [chars] Chers to remove.
+     * @returns Trimmed string.
+     * @memberof Utils
+     */
+    static trimChar(s: string, chars?: string) {
+        return this.trimCharLeft(this.trimCharRight(s, chars), chars);
     }
 
 }

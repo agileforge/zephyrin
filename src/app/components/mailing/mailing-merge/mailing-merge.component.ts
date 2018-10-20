@@ -7,7 +7,8 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { debounceTime, filter } from 'rxjs/operators';
-import { MSG_MAILINGDATA_LOADED, MSG_MAILINGLOG_SAVED } from '../../../misc/const';
+import { MSG_DATASOURCE_FIELDS_LOADED, MSG_MAILINGDATA_LOADED, MSG_MAILINGLOG_SAVED } from '../../../misc/const';
+import Utils from '../../../misc/utils';
 import { ConfigService } from '../../../providers/config/config.service';
 import { DataLoaderService } from '../../../providers/data-loader/data-loader.service';
 import { DocumentService } from '../../../providers/document/document.service';
@@ -139,10 +140,8 @@ export class MailingMergeComponent implements OnInit {
                 this._logger.debug(`File '${fileName}' loaded successfully and found ${rows.length} rows.`);
                 that.mailingData.datasource.data = rows;
                 that.mailingData.datasource.fileName = fileName;
-                that.availableFields = [];
-                if (rows.length > 0) {
-                    that.availableFields = Object.keys(rows[0]);
-                }
+                that.availableFields = Utils.getFields(this.mailingData.datasource);
+                that._messageHub.emitMessage(MSG_DATASOURCE_FIELDS_LOADED, that.availableFields);
             });
         }
     }
