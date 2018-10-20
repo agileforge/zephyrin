@@ -38,6 +38,6 @@ CKEDITOR.editorConfig = function (config) {
     config.removeDialogTabs = 'image:advanced;link:advanced';
 
     config.extraPlugins = 'autogrow';
-    config.autoGrow_minHeight = 450;
+    config.autoGrow_minHeight = 300;
     config.autoGrow_onStartup = true;
 };

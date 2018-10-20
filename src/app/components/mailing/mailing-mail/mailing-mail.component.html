@@ -4,7 +4,7 @@
         <mat-form-field fxFlex style="margin-right:10px;">
             <input matInput formControlName="copyToAddresses" placeholder="CC (you can use source placeholder)">
         </mat-form-field>
-        <mat-form-field fxFlex="20%">
+        <mat-form-field fxFlex="20%" *ngIf="fields?.length > 0">
             <mat-select placeholder="Field to add" (selectionChange)="addCopyPlaceholder($event, 'copyToAddresses')">
                 <mat-option *ngFor="let fieldName of fields" [value]="fieldName">{{ fieldName }}</mat-option>
             </mat-select>
@@ -15,7 +15,7 @@
         <mat-form-field fxFlex style="margin-right:10px;">
             <input matInput formControlName="blindCopyToAddresses" placeholder="BCC (you can use source placeholder)">
         </mat-form-field>
-        <mat-form-field fxFlex="20%">
+        <mat-form-field fxFlex="20%" *ngIf="fields?.length > 0">
             <mat-select placeholder="Field to add" (selectionChange)="addCopyPlaceholder($event, 'blindCopyToAddresses')">
                 <mat-option *ngFor="let fieldName of fields" [value]="fieldName">{{ fieldName }}</mat-option>
             </mat-select>

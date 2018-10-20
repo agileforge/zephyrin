@@ -77,7 +77,7 @@ export class MailingMailComponent implements OnInit {
 
     addCopyPlaceholder(event: MatSelectChange, field: string) {
         if (event.value) {
-            const chars = '\s' + EMAIL_SEP;
+            const chars = ' ' + EMAIL_SEP;
             const container = this.email.get(field);
             const currentValue: string = container.value || '';
             const newValue = Utils.trimChar(Utils.trimChar(currentValue, chars) + ', {' + event.value + '}', chars);

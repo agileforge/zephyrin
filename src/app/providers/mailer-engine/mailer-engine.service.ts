@@ -91,6 +91,8 @@ export class MailerEngineService {
                     const mail = <MailModel>{
                         from: Utils.getEmailAddress(config.sender.emailAddress, config.sender.fullName),
                         to: [Utils.getEmailAddress(emailAddress, lastName, firstName)],
+                        cc: that.getCopyEmails(mailingDataSource.copyToAddresses, row),
+                        cci: that.getCopyEmails(mailingDataSource.blindCopyToAddresses, row),
                         subject: that.replaceFields(mailingDataSource.subject, row),
                         body: that.replaceFields(mailingDataSource.body, row),
                         attachments: []
@@ -148,10 +150,37 @@ export class MailerEngineService {
      * @param {{ [field: string]: string }} data The dictionary that contains data.
      * @memberof MailerEngineService
      */
-    private replaceFields(value: string, data: MergeableRowDataModel): string {
+    private replaceFields(value: string, data: MergeableRowDataModel, defaultValue?: string): string {
         return value.replace(this._placeHolderPattern, (match, $1, $2) => {
-            return data[$2] || $1; // If field not exists in data let it as is.
+            return data[$2] || (defaultValue || $1); // If field not exists in data let it as is, or default if specified.
         });
     }
 
+    /**
+     * Parse a string that contains email addresses and return an array of email addresses.
+     * @private
+     * @param {string} addressesStr The string that contains email addresses.
+     * @param {MergeableRowDataModel} data Data object where are the data for place holders.
+     * @returns {string[]} Return an array of valid email addresses.
+     * @memberof MailerEngineService
+     */
+    private getCopyEmails(addressesStr: string, data: MergeableRowDataModel): string[] {
+        const that = this;
+
+        addressesStr = this.replaceFields(addressesStr, data, ' ');
+        const addresses = addressesStr.split(/[,;\|]/);
+
+        const result: string[] = [];
+        addresses.forEach(address => {
+            address = (address || ' ').trim();
+            if (address !== '') {
+                if (!EMAIL_REGEX.test(address)) {
+                    that._mailingLoggerService.warn(`The copy (CC or BCC) email address '${address}' is wrong.`).subscribe();
+                } else {
+                    result.push(address);
+                }
+            }
+        });
+        return result;
+    }
 }
