@@ -165,6 +165,9 @@ export class MailerEngineService {
      * @memberof MailerEngineService
      */
     private getCopyEmails(addressesStr: string, data: MergeableRowDataModel): string[] {
+        if ((addressesStr || '').trim() === '') {
+            return [];
+        }
         const that = this;
 
         addressesStr = this.replaceFields(addressesStr, data, ' ');
