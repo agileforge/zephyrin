@@ -121,7 +121,7 @@ export class MailerEngineService {
                                 })
                             );
                         }));
-                }, 3),
+                }, 1),
             );
     }
 
