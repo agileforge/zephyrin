@@ -6,7 +6,7 @@
 // #region Regular expressions
 
 /**
- * Regular expression that verify if a string in a valid email address.
+ * Regular expression that verify if a string is a valid email address.
  */
 // tslint:disable-next-line:max-line-length
 export const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

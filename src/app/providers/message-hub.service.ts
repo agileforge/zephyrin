@@ -6,6 +6,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 
+/**
+ * Allow to send and receive messages over th whole application.
+ * @export
+ * @class MessageHubService
+ */
 @Injectable({
     providedIn: 'root'
 })

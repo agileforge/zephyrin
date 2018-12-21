@@ -22,6 +22,15 @@ export class DocxToPdfService {
         private _fileService: FileService,
     ) { }
 
+    /**
+     * Converts a Word document to PDF document.
+     * Remarks: This only works in Windows. This is a bit dirty but
+     * seems not exists a JS library that do the job correctly. So
+     * a solution was to call ActiveX to convert.
+     * @param {Uint8Array} source Byte array that contains the Word document.
+     * @returns {Observable<DocumentModel>} The converted PDF document.
+     * @memberof DocxToPdfService
+     */
     convert(source: Uint8Array): Observable<DocumentModel> {
         const that = this;
         const tempDir = this._fileService.tempDir;
@@ -49,6 +58,15 @@ export class DocxToPdfService {
         );
     }
 
+
+    /**
+     * Execute a process.
+     * @private
+     * @param {string} command The command to execute.
+     * @param {string[]} args The command arguments.
+     * @param {*} [options] Some options.
+     * @memberof DocxToPdfService
+     */
     private spawn(command: string, args: string[], options?: any) {
         const that = this;
         return Observable.create(observer => {
@@ -74,6 +92,12 @@ export class DocxToPdfService {
         });
     }
 
+    /**
+     * Returns the JS script that launch MS-Word ActiveX to convert document to PDF.
+     * @private
+     * @returns {Observable<string>} The script.
+     * @memberof DocxToPdfService
+     */
     private getScriptFileName(): Observable<string> {
         const fileName = this._fileService.pathJoin(this._fileService.tempDir, 'word2pdf.js');
         return this._fileService.writeText(

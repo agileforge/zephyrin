@@ -12,6 +12,7 @@ import { FileService } from '../../file/file.service';
 import { LogService } from '../../log-service';
 import { DocxToPdfService } from '../../toPdf/docx-to-pdf-service';
 import { RenderEngine } from './render-engine';
+
 /**
  * Provide an engine that is able to render a document to a PDF document.
  * @export

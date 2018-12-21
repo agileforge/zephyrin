@@ -14,7 +14,7 @@ import { LogService } from '../../log-service';
 import { DocumentMerger } from './document-merger';
 
 /**
- * Service that is able to merge data with a text document template.
+ * Service that is able to merge data with a Word document template.
  * @export
  * @class DocumentMergerService
  */
@@ -39,8 +39,6 @@ export class DocumentMergerWord extends DocumentMerger {
      * @memberof DocumentMerger
      */
     merge(data: MergeableRowDataModel, template: DocumentModel): DocumentModel {
-        // var path = require('path');
-
         // Load the docx file as a binary
         const zip = new JSZip(template.content);
         const doc = new DocxTemplater();
@@ -69,9 +67,6 @@ export class DocumentMergerWord extends DocumentMerger {
             content: new Uint8Array(buf)
         };
         this._logger.trace(mergedDocument);
-        // this._fileService
-        //     .writeBytes('/home/paf/Temp/merged.' + new Date().getTime().toString() + '.docx', mergedDocument.content)
-        //     .subscribe();
         return mergedDocument;
     }
 

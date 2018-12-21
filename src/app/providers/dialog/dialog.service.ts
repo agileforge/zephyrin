@@ -17,14 +17,39 @@ export class DialogService {
     constructor(private _dialog: MatDialog) {
     }
 
+    /**
+     * Show a confirm dialog with a title, a message, eventually
+     * a warning message and yes/no buttons.
+     * @param title The title of dialog.
+     * @param message The message to user.
+     * @param warn The warning message to user.
+     * @param options Miscellaneous options for dialog.
+     */
     confirm(title: string, message: string, warn: string = null, options?: MatDialogConfig): Observable<DialogResponse> {
         return this.custom(title, message, warn, DialogButton.BtnYesNo, options);
     }
 
+    /**
+     * Show an info dialog with a title, a message, eventually
+     * a warning message and an OK button.
+     * @param title The title of dialog.
+     * @param message The message to user.
+     * @param warn The warning message to user.
+     * @param options Miscellaneous options for dialog.
+     */
     info(title: string, message: string, warn: string = null, options?: MatDialogConfig): Observable<DialogResponse> {
         return this.custom(title, message, warn, DialogButton.BtnOk, options);
     }
 
+    /**
+     * Show a dialog with a title, a message, eventually
+     * a warning message and some button(s).
+     * @param title The title of dialog.
+     * @param message The message to user.
+     * @param warn The warning message to user.
+     * @param buttons Buttons to show.
+     * @param options Miscellaneous options for dialog.
+     */
     custom(
         title: string,
         message: string,
@@ -40,6 +65,12 @@ export class DialogService {
         }, options);
     }
 
+    /**
+     * Show a custom dialog.
+     * @param component The component that is embedded inside the dialog.
+     * @param initAction A delegate action executed. It can be used to initialize dialog.
+     * @param options Miscellaneous options for dialog.
+     */
     dialog<TDialogComponent>(
         component: ComponentType<TDialogComponent>,
         initAction: (dialogRef: MatDialogRef<TDialogComponent>) => void = null,

@@ -19,7 +19,6 @@ export class InvalidEmailAddressError extends Error {
      * @memberof InvalidEmailAddressError
      */
     type: string;
-
     /**
      * The email that cause the error.
      * @type { string }

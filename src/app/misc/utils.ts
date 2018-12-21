@@ -55,12 +55,12 @@ export default class Utils {
     }
 
     /**
- * Get the corresponding extension for the specified mimeType.
- * @static
- * @param {string} mimeType The mime type
- * @returns {string} The extension for the specified mimeType.
- * @memberof Utils
- */
+     * Get the corresponding extension for the specified mimeType.
+     * @static
+     * @param {string} mimeType The mime type
+     * @returns {string} The extension for the specified mimeType.
+     * @memberof Utils
+     */
     static getMimeTypeExtension(mimeType: string): string {
         if (!mimeType) {
             return '';

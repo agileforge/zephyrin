@@ -6,7 +6,6 @@
 import { Injectable } from '@angular/core';
 import { MergeableRowDataModel } from '../../data-loader/mergeableRowDataModel';
 import { DocumentModel } from '../../document/documentModel';
-// import { RenderedDocument } from '../../../complexes/documents/rendered-document';
 
 /**
  * Service that is able to merge data with a document template.

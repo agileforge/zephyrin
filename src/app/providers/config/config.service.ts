@@ -78,8 +78,8 @@ export class ConfigService {
     }
 
     /**
-     * Check if config is complient and ready.
-     * @returns {boolean} True id complient and ready; oterwise false.
+     * Check if config is compliant and ready.
+     * @returns {boolean} True id compliant and ready; otherwise false.
      * @memberof ConfigService
      */
     checkConfig(): boolean {
